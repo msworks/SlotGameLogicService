@@ -37,7 +37,7 @@ class GameLogic
         {
             var table = new[]
             {
-                new { key = "result", value = "error" },
+                new { key = "result", value = "error".DQ() },
             };
 
             var res = "{" +
