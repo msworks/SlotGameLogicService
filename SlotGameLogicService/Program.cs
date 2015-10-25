@@ -29,6 +29,7 @@ class GameLogic
         {
             writer.WriteLine("[ERROR]GAMELOGIC SERVER RUN FAILED");
             writer.WriteLine(e);
+            return;
         }
 
         writer.WriteLine("[INFO]GAMELOGIC SERVER RUN PORT:9876");
