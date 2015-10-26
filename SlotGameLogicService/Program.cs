@@ -52,7 +52,7 @@ class GameLogic
         {
             var table = new []
             {
-                new { key = "balance", value = "123.4" },
+                //new { key = "balance", value = "123.4" },
                 new { key = "setting", value = "1" },
                 new { key = "reelleft", value = "0" },
                 new { key = "reelcenter", value = "0" },
@@ -74,9 +74,11 @@ class GameLogic
                 new { key = "balance", value = "123.4" },
             };
 
-            var res = "{" +
-                      string.Join(",", table.Select(e => e.key.DQ() + ":" + e.value)) +
-                      "}";
+            //var res = "{" +
+            //          string.Join(",", table.Select(e => e.key.DQ() + ":" + e.value)) +
+            //          "}";
+
+            var res = "{}";
 
             return res;
         };
@@ -85,7 +87,7 @@ class GameLogic
         {
             var table = new[]
             {
-                new { key = "balance", value = "123.4" },
+                //new { key = "balance", value = "123.4" },
                 new { key = "yaku", value = "1" },
                 new { key = "route", value = "2" },
             };
@@ -101,7 +103,7 @@ class GameLogic
         {
             var table = new[]
             {
-                new { key = "balance", value = "123.4" },
+                //new { key = "balance", value = "123.4" },
                 new { key = "result", value = "WIN".DQ() },
             };
 
