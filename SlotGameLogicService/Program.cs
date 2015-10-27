@@ -42,166 +42,12 @@ namespace SlotGameLogicService
 
             writer.WriteLine("[INFO]GAMELOGIC SERVER RUN PORT:9876");
 
-            Func<Associative, Json> defaultResponse = (param) =>
-            {
-                param.Add("result", "error".DQ());
-
-                return "{" +
-                       string.Join(",", param.Select(e => e.Key.DQ() + ":" + e.Value)) +
-                       "}";
-            };
-
-            Func<Associative, Json> configResponse = (param) =>
-            {
-                var gameId = null as GameId;
-                var userId = null as UserId;
-
-                try
-                {
-                    gameId = param["gameId"];
-                    userId = param["userId"];
-                }
-                catch (Exception ex)
-                {
-                    writer.WriteLine(ex);
-                    return defaultResponse(param);
-                }
-
-                var machine = null as IMachine;
-                var key = Tuple.Create(gameId, userId);
-
-                if (machines.ContainsKey(key))
-                {
-                    machines.Remove(key);
-                }
-
-                machine = MachineFactory.Create(gameId);
-                machines.Add(key, machine);
-
-                var table = new[]
-                {
-                    new { key = "setting", value = "1" },
-                    new { key = "reelleft", value = "0" },
-                    new { key = "reelcenter", value = "0" },
-                    new { key = "reelright", value = "0" },
-                    new { key = "seed", value = "0" },
-                };
-
-                var res = "{" +
-                          string.Join(",", table.Select(e => e.key.DQ() + ":" + e.value)) +
-                          "}";
-
-                return res;
-            };
-
-            Func<Associative, Json> initResponse = (param) =>
-            {
-                var gameId = null as GameId;
-                var userId = null as UserId;
-
-                try
-                {
-                    gameId = param["gameId"];
-                    userId = param["userId"];
-                }
-                catch (Exception ex)
-                {
-                    writer.WriteLine(ex);
-                    return defaultResponse(param);
-                }
-
-                var machine = null as IMachine;
-                var key = Tuple.Create(gameId, userId);
-
-                if (!machines.ContainsKey(key))
-                {
-                    return defaultResponse(param);
-                }
-
-                var res = "{}";
-
-                return res;
-            };
-
-            Func<Associative, Json> playResponse = (param) =>
-            {
-                var gameId = null as GameId;
-                var userId = null as UserId;
-
-                try
-                {
-                    gameId = param["gameId"];
-                    userId = param["userId"];
-                }
-                catch (Exception ex)
-                {
-                    writer.WriteLine(ex);
-                    return defaultResponse(param);
-                }
-
-                var machine = null as IMachine;
-                var key = Tuple.Create(gameId, userId);
-
-                if (!machines.ContainsKey(key))
-                {
-                    return defaultResponse(param);
-                }
-
-                var table = new[]
-                {
-                    new { key = "yaku", value = "1" },
-                    new { key = "route", value = "2" },
-                };
-
-                var res = "{" +
-                          string.Join(",", table.Select(e => e.key.DQ() + ":" + e.value)) +
-                          "}";
-
-                return res;
-            };
-
-            Func<Associative, Json> correctResponse = (param) =>
-            {
-                var gameId = null as GameId;
-                var userId = null as UserId;
-
-                try
-                {
-                    gameId = param["gameId"];
-                    userId = param["userId"];
-                }
-                catch (Exception ex)
-                {
-                    writer.WriteLine(ex);
-                    return defaultResponse(param);
-                }
-
-                var machine = null as IMachine;
-                var key = Tuple.Create(gameId, userId);
-
-                if (!machines.ContainsKey(key))
-                {
-                    return defaultResponse(param);
-                }
-
-                var table = new[]
-                {
-                    new { key = "result", value = "WIN".DQ() },
-                };
-
-                var res = "{" +
-                          string.Join(",", table.Select(e => e.key.DQ() + ":" + e.value)) +
-                          "}";
-
-                return res;
-            };
-
             var pathTable = new[]
             {
-                new { path = "/config", response = configResponse },
-                new { path = "/init", response = initResponse },
-                new { path = "/play", response = playResponse },
-                new { path = "/correct", response = correctResponse },
+                new { path = "/config", response = (Func<Associative, Json>) configResponse },
+                new { path = "/init", response = (Func<Associative, Json>)initResponse },
+                new { path = "/play", response = (Func<Associative, Json>)playResponse },
+                new { path = "/correct", response = (Func<Associative, Json>)correctResponse },
             };
 
             while (true)
@@ -251,37 +97,165 @@ namespace SlotGameLogicService
 
             return result;
         }
-    }
 
-    static class stringExtension
-    {
-        /// <summary>
-        /// Single Quart
-        /// </summary>
-        /// <param name="source"></param>
-        /// <returns></returns>
-        static public string SQ(this string source)
+        Json defaultResponse(Associative param)
         {
-            return Quart(source, "'");
+            param.Add("result", "error".DQ());
+
+            return "{" +
+                   string.Join(",", param.Select(e => e.Key.DQ() + ":" + e.Value)) +
+                   "}";
         }
 
         /// <summary>
-        /// Double Quart
+        /// Create Machine Instance
         /// </summary>
-        /// <param name="source"></param>
+        /// <param name="param"></param>
         /// <returns></returns>
-        static public string DQ(this string source)
+        Json configResponse(Associative param)
         {
-            return Quart(source, @"""");
+            var gameId = null as GameId;
+            var userId = null as UserId;
+
+            try
+            {
+                gameId = param["gameId"];
+                userId = param["userId"];
+            }
+            catch (Exception ex)
+            {
+                writer.WriteLine(ex);
+                return defaultResponse(param);
+            }
+
+            var machine = null as IMachine;
+            var key = Tuple.Create(gameId, userId);
+
+            if (machines.ContainsKey(key))
+            {
+                machines.Remove(key);
+            }
+
+            machine = MachineFactory.Create(gameId);
+            machines.Add(key, machine);
+
+            var table = new[]
+            {
+                    new { key = "setting", value = "1" },
+                    new { key = "reelleft", value = "0" },
+                    new { key = "reelcenter", value = "0" },
+                    new { key = "reelright", value = "0" },
+                    new { key = "seed", value = "0" },
+                };
+
+            var res = "{" +
+                      string.Join(",", table.Select(e => e.key.DQ() + ":" + e.value)) +
+                      "}";
+
+            return res;
         }
 
-        static string Quart(string source, string quart)
+        Json initResponse(Associative param)
         {
-            var builder = new StringBuilder();
-            builder.Append(quart);
-            builder.Append(source);
-            builder.Append(quart);
-            return builder.ToString();
+            var gameId = null as GameId;
+            var userId = null as UserId;
+
+            try
+            {
+                gameId = param["gameId"];
+                userId = param["userId"];
+            }
+            catch (Exception ex)
+            {
+                writer.WriteLine(ex);
+                return defaultResponse(param);
+            }
+
+            var machine = null as IMachine;
+            var key = Tuple.Create(gameId, userId);
+
+            if (!machines.ContainsKey(key))
+            {
+                return defaultResponse(param);
+            }
+
+            var res = "{}";
+
+            return res;
         }
+
+        Json playResponse(Associative param)
+        {
+            var gameId = null as GameId;
+            var userId = null as UserId;
+
+            try
+            {
+                gameId = param["gameId"];
+                userId = param["userId"];
+            }
+            catch (Exception ex)
+            {
+                writer.WriteLine(ex);
+                return defaultResponse(param);
+            }
+
+            var machine = null as IMachine;
+            var key = Tuple.Create(gameId, userId);
+
+            if (!machines.ContainsKey(key))
+            {
+                return defaultResponse(param);
+            }
+
+            var table = new[]
+            {
+                    new { key = "yaku", value = "1" },
+                    new { key = "route", value = "2" },
+                };
+
+            var res = "{" +
+                      string.Join(",", table.Select(e => e.key.DQ() + ":" + e.value)) +
+                      "}";
+
+            return res;
+        }
+
+        Json correctResponse(Associative param)
+        {
+            var gameId = null as GameId;
+            var userId = null as UserId;
+
+            try
+            {
+                gameId = param["gameId"];
+                userId = param["userId"];
+            }
+            catch (Exception ex)
+            {
+                writer.WriteLine(ex);
+                return defaultResponse(param);
+            }
+
+            var machine = null as IMachine;
+            var key = Tuple.Create(gameId, userId);
+
+            if (!machines.ContainsKey(key))
+            {
+                return defaultResponse(param);
+            }
+
+            var table = new[]
+            {
+                    new { key = "result", value = "WIN".DQ() },
+                };
+
+            var res = "{" +
+                      string.Join(",", table.Select(e => e.key.DQ() + ":" + e.value)) +
+                      "}";
+
+            return res;
+        }
+
     }
 }
