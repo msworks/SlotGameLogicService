@@ -81,6 +81,10 @@ namespace GameLogicService
 
     class Oohababi : AbstractMachine, IMachine
     {
+        public void Config()
+        {
+            
+        }
     }
 
     class TheOcean : AbstractMachine, IMachine

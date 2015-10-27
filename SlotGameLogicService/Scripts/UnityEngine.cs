@@ -50,19 +50,49 @@ namespace UnityEngine
 
     public class Texture { }
 
-    public sealed class Application {
-        public static void OpenURL(string url);
-        public static RuntimePlatform platform { get; }
-        public static void Quit();
+    public class Application {
+        public static void OpenURL(string url) { return; }
+        public static RuntimePlatform platform { get; set; }
+        public static void Quit() { }
     }
 
     public sealed class AudioListener
     {
-        public AudioListener();
+        public AudioListener() { }
         public static bool pause { get; set; }
         public static float volume { get; set; }
-        public static void GetOutputData(float[] samples, int channel);
-        [Obsolete("GetOutputData returning a float[] is deprecated, use GetOutputData and pass a pre allocated array instead.")]
-        public static float[] GetOutputData(int numSamples, int channel);
+        public static void GetOutputData(float[] samples, int channel) { }
+        public static float[] GetOutputData(int numSamples, int channel) { return null; }
+    }
+
+    public sealed class PlayerPrefs
+    {
+        public PlayerPrefs() { }
+        public static void DeleteAll() { }
+        public static void DeleteKey(string key) { }
+        public static float GetFloat(string key) { return 0f; }
+        public static float GetFloat(string key, float defaultValue) { return 0f; }
+        public static int GetInt(string key) { return 1; }
+        public static int GetInt(string key, int defaultValue) { return 1; }
+        public static string GetString(string key) { return ""; }
+        public static string GetString(string key, string defaultValue) { return ""; }
+        public static bool HasKey(string key) { return false; }
+        public static void Save() { }
+        public static void SetFloat(string key, float value) { }
+        public static void SetInt(string key, int value) { }
+        public static void SetString(string key, string value) { }
+    }
+
+    public class TextAsset : Object
+    {
+        public TextAsset() { }
+        public byte[] bytes { get { return null; } set { } }
+        public string text { get { return null; } set { } }
+        public override string ToString() { return ""; }
+    }
+
+    public sealed class Resources
+    {
+        public static T Load<T>(string path) { return default(T); }
     }
 }
