@@ -9,7 +9,6 @@ public class GameManager
 
     public static Defines.ForceYakuFlag forceYakuValue;
 
-
     public static void PlayBGM(int soundID, bool isLoop){}
     public void SetReelTexture(int row, int col, bool isLit){}
     public void Set4thReelTexture(bool isLit) {}
