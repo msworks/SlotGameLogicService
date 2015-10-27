@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Net;
 
-namespace SlotGameLogicService
+namespace GameLogicService
 {
     using Associative = Dictionary<string, string>;
     using GameId = String;
@@ -139,14 +139,16 @@ namespace SlotGameLogicService
             machine = MachineFactory.Create(gameId);
             machines.Add(key, machine);
 
+            machine.Config();
+
             var table = new[]
             {
-                    new { key = "setting", value = "1" },
-                    new { key = "reelleft", value = "0" },
-                    new { key = "reelcenter", value = "0" },
-                    new { key = "reelright", value = "0" },
-                    new { key = "seed", value = "0" },
-                };
+                new { key = "setting", value = "1" },
+                new { key = "reelleft", value = "0" },
+                new { key = "reelcenter", value = "0" },
+                new { key = "reelright", value = "0" },
+                new { key = "seed", value = "0" },
+            };
 
             var res = "{" +
                       string.Join(",", table.Select(e => e.key.DQ() + ":" + e.value)) +
@@ -210,9 +212,9 @@ namespace SlotGameLogicService
 
             var table = new[]
             {
-                    new { key = "yaku", value = "1" },
-                    new { key = "route", value = "2" },
-                };
+                new { key = "yaku", value = "1" },
+                new { key = "route", value = "2" },
+            };
 
             var res = "{" +
                       string.Join(",", table.Select(e => e.key.DQ() + ":" + e.value)) +
@@ -247,8 +249,8 @@ namespace SlotGameLogicService
 
             var table = new[]
             {
-                    new { key = "result", value = "WIN".DQ() },
-                };
+                new { key = "result", value = "WIN".DQ() },
+            };
 
             var res = "{" +
                       string.Join(",", table.Select(e => e.key.DQ() + ":" + e.value)) +
