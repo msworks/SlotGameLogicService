@@ -1,4 +1,7 @@
-﻿public partial class SlotInterface {
+﻿using UnityEngine;
+using System.Collections;
+
+public partial class SlotInterface {
 
 	// 互換性のために用意するメソッド、メンバー類
 	// ファイル関係

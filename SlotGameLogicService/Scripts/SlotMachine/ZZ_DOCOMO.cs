@@ -1,6 +1,7 @@
 ﻿#define _UNITY_CONVERT_ // Unity+C#移植作業用
 
 using System;
+using System.Threading;
 public partial class ZZ {
     // TOBE ソフトきー
 	/** ソフトきー */

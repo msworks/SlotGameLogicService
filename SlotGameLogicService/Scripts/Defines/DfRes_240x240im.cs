@@ -1,4 +1,7 @@
-﻿public partial class Defines {
+﻿//using UnityEngine;
+using System.Collections;
+
+public partial class Defines {
 
 /** AUTO GENERATED RESOURCE DEFINITION BY TOOLS MERGE */
 

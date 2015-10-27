@@ -1,4 +1,7 @@
-﻿public partial class Defines {
+﻿//using UnityEngine;
+using System.Collections;
+
+public partial class Defines {
 /*
  * 作成日: 2003/10/15
  */
