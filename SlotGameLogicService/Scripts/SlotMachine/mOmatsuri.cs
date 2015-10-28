@@ -1465,161 +1465,6 @@ public partial class mOmatsuri
         }    
     }
 
-#if __DRAW_SLOT2__
-#else
-//	public void paintSlot() {
-//		DfMain.TRACE(("★★★★paintSlot★★★★");
-//		ZZ.setColor(ZZ.getColor(0, 0, 0));
-//		ZZ.fillRect(Defines.DEF_POS_NAVI_C_X, Defines.DEF_POS_NAVI_C_Y + 26 + Defines.GP_DRAW_OFFSET_Y, Defines.DEF_POS_NAVI_C_W,
-//				Defines.DEF_POS_NAVI_C_H);
-//#if __COM_TYPE__
-//#else
-//		drawK0();
-//#endif
-//		drawK1();
-//		draw4th();
-//		drawK3();
-//		if(int_s_value[Defines.DEF_INT_MODE_COUNTER] < 2
-//				|| int_s_value[Defines.DEF_INT_CURRENT_MODE] ==Defines.DEF_RMODE_SPIN
-//				|| int_s_value[Defines.DEF_INT_CURRENT_MODE] ==Defines.DEF_RMODE_FLASH
-//		){
-//			//DfMain.TRACE(("drawSlot");
-//			drawSlot();
-//		}
-//		drawK7();
-//		// drawKokuchi();
-//#if __DRAW_MENU_ICON__
-//		Mobile.drawIcon(false);
-//#endif
-//		if (Mobile.getKokuchi() != Defines.DEF_SELECT_3_OFF) {
-//			// drawKokuchi();
-//			DrawYokoku();
-//		}else{
-//			drawK4();
-//		}
-//
-////		if (Defines.DEF_IS_DEBUG_AUTO) {
-////		}
-//
-//		int pos = (int_s_value[Defines.DEF_INT_4TH_REEL_ANGLE] % 414)
-//		* (2359296 / 414);
-//		Mascot3D.draw3Dtest(pos);
-//		// }
-//		// スロットの描画
-//		// if (Defines.DEF_IS_DEBUG_POS) {
-//		// // デバック
-//		// clearClip();
-//		// // Z.setColor(Z.getColor(0, 0, 0));
-//		// Z.setColor(Z.getColor(255, 0, 0));
-//		// int y = 0;
-//		// // Z.drawString("左 押:" + debugPos[0] + " 止:" + debugStop[0], 10, y
-//		// // +=
-//		// // 12);
-//		// Z.drawString("HITLINE :"
-//		// + Integer.toHexString(clOHHB_V23.getWork(Defines.DEF_HITLINE)), 10,
-//		// y += 12);
-//		// Z.drawString("WAVENUM :"
-//		// + Integer.toHexString(clOHHB_V23.getWork(Defines.DEF_WAVENUM)), 130,
-//		// y);
-//		// // Z.drawString("中 押:" + debugPos[1] + " 止:" + debugStop[1], 10, y
-//		// // +=
-//		// // 12);
-//		// // Z.drawString("JAC_CTR :" + (int) clOHHB_V23.getWork(Defines.DEF_JAC_CTR),
-//		// // 10, y += 12);
-//		// Z.drawString("FLASH0 :"
-//		// + Integer.toHexString(clOHHB_V23.getWork(Defines.DEF_FLASH)), 10,
-//		// y += 12);
-//		// Z.drawString("GAMEST :0x"
-//		// + Integer.toHexString(clOHHB_V23.getWork(Defines.DEF_GAMEST)), 130,
-//		// y);
-//		//
-//		// // Z.drawString("右 押:" + debugPos[2] + " 止:" + debugStop[2], 10, y
-//		// // +=
-//		// // 12);
-//		// // Z.drawString("BIGBCTR:" + (int) clOHHB_V23.getWork(Defines.DEF_BIGBCTR),
-//		// // 10,
-//		// // y += 12);
-//		// Z.drawString("FLASH1:"
-//		// + Integer.toHexString(clOHHB_V23.getWork(Defines.DEF_FLASH + 1)),
-//		// 10, y += 12);
-//		// Z.drawString("GMLVSTS :0x"
-//		// + Integer.toHexString(clOHHB_V23.getWork(Defines.DEF_GMLVSTS)), 130,
-//		// y);
-//		//
-//		// Z
-//		// .drawString("MEDAL :" + int_s_value[Defines.DEF_INT_BET_COUNT], 10,
-//		// y += 12);
-//		// Z.drawString("HITREQ :0x"
-//		// + Integer.toHexString(clOHHB_V23.getWork(Defines.DEF_HITREQ)), 130,
-//		// y);
-//		//
-//		// Z.drawString("RANDOMX :" + (int) clOHHB_V23.getWork(Defines.DEF_RANDOMX),
-//		// 10, y += 12);
-//		// Z.drawString("WAVEBIT :0x"
-//		// + Integer.toHexString(clOHHB_V23.getWork(Defines.DEF_WAVEBIT)), 130,
-//		// y);
-//		//
-//		// Z.drawString("SLAMPBIT :0x"
-//		// + Integer.toHexString(clOHHB_V23.getWork(Defines.DEF_SLAMPBIT)), 10,
-//		// y += 12);
-//		// Z.drawString("HITFLAG :0x"
-//		// + Integer.toHexString(clOHHB_V23.getWork(Defines.DEF_HITFLAG)), 130,
-//		// y);
-//		//
-//		// Z.drawString("PUSHCTR :0x"
-//		// + Integer.toHexString(clOHHB_V23.getWork(Defines.DEF_PUSHCTR)), 10,
-//		// y += 12);
-//		// Z.drawString("PayMedal :" + int_s_value[Defines.DEF_INT_WIN_COIN_NUM], 130,
-//		// y);
-//		//
-//		// Z.drawString("STOPBIT :0x"
-//		// + Integer.toHexString(clOHHB_V23.getWork(Defines.DEF_STOPBIT)), 10,
-//		// y += 12);
-//		// if (Defines.DEF_IS_DEBUG_FORCE_YAKU) {
-//		// Z.drawString("debugForceYaku:" + debugForceYaku, 130, y);
-//		// }
-//		// }
-//
-//		drawDataPanel(true);
-//#if __COM_TYPE__
-//
-//#else
-////		if(IS_HALL()){
-////			if(Mobile.isDataPanel()){
-////				drawDataPanelHall();
-////			}
-////		}
-//#endif
-//		if (Defines.DEF_IS_PRINT_FREEMEMORY) {
-//			ZZ.setClip(0, 0, 240, 24);
-//			ZZ.setColor(ZZ.getColor(0xff, 0xff, 0xff));
-//			ZZ.fillRect(0, 0, 240, 24);
-//			int xx = 200;
-//			int yy = 0;
-//			long val = Runtime.getRuntime().freeMemory();
-//			do {
-//				// 一桁は必ず描く
-//				// 下（右）から描いて行く
-//				ZZ.drawImage(Defines.DEF_RES_NA0 + (int) (val % 10), xx, yy);
-//				val /= 10;
-//				xx -= Defines.DEF_POS_NAVI_BB_W;
-//			} while (val > 0);
-//		}
-//		
-//		if(int_s_value[Defines.DEF_INT_CURRENT_MODE] == Defines.DEF_RMODE_HTTP){
-//			ZZ.setClip(-ZZ.getOffsetX(), -ZZ.getOffsetY(), ZZ.getWidth(), ZZ
-//					.getHeight());
-//			ZZ.drawImage(Defines.DEF_RES_TUSHIN_BACK,23,113);
-//			ZZ.setColor(ZZ.getColor(0xff, 0xff, 0xff));
-//			ZZ.drawString("通信中...", 36,127+12);
-//			
-//		}
-//#if __COM_TYPE__
-//		// クリッピング領域の解除
-//		ZZ.setClip(-ZZ.getOffsetX(), -ZZ.getOffsetY(), ZZ.getWidth(), ZZ.getHeight());
-//#endif
-//	}
-#endif
 	/**
 	 * クリップが使えるのでisRepaintを使用しない方向で
 	 * 
@@ -1697,12 +1542,9 @@ public partial class mOmatsuri
 	 * 光どころ描画
 	 * 
 	 */
-	private static void drawK3() {
+	private static void drawK3()
+    {
 		ZZ.setClip(Defines.DEF_POS_K3_X, Defines.DEF_POS_K3_Y, Defines.DEF_POS_K3_W, Defines.DEF_POS_K3_H);
-#if __COM_TYPE__
-#else
-//		ZZ.drawImage(Defines.DEF_RES_K3, Defines.DEF_POS_K3_X, Defines.DEF_POS_K3_Y);
-#endif
 		int[] x = { Defines.DEF_POS_B1_X, Defines.DEF_POS_B2_X, Defines.DEF_POS_B3_X, Defines.DEF_POS_B4_X, Defines.DEF_POS_B5_X };
 		int[] y = { Defines.DEF_POS_B1_Y, Defines.DEF_POS_B2_Y, Defines.DEF_POS_B3_Y, Defines.DEF_POS_B4_Y, Defines.DEF_POS_B5_Y };
 		for (int i = 0; i < 5; i++) {
@@ -1710,11 +1552,8 @@ public partial class mOmatsuri
 				ZZ.drawImage(Defines.DEF_RES_B1_B + i, x[i], y[i]);
 			}
 		}
-#if __COM_TYPE__
 		// クリッピング領域の解除
 		ZZ.setClip(-ZZ.getOffsetX(), -ZZ.getOffsetY(), ZZ.getWidth(), ZZ.getHeight());
-#endif
-
 	}
 	
 	private static void drawK1()
@@ -1808,8 +1647,6 @@ public partial class mOmatsuri
 				ZZ.drawImage(Defines.DEF_RES_BACK, x[i], 114 + Defines.GP_DRAW_OFFSET_Y);
 			}
 
-//			System.out.println("time="+ZZ.getThreadSpeed());
-//			System.out.println(""+int_s_value[2 + 0]+","+int_s_value[2 + 1]+","+int_s_value[2 + i]+"&"+ANGLE_2PI_MASK);
 			// 例:1周21コマのうち15.75コマ回転していたら、per21=15.75<<16
 			int per21 = Defines.DEF_N_FRAME
 					* (int_s_value[Defines.DEF_INT_REEL_ANGLE_R0 + i] & ANGLE_2PI_MASK);

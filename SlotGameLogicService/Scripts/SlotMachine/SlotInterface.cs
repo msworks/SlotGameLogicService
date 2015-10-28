@@ -31,16 +31,9 @@ public partial class SlotInterface
 		new short[]{2,0,1},	//4:右、左、中
 		new short[]{2,1,0}		//5:右、中、左（逆押し）
 	};
-	
-	// ソフトキーラベル
-	string buf_l_label = null;
-	string buf_r_label = null;
 		
 	// サウンドボリューム
 	static int[] vollist = { 0,20,30,50,65,90,100,};
-		
-	// コイン補充タイミング用
-	bool get_coin_f = false;
 		
 	// オートプレイの停止タイミング用
 	public bool gpif_auto_stop_f = false;
@@ -209,7 +202,6 @@ public partial class SlotInterface
 	public void onCreditZero()
 	{
 		Defines.TRACE("call onCreditZero");
-		get_coin_f = true;
 	}
 
 	// クレジット加算（コイン＋1時）時に呼ばれる
@@ -347,9 +339,6 @@ public partial class SlotInterface
 				setColor( 255, 255, 255 );
 				drawString( telopStr, ( 240 - stringWidth( telopStr ) ) / 2, ( 240 - fontHeight ) / 2  - 20);
 			}
-            
-            // TODO C#移植 一旦コメントアウト
-            //flash();
 		}
 	}
 

@@ -978,51 +978,6 @@ public partial class ZZ
             //grp.drawImage(img, x + ofX, y + ofY);
 		}
 	}
-	/**
-	 * Imageの範囲指定描画メソッド
-	 *
-	 * @param id
-	 *			イメージＩＤ
-	 * @param x
-	 *			描画先のX座標
-	 * @param y
-	 *			描画先のY座標
-	 * @param sx
-	 *			元画像の書き出しX座標
-	 * @param sy
-	 *			元画像の書き出しX座標
-	 * @param sw
-	 *			元画像の描画幅
-	 * @param sh
-	 *			元画像の描画高さ
-	 *
-	 */
-	public static void drawImageRegion(int id, int x, int y, int sx, int sy,
-			int sw, int sh) {
-
-		if (true) {
-            // TODO C#移植 一旦コメントアウト
-            //grp.drawImage(images[id], x + ofX, y + ofY, sx, sy, sw, sh);
-
-		} else {
-			// TODO SO902iで使ってはいけない for MEXA Core
-			// 画面上の書き込みたい場所をクリッピングする
-			setClipIntersect(x, y, sw, sh);
-
-			drawImage(id, x - sx, y - sy);
-
-            // TODO C#移植 一旦コメントアウト
-            // 書き終わったら元のクリッピング領域を指定しなおす
-            //grp.setClip(clipRegion[0] + ofX, clipRegion[1] + ofY,
-            //        clipRegion[2], clipRegion[3]);
-
-			// Defines.TRACE("描画直後のクリッピング領域＝ (" + clipRegion[0] + ", " +
-			// clipRegion[1] + ", " + clipRegion[2] + ", " + clipRegion[3] +
-			// ")");
-
-		}
-
-	}
 
 	/**
 	 *
@@ -1102,36 +1057,11 @@ public partial class ZZ
 		nsy = (ymin > yymin) ? ymin : yymin; // ｙ始点
 		ney = (ymax < yymax) ? ymax : yymax; // ｙ終点
 
-		// Defines.TRACE("これでクリッピング座標＝ (" + nsx + ", " + nsy + ", " + nex +
-		// ", " + ney + ")");
-
 		nx = nsx;
 		nw = nex - nsx;
 		ny = nsy;
 		nh = ney - nsy;
-
-		// Defines.TRACE("これでクリッピング＝ (" + nx + ", " + ny + ", " + nw + ", "
-		// + nh + ")");
-		// Defines.TRACE("\n");
-
-        // TODO C#移植 一旦コメントアウト
-		// 新たなクリッピング領域を指定する
-        //grp.setClip(nx + ofX, ny + ofY, nw, nh);
-
 	}
-
-	public static void drawRotateImage(int id, int x, int y, int rot)
-    {
-        if (images == null)
-        {
-            return;
-        }
-        if (id < 0 || id >= images.Length)
-        {
-            return;
-        }
-	}
-
 
 	public static void drawstring(string str, int x, int y) {}
 	public static void drawstringRight(string str, int y) {}

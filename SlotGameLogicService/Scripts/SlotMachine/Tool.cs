@@ -1,20 +1,12 @@
 ﻿using System;
 using System.Text;
-public class Tool {
 
+public class Tool
+{
 	// 内部でバッファ
 	static public string[] split_buf = new string[ 600 ];
 
 	static protected int delim_split( sbyte[] bs, char delim )
-	{
-		return delim_split( bs, delim, split_buf ,0 );
-	}
-
-	/**
-	 * 改行コードでの分割（呼び出すと前の結果がクリアされます）
-	 * @return int count 分割後の個数を返す
-	 */
-	static public int delim_split( sbyte[] bs, char delim, string[] split_buf )
 	{
 		return delim_split( bs, delim, split_buf ,0 );
 	}
@@ -27,61 +19,7 @@ public class Tool {
     [Obsolete]
 	static public int delim_split( sbyte[] bs, char delim, string[] split_buf , int num )
 	{
-        // TODO C#移植 
         return -1;
-//        int cur = 0; // スタート
-//        int c = 0; // バッファの個数
-//        int cc;
-//        int strNum = 0;
-//        for( int i = 0; i < bs.Length; i++ ) {
-//            cc = bs[i]; // 判定コードのキャラクターコードのセット
-//            if( cc >= 0x81 && cc <= 0x9f || cc >= 0xe0 && cc <= 0xef || cc == 0xf8 || cc == 0xf9 ) {
-//                // マルチバイト文字の場合
-//                i++;
-//            }
-//            else if( bs[ i ] == delim ) { // 区切り文字指定
-//                if( cur == i ) {
-//                    cur = i+1;
-//                    if( c >= num ) {
-//                        split_buf[ strNum ] = "";
-//                        strNum++;
-//                    }
-//                    c++;
-//                    continue; // 区切りが並んだ場合は空白を入れてスキップ（nullにするかは後日談）
-//                }
-//                int skip = 0;
-//                if( bs[ i - 1 ] == '\r'  ) {
-//                    // これもSkip対象
-//                    skip = 1;
-//                }
-//                // 区切り文字の場合
-//                if( c >= num ) {
-//                    split_buf[ strNum ] = new string( bs, cur, i-cur - skip );
-//                    strNum++;
-//                }
-////				split_buf[ c ] = s.substring( cur, i );
-//                cur = i + 1;
-//                c++;
-//                if( split_buf.Length <= c - num ) {
-//                    // ここまで
-//                    return strNum;
-//                    //return c;
-//                }
-//            }
-//        }
-//        if( cur < bs.Length ) {
-//            // 最後の文字列を追加
-//            if( c >= num ) {
-//                split_buf[ strNum ] = new string( bs, cur, bs.Length - cur );
-//            }
-//            c++;
-//        }
-//        // 不要部分のクリア
-//        for( int i = c; i < split_buf.Length; ++ i ) {
-//            split_buf[ i ] = null;
-//        }
-//        return	strNum;
-//        //return c; // 分割後の個数を返す
 	}
 
 	/**

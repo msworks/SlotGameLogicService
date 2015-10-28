@@ -1,36 +1,17 @@
-﻿#if __GP_TRACE__
-	#define TRACE_ON
-#endif
+﻿using System;
 
-using System;
-using System.Threading;
 public class PublicDefine {
 
 	public const int DEBUG_PRI = 57;
-#if __GP_TRACE__
+
 	public static void PRINT(object a)      {} //System.out.println(a)
 	public static void PRINTLN(object a)    {} //System.out.print(a)
 	public static void DEBUGOUT(object a)   {} //setMessageDebug(a)
 	public static void PRINT_PRI(int p, object a) {if(p==DEBUG_PRI) Console.WriteLine(a.ToString());}
-//	#define SYNCCON_OFF
-#else
-	public static void PRINT(object a) {}
-    public static void PRINTLN(object a) { }
-    public static void DEBUGOUT(object a) { }
-    public static void PRINT_PRI(object p, object a) { }
-#endif
 
-    public static void SLEEP(int a) {
-        try { Thread.Sleep(a); } catch (Exception e) { }
-    }
 	public const int NOVALUE = 0;
 	public const int REA_SCENE_MAX = 8;
-
-#if _DOCOMO
 	public const string IMAGETYPE = ".gif";
-#else
-	public const string IMAGETYPE = ".png";
-#endif
 	public const int TRUE = 1;
 	public const int FALSE = 0;
 
@@ -46,86 +27,11 @@ public class PublicDefine {
 	public const int GP_MODE_GAME      =   6;
 	public const int GP_MODE_KILL      =   7;
 
-	// 内部キー設定で使う値
-#if	_DOCOMO	// {
-    // TODO C#移植 一旦コメントアウト
-    //public const int GP_KEY_0        = ( Display.KEY_0 );        // 0
-    //public const int GP_KEY_1        = ( Display.KEY_1 );        // 1
-    //public const int GP_KEY_2        = ( Display.KEY_2 );        // 2
-    //public const int GP_KEY_3        = ( Display.KEY_3 );        // 3
-    //public const int GP_KEY_4        = ( Display.KEY_4 );        // 4
-    //public const int GP_KEY_5        = ( Display.KEY_5 );        // 5
-    //public const int GP_KEY_6        = ( Display.KEY_6 );        // 6
-    //public const int GP_KEY_7        = ( Display.KEY_7 );        // 7
-    //public const int GP_KEY_8        = ( Display.KEY_8 );        // 8
-    //public const int GP_KEY_9        = ( Display.KEY_9 );        // 9
-    //public const int GP_KEY_SELECT   = ( Display.KEY_SELECT );   // SELECT
-    //public const int GP_KEY_UP       = ( Display.KEY_UP );       // UP
-    //public const int GP_KEY_DOWN     = ( Display.KEY_DOWN );     // DOWN
-    //public const int GP_KEY_LEFT     = ( Display.KEY_LEFT );     // LEFT
-    //public const int GP_KEY_RIGHT    = ( Display.KEY_RIGHT );    // RIGHT
-    //public const int GP_KEY_SOFT1    = ( Display.KEY_SOFT1 );    // SOFT1
-    //public const int GP_KEY_SOFT2    = ( Display.KEY_SOFT2 );    // SOFT2
-    //public const int GP_KEY_ASTERISK = ( Display.KEY_ASTERISK ); // ASTERISK
-    //public const int GP_KEY_POUND    = ( Display.KEY_POUND );    // POUND
-
-#else // } {
-/*
-	public const int GP_KEY_0 = 0x00000001; // 〇
-	public const int GP_KEY_1 = 0x00000002; // ①
-	public const int GP_KEY_2 = 0x00000004; // ②
-	public const int GP_KEY_3 = 0x00000008; // ③
-	public const int GP_KEY_4 = 0x00000010; // ④
-	public const int GP_KEY_5 = 0x00000020; // ⑤
-	public const int GP_KEY_6 = 0x00000040; // ⑥
-	public const int GP_KEY_7 = 0x00000080; // ⑦
-	public const int GP_KEY_8 = 0x00000100; // ⑧
-	public const int GP_KEY_9 = 0x00000200; // ⑨
-	
-	public const int GP_KEY_SELECT = 0x00010000; // ◎
-	public const int GP_KEY_UP = 0x00001000; // ↑
-	public const int GP_KEY_DOWN = 0x00008000; // ↓
-	public const int GP_KEY_LEFT = 0x00002000; // ←
-	public const int GP_KEY_RIGHT = 0x00004000; // →
-	public const int GP_KEY_SOFT1 = 0x00020000; 
-	public const int GP_KEY_SOFT2 = 0x00040000; 
-	
-	public const int GP_KEY_ASTERISK = 0x00000400; // *
-	public const int GP_KEY_POUND = 0x00000800; // #
-*/
-	public const int GP_KEY_0 = 0x00000000; // 〇
-	public const int GP_KEY_1 = 0x00000001; // ①
-	public const int GP_KEY_2 = 0x00000002; // ②
-	public const int GP_KEY_3 = 0x00000003; // ③
-	public const int GP_KEY_4 = 0x00000004; // ④
-	public const int GP_KEY_5 = 0x00000005; // ⑤
-	public const int GP_KEY_6 = 0x00000006; // ⑥
-	public const int GP_KEY_7 = 0x00000007; // ⑦
-	public const int GP_KEY_8 = 0x00000008; // ⑧
-	public const int GP_KEY_9 = 0x00000009; // ⑨
-	
-	public const int GP_KEY_SELECT = 0x00000014; // ◎
-	public const int GP_KEY_UP = 0x00000011; // ↑
-	public const int GP_KEY_DOWN = 0x00000013; // ↓
-	public const int GP_KEY_LEFT = 0x00000010; // ←
-	public const int GP_KEY_RIGHT = 0x00000012; // →
-	public const int GP_KEY_SOFT1 = 0x00000015; 
-	public const int GP_KEY_SOFT2 = 0x00000016; 
-	
-	public const int GP_KEY_ASTERISK = 0x0000000a; // *
-	public const int GP_KEY_POUND = 0x0000000b; // #
-
-
-#endif			// }
 	// 画像リソース番号(01)
 	public const int GP_OPEN0             =   0; // BG
 	public const int GP_OPEN1             =   1; // 下部BAR
 	public const int GP_MSG_WINDOW        =   2; // ウィンドウBG
 	public const int GP_CR0               =   3; // 時計ｱﾆﾒ
-//	public const int GP_CR1               =   4;
-//	public const int GP_CR2               =   5;
-//	public const int GP_CR3               =   6;
-//	public const int GP_CR4               =   7;
 	public const int GP_COMM_OFF          =   8;
 	public const int GP_COMM_ON           =   9;
 	public const int GP_LOADING_OFF       =  10;
@@ -376,13 +282,11 @@ public class PublicDefine {
 	public const int GPH_ERR3        =  58; // 01 起動エラー
 	public const int GPH_ERR4        =  61; // 01 起動エラー
 	public const int GPH_RES_RETRY   =  62; // 01 リソースリトライ処理
-	// ↓
-	// ↓
 	public const int GPH_INFOLAOD    =  90; // 02 広告取得(画像リソース)
 	public const int GPH_RES1        = 100; // 02 リソース通信(1)
 	public const int GPH_RES2        = 110; // 02 リソース通信(2)
-	// ↓
-	// ゲーム部分（分岐点）
+
+    // ゲーム部分（分岐点）
 	public const int GPH_GAMEMODE      = 120; // 03 ゲームモード設定
 	public const int GPH_MAIN          = 130; // 03 ゲームメイン
 	public const int GPH_RESET         = 150; // 03 ゲーム画面リセット(メニューから戻るなど)

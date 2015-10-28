@@ -65,11 +65,11 @@ public class clRAND8 {
 		return (mRndbuf[mRndwh] & 0x00FF);
 	}
 };
+
 ///////////////////////////////////////////////
 // Z80用レジスタークラス
 ///////////////////////////////////////////////
 public class clREG {
-      // TODO C#移植 とりあえずintとしたもののビットシフト演算で使われる可能性を考えるとushortにした方が良さそう
       public ushort AF;
       public ushort BC;
       public ushort DE;
