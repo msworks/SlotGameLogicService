@@ -21,7 +21,7 @@
 #if	__DEBUG__
 #define __GP_TRACE__	// GP側のトレース情報
 
-//	#define __TRACE__	// トレース出力
+	#define __TRACE__	// トレース出力
 
 //	#define __DEBUG_MENU__	// デバッグメニュー
 //	#define __DEBUG_DRAW_YAKU__	// デバッグ用 内部当選役の描画
@@ -68,7 +68,8 @@ public partial class Defines {
 
     public static void TRACE(object x) {
 #if __TRACE__
-	    ZZ.TRACE1(x)
+        //ZZ.TRACE1(x);
+        Console.WriteLine(x);
 #else
         //TRACE( x );
         //Debug.Log(DateTime.Now.ToString("HH:mm:ss.fff")+ ":DebugTrace:" + x.ToString());

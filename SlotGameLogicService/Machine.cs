@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 
 namespace GameLogicService
 {
+    using Associative = Dictionary<string, string>;
+
     interface IMachine
     {
-        void Config();
-        void Init();
-        void Play();
-        void Correct();
+        Associative Config(Associative param);
+        Associative Init(Associative param);
+        Associative Play(Associative param);
+        Associative Correct(Associative param);
     }
 
     class MachineFactory
@@ -49,45 +51,112 @@ namespace GameLogicService
         CORRECT,
     }
 
-    abstract class AbstractMachine : IMachine
+    class Oohababi : IMachine
     {
-        MACHINE_STATE state;
-
-        public AbstractMachine()
+        public MACHINE_STATE State
         {
-            state = MACHINE_STATE.CREATED;
+            get { return _state; }
+            private set { _state = value; }
         }
 
-        public void Config()
+        MACHINE_STATE _state;
+
+        Mobile core;
+
+        public Oohababi()
         {
-            state = MACHINE_STATE.CONFIG;
+            State = MACHINE_STATE.CREATED;
         }
 
-        public void Correct()
+        public Associative Config(Associative param)
         {
-            state = MACHINE_STATE.INIT;
+            core = new Mobile();
+
+            var result = new Associative();
+
+            // TODO settingの値を6に固定しているのでサーバーから取得する
+            // TODO seedの値を0に固定しているので、どうやって決める？？
+            result.Add("setting", "6");
+            result.Add("reelleft", "0");
+            result.Add("reelcenter", "0");
+            result.Add("reelright", "0");
+            result.Add("seed", "0");
+
+            State = MACHINE_STATE.CONFIG;
+
+            return result;
         }
 
-        public void Init()
+        public Associative Init(Associative param)
         {
-            state = MACHINE_STATE.PLAY;
+            var result = new Associative();
+            State = MACHINE_STATE.INIT;
+            return result;
         }
 
-        public void Play()
+        public Associative Play(Associative param)
         {
-            state = MACHINE_STATE.CORRECT;
+            var betcount = null as string;
+            var rate = null as string;
+
+            try
+            {
+                betcount = param["betcount"];
+                rate = param["rate"];
+            }
+            catch
+            {
+                return new Associative() { {"result", "error".DQ()} };
+            }
+
+            // Play
+            foreach (var i in Enumerable.Range(0, 100))
+            {
+                ZZ.int_value[Defines.DEF_Z_INT_KEYPRESS] |= (1 << 5);
+                core.exec();
+            }
+
+            var result = new Associative();
+            result.Add("yaku", "0");
+            result.Add("route", "0");
+
+            State = MACHINE_STATE.PLAY;
+            return result;
+        }
+
+        public Associative Correct(Associative param)
+        {
+            var reelstopleft = null as string;
+            var reelstopcenter = null as string;
+            var reelstopright = null as string;
+            var oshijun = null as string;
+
+            try
+            {
+                reelstopleft = param["reelstopleft"];
+                reelstopcenter = param["reelstopcenter"];
+                reelstopright = param["reelstopright"];
+                oshijun = param["oshijun"];
+            }
+            catch
+            {
+                return new Associative() { { "result", "error".DQ() } };
+            }
+
+            // TODO Correct
+            var result = new Associative();
+            result.Add("result", "WIN".DQ());
+
+            State = MACHINE_STATE.CORRECT;
+            return result;
         }
     }
 
-    class Oohababi : AbstractMachine, IMachine
+    class TheOcean : IMachine
     {
-        public void Config()
-        {
-            
-        }
-    }
-
-    class TheOcean : AbstractMachine, IMachine
-    {
+        public Associative Config(Associative param) { return new Associative(); }
+        public Associative Init(Associative param) { return new Associative(); }
+        public Associative Play(Associative param) { return new Associative(); }
+        public Associative Correct(Associative param) { return new Associative(); }
     }
 }

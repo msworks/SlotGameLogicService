@@ -44,10 +44,10 @@ namespace GameLogicService
 
             var pathTable = new[]
             {
-                new { path = "/config", response = (Func<Associative, Json>) configResponse },
-                new { path = "/init", response = (Func<Associative, Json>)initResponse },
-                new { path = "/play", response = (Func<Associative, Json>)playResponse },
-                new { path = "/correct", response = (Func<Associative, Json>)correctResponse },
+                new { path = "/config", response = (Func<Associative, Json>) ConfigResponse },
+                new { path = "/init", response = (Func<Associative, Json>)InitResponse },
+                new { path = "/play", response = (Func<Associative, Json>)PlayResponse },
+                new { path = "/correct", response = (Func<Associative, Json>)CorrectResponse },
             };
 
             while (true)
@@ -112,7 +112,7 @@ namespace GameLogicService
         /// </summary>
         /// <param name="param"></param>
         /// <returns></returns>
-        Json configResponse(Associative param)
+        Json ConfigResponse(Associative param)
         {
             var gameId = null as GameId;
             var userId = null as UserId;
@@ -134,30 +134,30 @@ namespace GameLogicService
             if (machines.ContainsKey(key))
             {
                 machines.Remove(key);
+                writer.WriteLine("[INFO] DESTROY MACHINE GAMEID:" + gameId + " USERID:" + userId);
             }
 
             machine = MachineFactory.Create(gameId);
+            if (machine == null)
+            {
+                writer.WriteLine("[ERROR] CREATE MACHINE FAILD GAMEID:" + gameId + " USERID:" + userId);
+                return defaultResponse(param);
+            }
+
             machines.Add(key, machine);
 
-            machine.Config();
+            writer.WriteLine("[INFO] CREATE MACHINE GAMEID:" + gameId + " USERID:" + userId);
 
-            var table = new[]
-            {
-                new { key = "setting", value = "1" },
-                new { key = "reelleft", value = "0" },
-                new { key = "reelcenter", value = "0" },
-                new { key = "reelright", value = "0" },
-                new { key = "seed", value = "0" },
-            };
+            var table = machine.Config(param);
 
             var res = "{" +
-                      string.Join(",", table.Select(e => e.key.DQ() + ":" + e.value)) +
+                      string.Join(",", table.Select(e => e.Key.DQ() + ":" + e.Value)) +
                       "}";
 
             return res;
         }
 
-        Json initResponse(Associative param)
+        Json InitResponse(Associative param)
         {
             var gameId = null as GameId;
             var userId = null as UserId;
@@ -181,49 +181,18 @@ namespace GameLogicService
                 return defaultResponse(param);
             }
 
-            var res = "{}";
+            machine = machines[key];
 
-            return res;
-        }
-
-        Json playResponse(Associative param)
-        {
-            var gameId = null as GameId;
-            var userId = null as UserId;
-
-            try
-            {
-                gameId = param["gameId"];
-                userId = param["userId"];
-            }
-            catch (Exception ex)
-            {
-                writer.WriteLine(ex);
-                return defaultResponse(param);
-            }
-
-            var machine = null as IMachine;
-            var key = Tuple.Create(gameId, userId);
-
-            if (!machines.ContainsKey(key))
-            {
-                return defaultResponse(param);
-            }
-
-            var table = new[]
-            {
-                new { key = "yaku", value = "1" },
-                new { key = "route", value = "2" },
-            };
+            var table = machine.Init(param);
 
             var res = "{" +
-                      string.Join(",", table.Select(e => e.key.DQ() + ":" + e.value)) +
+                      string.Join(",", table.Select(e => e.Key.DQ() + ":" + e.Value)) +
                       "}";
 
             return res;
         }
 
-        Json correctResponse(Associative param)
+        Json PlayResponse(Associative param)
         {
             var gameId = null as GameId;
             var userId = null as UserId;
@@ -247,13 +216,47 @@ namespace GameLogicService
                 return defaultResponse(param);
             }
 
-            var table = new[]
-            {
-                new { key = "result", value = "WIN".DQ() },
-            };
+            machine = machines[key];
+
+            var table = machine.Play(param);
 
             var res = "{" +
-                      string.Join(",", table.Select(e => e.key.DQ() + ":" + e.value)) +
+                      string.Join(",", table.Select(e => e.Key.DQ() + ":" + e.Value)) +
+                      "}";
+
+            return res;
+        }
+
+        Json CorrectResponse(Associative param)
+        {
+            var gameId = null as GameId;
+            var userId = null as UserId;
+
+            try
+            {
+                gameId = param["gameId"];
+                userId = param["userId"];
+            }
+            catch (Exception ex)
+            {
+                writer.WriteLine(ex);
+                return defaultResponse(param);
+            }
+
+            var machine = null as IMachine;
+            var key = Tuple.Create(gameId, userId);
+
+            if (!machines.ContainsKey(key))
+            {
+                return defaultResponse(param);
+            }
+
+            machine = machines[key];
+
+            var table = machine.Correct(param);
+
+            var res = "{" +
+                      string.Join(",", table.Select(e => e.Key.DQ() + ":" + e.Value)) +
                       "}";
 
             return res;

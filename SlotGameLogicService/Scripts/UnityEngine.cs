@@ -74,7 +74,7 @@ namespace UnityEngine
         public static float GetFloat(string key, float defaultValue) { return 0f; }
         public static int GetInt(string key) { return 1; }
         public static int GetInt(string key, int defaultValue) { return 1; }
-        public static string GetString(string key) { return ""; }
+        public static string GetString(string key) { return "\u0001"; }
         public static string GetString(string key, string defaultValue) { return ""; }
         public static bool HasKey(string key) { return false; }
         public static void Save() { }

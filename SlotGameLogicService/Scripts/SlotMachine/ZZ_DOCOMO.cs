@@ -2,7 +2,9 @@
 
 using System;
 using System.Threading;
-public partial class ZZ {
+
+public partial class ZZ
+{
     // TOBE ソフトきー
 	/** ソフトきー */
 	public static string[] m_strSoftKeyName =  {"",""};
@@ -49,30 +51,10 @@ public partial class ZZ {
 	/** reschar */
 	public static readonly char[][] reschar = new char[Defines.DEF_RES_JAR_MAX][];
 
-	/** 3D Figure_data in resource.d_* */
-	static readonly Figure[] figures = new Figure[Defines.DEF_RES_FIGURE_MAX];
-    class Figure {}// TODO C#移植 スタブ
-
-	/** Figureに複数Textureを貼る場合のwork */
-	static readonly Texture[][] figures_texture = new Texture[Defines.DEF_RES_FIGURE_MAX][];
-    class Texture {}// TODO C#移植 スタブ
-
-    /** 3D Action_data in resource.d_* */
-	static readonly ActionTable[] actions = new ActionTable[Defines.DEF_RES_ACTIONTABLE_MAX];
-    class ActionTable {}// TODO C#移植 スタブ
-
-	/** 3D Texture_data in resource.d_* */
-	static readonly Texture[] textures = new Texture[Defines.DEF_RES_TEXTURE_MAX];
-	/** 3D Texture_data in resource.d_* */
-	static Texture env_texture = null;
-
 	/** ActionTableのFrame*/
 	static int[] arrFrame = new int[Defines.DEF_RES_ACTIONTABLE_MAX];
 	/** ActionTableNo */
 	static int[] arrActNo = new int[Defines.DEF_RES_FIGURE_MAX];
-
-
-
 
 	/** Graphics */
 	static Graphics grp;
@@ -91,11 +73,6 @@ public partial class ZZ {
         public const int SIZE_TINY = 0;
         public static Font getFont(int size) { return new Font();}
     }
-
-
-	/** TOBE オーディオ */
-	static readonly AudioPresenter[] audio = new AudioPresenter[2];
-    class AudioPresenter {}// TODO C#移植 スタブ
 
 	/** TOBE オーディオ */
 	static readonly int[] volume = {100,100
