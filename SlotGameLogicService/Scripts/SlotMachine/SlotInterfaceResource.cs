@@ -135,6 +135,7 @@ public class SlotInterfaceResource
 
 			Defines.APP_TRACE("appData初期化:" + str);
 		}
+
 		//TRACE("復元:" + str);
 		split_str = Tool.getSplitString( str, ',' );
 		

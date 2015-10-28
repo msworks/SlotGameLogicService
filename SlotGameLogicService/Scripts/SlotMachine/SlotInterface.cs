@@ -125,14 +125,6 @@ public partial class SlotInterface
     class Image {
         public void setAlpha(int a) {}
     }
-
-	void drawImage( Image img, int x, int y )
-	{
-	}
-	
-	void drawImage( Image img, int dest_x, int dest_y, int src_x, int src_y, int wid, int hei )
-	{
-	}
 	
 	void setImageAlpah( Image img, int alpha )
 	{
@@ -177,26 +169,7 @@ public partial class SlotInterface
                 break;
         }
 	}
-	
-    /// <summary>
-    /// アプリケーション終了
-    /// </summary>
-	public void terminate()
-	{
-        Application.Quit();
-	}
 
-    /// <summary>
-    /// ボリューム設定
-    /// </summary>
-    /// <param name="vol"></param>
-	public void setVolume( int vol )
-	{
-		ZZ.setVolume( vollist[ vol ], Defines.DEF_SOUND_MULTI_BGM );
-		ZZ.setVolume( vollist[ vol ], Defines.DEF_SOUND_MULTI_SE );
-        AudioListener.volume = vol;
-	}
-		
 	// コールバック
 	// クレジットが0で投入が必要な時に呼ばれる
 	public void onCreditZero()

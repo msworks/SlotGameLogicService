@@ -1,37 +1,11 @@
-﻿//using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
 using System.Text;
 
-/*
- * 作成日: 2003/08/25
- * 更新： 2006/02/28
- */
-
-//#include "DfMain.h"
-//import docomo_DF905.*;
-
-/**
- * スロット以外の親クラス 主にメニューを担当する 起動ﾓｰﾄﾞ等各種設定等を管理します。
- * 
- * @author A05229Ak
- */
-//#include "DfImport.h"
-//import java.io.*;
-//import java.util.*;
-//import javax.microedition.io.*;
-//import com.nttdocomo.ui.*;
-//import com.nttdocomo.io.*;
-//import com.nttdocomo.device.*;
-//import com.nttdocomo.opt.ui.*;
-//import com.nttdocomo.opt.ui.j3d.*;
-
-/*
- * メニューの背景が黒なので、ヘルプの絵文字を一部変更。
- */
 public class Mobile
 {
-    public mOmatsuri mo = new mOmatsuri();
     public static SlotInterface gp = null;
+
+    public mOmatsuri mo = new mOmatsuri();
     public const bool DEF_IS_DOCOMO = true; // TODO C#移植 DOCOMO準拠と仮定
     public static int keyTrigger = 0;
 
@@ -67,14 +41,6 @@ public class Mobile
         // キー取得
         keyTrigger = ZZ.getKeyPressed();
         keyPressing = ZZ.getKeyPressing();
-        //Debug.Log("keyTrigger:" + keyTrigger);
-        //Debug.Log("keyPressing:" + keyPressing);
-#if __ERR_MSG__
-		if( ZZ.errCode != 0)
-		{	// エラーコードがあれば
-			keyTrigger = 0;
-		}
-#endif
 
         if (keyPressing == 0) {
             keyPressingCount = 0;

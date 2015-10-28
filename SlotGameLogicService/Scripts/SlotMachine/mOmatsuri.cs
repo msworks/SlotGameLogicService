@@ -184,15 +184,6 @@ public partial class mOmatsuri
 		}
 	}
 
-	// ======================================================
-	// TOBE [スロット開始再開終了]
-	// ======================================================
-	/**
-	 * ゲーム開始時に各値を初期化。 0:通常1:シミュレーション
-	 * 
-	 * @see #int_s_value
-	 * @see #initGameInfo()
-	 */
 	public void newSlot()
     {
 		for (int i = 0; i < int_s_value.Length; i++) {
@@ -212,7 +203,6 @@ public partial class mOmatsuri
 		int_s_value[Defines.DEF_INT_WIN_COIN_NUM] = 0; // １ゲーム中の獲得コイン枚数
 		int_s_value[Defines.DEF_INT_BONUS_GOT] = 0; // ボーナス獲得数
 		int_s_value[Defines.DEF_INT_BONUS_JAC_GOT] = 0; //JACゲーム中の獲得枚数
-		
 		int_s_value[Defines.DEF_INT_BB_KIND] = Defines.DEF_BB_UNDEF; // ＢＢ入賞時の種別
 		int_s_value[Defines.DEF_INT_BB_AFTER_1GAME] = 0; // BB 終了後の１ゲーム目？					
 		int_s_value[Defines.DEF_INT_BB_END_1GAME_REGET_BB] = 0; // BB 終了後の１ゲーム目でそろえることができた？ミッションパラメータ		
@@ -888,8 +878,8 @@ public partial class mOmatsuri
 		return false;
 	} // process()
 
-    private void DoModeAction(int keyTrigger) {
-
+    private void DoModeAction(int keyTrigger)
+    {
         // ======================================
         // 各モードにおける毎回の処理
         // ======================================
@@ -936,15 +926,6 @@ public partial class mOmatsuri
                             if (int_s_value[Defines.DEF_INT_SLOT_COIN_NUM] < int_s_value[Defines.DEF_INT_BET_COUNT]) {	// コインがないからBETさせない
                                 gp.onCreditZero();
                             } else {
-                                //							if (int_s_value[Defines.DEF_INT_CREDIT_COIN_NUM] < int_s_value[Defines.DEF_INT_BET_COUNT])
-                                //							{	// 筐体内クレジット描画
-                                //								int_s_value[Defines.DEF_INT_CREDIT_COIN_NUM] = int_s_value[Defines.DEF_INT_SLOT_COIN_NUM];
-                                //								if( int_s_value[Defines.DEF_INT_CREDIT_COIN_NUM] > Defines.DEF_NUM_MAX_CREDIT)
-                                //								{	// 最大数に丸め込む
-                                //									int_s_value[Defines.DEF_INT_CREDIT_COIN_NUM] = Defines.DEF_NUM_MAX_CREDIT;
-                                //								}
-                                //							}
-
                                 REQ_MODE(Defines.DEF_RMODE_BET);
                                 gp.betFlag = true;
                             }
@@ -1000,7 +981,6 @@ public partial class mOmatsuri
                 } else {
                     if (_soundTime < Util.GetMilliSeconds()) {
                         // 回転開始
-#if __COM_TYPE__
                         //DfMain.TRACE(("回転開始チェック:" + int_s_value[Defines.DEF_INT_BETTED_COUNT]);
                         if ((int_s_value[Defines.DEF_INT_BETTED_COUNT] > 0)
                             && (((keyTrigger & (Defines.DEF_KEY_BIT_SELECT | Defines.DEF_KEY_BIT_5)) != 0)
@@ -1008,9 +988,6 @@ public partial class mOmatsuri
                             //DfMain.TRACE(("回転開始ウェイト");
                             reelStartFg = true;
                             lampSwitch(Defines.DEF_LAMP_LEVER, Defines.DEF_LAMP_ACTION_ON);
-#if __REEL_WEIT_SKIP__
-						reelwait = -3200;
-#else
                             if (Mobile.isJacCut() == true) {	// ボーナスカットの場合
                                 reelwait = -3200;
                             }
@@ -1021,16 +998,8 @@ public partial class mOmatsuri
                                 reelwait = Util.GetMilliSeconds();//リール全体用
                                 reelStartFg = false;
                             }
-#endif
 
                         }
-#else
-					if ( (int_s_value[Defines.DEF_INT_BETTED_COUNT] > 0)
-						&& ((keyTrigger & (Defines.DEF_KEY_BIT_SELECT | Defines.DEF_KEY_BIT_5 | Defines.DEF_KEY_BIT_DOWN)) != 0)) {
-						lampSwitch(Defines.DEF_LAMP_LEVER, Defines.DEF_LAMP_ACTION_ON);
-						REQ_MODE(Defines.DEF_RMODE_SPIN);
-					}
-#endif
                     }
                 }
                 break;
@@ -1056,23 +1025,21 @@ public partial class mOmatsuri
                 }
 
                 // 前に鳴らしたサウンド待ち
-                if (_soundTime < Util.GetMilliSeconds()
-                        || int_s_value[Defines.DEF_INT_IS_REEL_STOPPED] != 0) {
-                    if (int_s_value[Defines.DEF_INT_KEY_REJECT] > 0) {
-                        int_s_value[Defines.DEF_INT_KEY_REJECT]--; // 一定ターン待つ
-                    } else {
-#if __COM_TYPE__
-
-#else
-					if(Mobile.isVaib()){
-						ZZ.setVibrator(false);
-					}
-#endif
+                if ( _soundTime < Util.GetMilliSeconds() ||
+                     int_s_value[Defines.DEF_INT_IS_REEL_STOPPED] != 0)
+                {
+                    if (int_s_value[Defines.DEF_INT_KEY_REJECT] > 0)
+                    {
+                        // 一定ターン待つ
+                        int_s_value[Defines.DEF_INT_KEY_REJECT]--;
+                    }
+                    else
+                    {
                         // 同時押しは出来ない ワンボタン(KEY_5)操作あり
                         bool isSpinning = true;
                         bool isLimitStop = false; // 自動停止の場合用
                         //DfMain.TRACE(("ここから開始");
-#if __COM_TYPE__
+
                         if (_spinTime < Util.GetMilliSeconds()) {
                             Defines.TRACE(Util.GetMilliSeconds() - _spinTime);
                             isLimitStop = true;
@@ -1103,44 +1070,6 @@ public partial class mOmatsuri
                                 isSpinning = setReelStopAngle(2);
                             }
                         }
-#else
-/////////////////////
-//					if ((keyTrigger & (Defines.DEF_KEY_BIT_SELECT | Defines.DEF_KEY_BIT_5)) != 0
-//							|| _spinTime < Util.GetMilliSeconds() )
-//					{
-//						int tmp;
-//						for (int i = 0; i < Defines.DEF_N_REELS; i++) {
-//							if (isSpinning) {
-//								if(debugAuto){
-//									if(IS_BONUS_GAME() && (clOHHB_V23.getWork(Defines.DEF_WAVEBIT)&0x08)!=0
-//										
-//											&& clOHHB_V23.getWork(Defines.DEF_BIGBCTR) == 1 && clOHHB_V23.getWork(Defines.DEF_BBGMCTR) > 8){
-//										isSpinning = setReelStopAngle(new int[]{2,1,0}[i]);
-//									}else{
-//										isSpinning = setReelStopAngle(Mobile.getOrder(i));
-//									}
-//								}else{
-//									isSpinning = setReelStopAngle(Mobile.getOrder(i));
-//								}
-//							}
-//						}
-//					} else {
-//						if (isSpinning
-//								&& (keyTrigger & (Defines.DEF_KEY_BIT_1)) != 0) {
-//							isSpinning = setReelStopAngle(0);
-//						}
-//						if (isSpinning
-//								&& (keyTrigger & (Defines.DEF_KEY_BIT_2)) != 0) {
-//							isSpinning = setReelStopAngle(1);
-//						}
-//						if (isSpinning
-//								&& (keyTrigger & (Defines.DEF_KEY_BIT_3)) != 0) {
-//							isSpinning = setReelStopAngle(2);
-//						}
-//					}
-////
-#endif
-
                     }
                 }
 
@@ -1180,10 +1109,8 @@ public partial class mOmatsuri
                                 case 0x01:// 第2停止
                                     if (tempai[1] == 3) {
                                         //ﾄﾘﾌﾟﾙﾃﾝﾊﾟｲ音
-#if __COM_TYPE__
                                         // (トリプルテンパイ（BIG確）)
                                         GPW_eventProcess((int)Defines.EVENT_PROC.EVENT_PROC_CHK_REEL, (int)Defines.EVENT.EVENT_NO2);
-#endif
                                         stop_snd_id = Defines.DEF_SOUND_15;
                                         _soundTime = Util.GetMilliSeconds() + Defines.DEF_SOUND_MS_15;
                                         int_s_value[Defines.DEF_INT_IS_TEMPAI] = 1;
@@ -1212,45 +1139,22 @@ public partial class mOmatsuri
                                         }
                                         gp.onBonusBB();
                                     }
-#if __COM_TYPE__
-                                    // ゲチェナ
-                                    GPW_eventProcess((int)Defines.EVENT_PROC.EVENT_PROC_CHK_REEL, (int)Defines.EVENT.EVENT_NO3);
-#endif
-                                    int_s_value[Defines.DEF_INT_BB_AFTER_1GAME] = 0;// TOBE 個別PARAM用フラグで使うフラグを必ず下ろす
-                                    break;
+
+                                // ゲチェナ
+                                GPW_eventProcess((int)Defines.EVENT_PROC.EVENT_PROC_CHK_REEL, (int)Defines.EVENT.EVENT_NO3);
+                                int_s_value[Defines.DEF_INT_BB_AFTER_1GAME] = 0;// TOBE 個別PARAM用フラグで使うフラグを必ず下ろす
+                                break;
                             }
                         }
-#if __COM_TYPE__
+
                         if ((Mobile.isJacCut() == false))
-#else
-//					if (!(Mobile.isJacCut() && IS_BONUS_JAC()))
-#endif
- {
+                        {
                             playSE(stop_snd_id);
                         }
 
                     } else {
-#if __DEBUG_MENU__
-					if( Debug.debug_cnf[DBG_MANUAL] == 1)
-					{
-						//40秒停止を無効化する
-						// 回転開始時間を記録する
-						_spinTime = Util.GetMilliSeconds() + Defines.DEF_WAIT_SPIN;
-						if( CHECK_FLAG(keyTrigger, Defines.DEF_KEY_BIT_UP) )
-						{
-							int_s_value[Defines.DEF_INT_REEL_ANGLE_R0 + i] = 
-								(int_s_value[Defines.DEF_INT_REEL_ANGLE_R0 + i] + int_s_value[Defines.DEF_INT_REEL_SPEED]) & ANGLE_2PI_MASK;
-						}
-					}
-					else
-					{
-						int_s_value[Defines.DEF_INT_REEL_ANGLE_R0 + i] = 
-						(int_s_value[Defines.DEF_INT_REEL_ANGLE_R0 + i] + int_s_value[Defines.DEF_INT_REEL_SPEED]) & ANGLE_2PI_MASK;
-					}
-#else
                         int_s_value[Defines.DEF_INT_REEL_ANGLE_R0 + i] =
                             (int_s_value[Defines.DEF_INT_REEL_ANGLE_R0 + i] + int_s_value[Defines.DEF_INT_REEL_SPEED]) & ANGLE_2PI_MASK;
-#endif
                     }
                 }
 
