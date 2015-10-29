@@ -5,6 +5,13 @@ using System.Threading;
 
 public partial class ZZ
 {
+    clOHHB_V23 v23;
+
+    public ZZ(clOHHB_V23 v23)
+    {
+        this.v23 = v23;
+    }
+
     // TOBE ソフトきー
 	/** ソフトきー */
 	public static string[] m_strSoftKeyName =  {"",""};
@@ -1078,7 +1085,7 @@ public partial class ZZ
 	 */
 	public static bool changeSound() {
 		try {
-		} catch (Exception e) {
+		} catch (Exception) {
 			return is_value[Defines.DEF_IS_SQ_ON];
 		}
 

@@ -89,12 +89,6 @@ public class Mascot3D {
 	 * @param type true==setBlurTexture
 	 */
 	public static void setTexture(int type){
-//System.out.println("setTexture: " + type);
-//		TODO CONST
-//		if(type == 2){
-//			ZZ.setTextures(Defines.DEF_RES_MBAC, tex01_blur);
-//		}
-//		else 
 		if(type == 1){
 			ZZ.setTextures(Defines.DEF_RES_MBAC, tex01_on);
 		}
@@ -126,11 +120,6 @@ public class Mascot3D {
 			int len = ZZ.getActionFrameLength(Defines.DEF_RES_MTRA, 0);
 			//フレームを任意に進める.
 			ZZ.setPosture(Defines.DEF_RES_MBAC, Defines.DEF_RES_MTRA, 0, frame);
-//			Mascot3D.act_frame += Mascot3D.act_frame_d;
-//
-//			if(Mascot3D.act_frame > len){
-//				Mascot3D.act_frame %= len;
-//			}
 		}
 	}
 

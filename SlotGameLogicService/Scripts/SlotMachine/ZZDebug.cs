@@ -1,12 +1,13 @@
 ﻿using System;
-//using UnityEngine;
-public partial class ZZ{
+
+public partial class ZZ
+{
 
 #if __REEL_ID_CHECK__
-	public static int drawReel[] = new int[3];
-	public static string drawReelStr;
+	public  int drawReel[] = new int[3];
+	public  string drawReelStr;
 	
-	public static void checkReel()
+	public  void checkReel()
 	{
 		int i;
 		int defAray = DEF_ARAY11;
@@ -43,7 +44,7 @@ public partial class ZZ{
 		
 	}
 	
-	public static void dbgReelMsg()
+	public  void dbgReelMsg()
 	{
 #if	_DOCOMO	// {
 #else			// } {
@@ -72,12 +73,12 @@ public partial class ZZ{
 #endif
 #if __ERR_MSG__
 	  
-	public static int errCode=0;
-	public static int errOption1=0;
-	public static string errOption2="";
-	public static string errOption3="";
+	public  int errCode=0;
+	public  int errOption1=0;
+	public  string errOption2="";
+	public  string errOption3="";
 	
-	public static void drawErrMsg()
+	public  void drawErrMsg()
 	{
 		//ZZ.grp.setFont(Font.getFont( Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_SMALL ) );
 		
@@ -94,9 +95,9 @@ public partial class ZZ{
 
 
 #if __CHANGE_FPS__
-	public static int appSecLog;
+	public  int appSecLog;
 	
-	public static void dbgFpsProc(int keyTrigger,int kePressing)
+	public  void dbgFpsProc(int keyTrigger,int kePressing)
 	{
 		int ofset = 0;
 		if( CHECK_FLAG(keyTrigger, DEF_KEY_BIT_UP) )
@@ -119,7 +120,7 @@ public partial class ZZ{
 		ZZ.appSec += ofset;
 		ZZ.appSec = ZZ.dbg_Range(ZZ.appSec, 0, 500);
 	}
-	public static void dbgFpsuDraw()
+	public  void dbgFpsuDraw()
 	{
 #if	_DOCOMO	// {
 #else			// } {
@@ -136,9 +137,9 @@ public partial class ZZ{
 #endif
 
 #if __DRAW_CREDIT_UP__
-	public static int cregitUpLog;
+	public  int cregitUpLog;
 	
-	public static void dbgCreditUp()
+	public  void dbgCreditUp()
 	{
 #if	_DOCOMO	// {
 #else			// } {
@@ -154,9 +155,9 @@ public partial class ZZ{
 #endif
 
 #if __DRAW_REEL_WAIT__
-	public static int reelWaitLog;
+	public  int reelWaitLog;
 	
-	public static void dbgReelWait()
+	public  void dbgReelWait()
 	{
 #if	_DOCOMO	// {
 #else			// } {
@@ -173,11 +174,11 @@ public partial class ZZ{
 #endif
 
 #if __DEBUG_DRAW_YAKU__
-	public static void dbgYakuDraw()
-	{
-		int i;
-		// 内部当選役の描画
-		int[] yakuID = {
+    public void dbgYakuDraw()
+    {
+        int i;
+        // 内部当選役の描画
+        int[] yakuID = {
                            0x00, 
                            Defines.LOT_YAKU_CHRY, 
                            Defines.LOT_YAKU_BELL, 
@@ -185,32 +186,32 @@ public partial class ZZ{
                            Defines.LOT_YAKU_REP, 
                            Defines.LOT_YAKU_RB, 
                            Defines.LOT_YAKU_BB};
-		int yaku;
-        yaku = clOHHB_V23.getWork(Defines.DEF_WAVEBIT);
+        int yaku;
+        yaku = v23.getWork(Defines.DEF_WAVEBIT);
 
-		for( i = 0; i < 7;i++)
-		{
-			if(yakuID[i] == yaku)
-			{
+        for (i = 0; i < 7; i++)
+        {
+            if (yakuID[i] == yaku)
+            {
                 innerHitPattern = "内部当選役:" + getYakuTxt(i + 1) + System.Environment.NewLine;
-				break;
-			}
-		}
-	}
+                break;
+            }
+        }
+    }
 
     /// <summary>
     /// 内部当選役
     /// </summary>
-    public static string innerHitPattern;
+    public string innerHitPattern;
 
     /// <summary>
     /// リール停止位置
     /// </summary>
-    public static string[] reelStopStatus = new string[3];
+    public string[] reelStopStatus = new string[3];
 
-   	public static String getYakuTxt(int index)
-	{
-		String[] str = {
+    public String getYakuTxt(int index)
+    {
+        String[] str = {
 			"ﾗﾝﾀﾞﾑ (NO)|(BB)|(JAC)",
 			"(ﾊｽﾞﾚ)|(ﾊｽﾞﾚ)|(ﾊｽﾞﾚ)",
 			"(ﾁｪﾘｰ)|(ﾄﾞﾝﾍﾞﾙ15)|(無効)",
@@ -220,20 +221,20 @@ public partial class ZZ{
 			"(ﾚｷﾞｭﾗ)|(無効)|(無効)",
 			"(ﾋﾞｯｸﾞ)|(無効)|(無効)"
 		};
-		//TRACE("ﾃｷｽﾄId:" + debug_cnf[DBG_YAKUN]);
-		return str[index];
-	}
+        //TRACE("ﾃｷｽﾄId:" + debug_cnf[DBG_YAKUN]);
+        return str[index];
+    }
 
 #endif
 
 #if __DEBUG__
-	//------------------------------------------------------------------
-	//		デバッグ用
-	//------------------------------------------------------------------
-	
-	// デバッグ描画用
-	public static void dbgDrawAll()
-	{
+    //------------------------------------------------------------------
+    //		デバッグ用
+    //------------------------------------------------------------------
+
+    // デバッグ描画用
+    public void dbgDrawAll()
+    {
 #if __CHANGE_FPS__
 		dbgFpsuDraw();
 #endif
@@ -247,16 +248,17 @@ public partial class ZZ{
 		dbgReelMsg();
 #endif
 #if __DEBUG_DRAW_YAKU__
-		dbgYakuDraw();
+        dbgYakuDraw();
 #endif
 #if	__DEBUG_MENU__
 		Debug.drawDebug(); // デバッグ画面の描画
 #endif
-	}
-	
+    }
+
 #endif
 
-    private static string @hex2str(int d, int x) {
+    private string @hex2str(int d, int x)
+    {
         string s;
         int l;
 
@@ -266,23 +268,29 @@ public partial class ZZ{
     }
 
     // TODO C#移植 未使用につきコメントアウト
-    //public static string hexByte(sbyte d) {
+    //public  string hexByte(sbyte d) {
     //    int dd = (int)d;
     //    return @hex2str(dd & 0x000000ff, 2);
     //}
-    public static string hexShort(short d) {
+    public string hexShort(short d)
+    {
         int dd = (int)d;
         return @hex2str(dd & 0x0000ffff, 4);
     }
-    public static string hexInt(int d) {
+    public string hexInt(int d)
+    {
         return @hex2str(d, 8);
     }
 
     // 範囲で折り返す処理
-    public static int dbg_Range(int now, int min, int max) {
-        if (now < min) {
+    public int dbg_Range(int now, int min, int max)
+    {
+        if (now < min)
+        {
             now = max;
-        } else if (now > max) {
+        }
+        else if (now > max)
+        {
             now = min;
         }
 
@@ -293,12 +301,12 @@ public partial class ZZ{
 #if __TRACE__
 
 
- 	public static void	TRACE1(string s)
+ 	public  void	TRACE1(string s)
 	{
 		System.out.println(s);
 	}
 	
- 	public static void	TRACE2(string s)
+ 	public  void	TRACE2(string s)
 	{	// 改行なし
 		System.out.print(s);
 	}
@@ -307,7 +315,7 @@ public partial class ZZ{
 
 
 #if __TRACE_PROCESS__
-	public static void testProses(int index)
+	public  void testProses(int index)
 	{
 		int ProcessIndex[] = 
 		{

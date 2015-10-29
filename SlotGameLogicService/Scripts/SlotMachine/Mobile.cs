@@ -3,15 +3,46 @@ using System.Text;
 
 public class Mobile
 {
-    public static SlotInterface gp = null;
-
-    public mOmatsuri mo = new mOmatsuri();
     public const bool DEF_IS_DOCOMO = true; // TODO C#移植 DOCOMO準拠と仮定
-    public static int keyTrigger = 0;
+    public int keyTrigger = 0;
 
-    private static bool initModeFlag = false;    // モード初期化フラグ
-    private static int keyPressing = 0;
-    private static int keyPressingCount = 0;
+    private bool initModeFlag = false;    // モード初期化フラグ
+    private int keyPressing = 0;
+    private int keyPressingCount = 0;
+
+    SlotInterface slotInterface;
+    Omatsuri mOmatsuri;
+    clOHHB_V23 v23;
+    ZZ ZZ;
+
+    public Mobile()
+    {
+        // 相互参照しまくりなのだが解決した方がいいのだろうか
+        mOmatsuri = new Omatsuri();
+        slotInterface = new SlotInterface(this, mOmatsuri);
+        ZZ = new ZZ();
+        v23 = new clOHHB_V23(mOmatsuri, ZZ);
+
+        mOmatsuri.SetSlotInterface(slotInterface);
+        mOmatsuri.SetclOHHB_V23(v23);
+
+        int_m_value[Defines.DEF_INT_MODE_REQUEST] = Defines.DEF_MODE_UNDEF;
+        int_m_value[Defines.DEF_INT_MODE_CURRENT] = Defines.DEF_MODE_UNDEF;
+        int_m_value[Defines.DEF_INT_BASE_OFFSET_X] = (ZZ.getWidth() - Defines.DEF_POS_WIDTH);
+        int_m_value[Defines.DEF_INT_BASE_OFFSET_Y] = (ZZ.getHeight() - Defines.DEF_POS_HEIGHT);
+
+        ZZ.setOrigin(int_m_value[Defines.DEF_INT_BASE_OFFSET_X], int_m_value[Defines.DEF_INT_BASE_OFFSET_Y]);
+
+        int_m_value[Defines.DEF_INT_TITLE_BG_START] = ZZ.getBitRandom(32);
+
+        int_m_value[Defines.DEF_INT_GMODE] = Defines.DEF_GMODE_GAME;
+        int_m_value[Defines.DEF_INT_SETUP_VALUE_CURSOL] = 3;// 設定４
+        setSetUpValue(3);	// 設定４
+        int_m_value[Defines.DEF_INT_SUB_MENU_ITEM] = -1; // 選択メニューアイテムの初期化
+        int_m_value[Defines.DEF_INT_IS_SOUND] = 1;// 音鳴るよ
+
+        initConfig();
+    }
 
     public void SetKeyTrigger(int key)
     {
@@ -25,30 +56,23 @@ public class Mobile
 
     public void exec()
     {
-        if (gp == null)
-        {
-            Defines.TRACE("gpがないよ");
-            gp = new SlotInterface(); // TODO C#移植 ここでGP作ってみる
-        }
-
-        if (mOmatsuri.gp == null)
-        {
-            Defines.TRACE("gpの登録");
-            mOmatsuri.gp = gp;
-        }
-
         initModeFlag = false;
+
         // キー取得
         keyTrigger = ZZ.getKeyPressed();
         keyPressing = ZZ.getKeyPressing();
 
-        if (keyPressing == 0) {
+        if (keyPressing == 0)
+        {
             keyPressingCount = 0;
-        } else {
+        }
+        else
+        {
             keyPressingCount++;
         }
         // モード切り替えチェック
-        if (int_m_value[Defines.DEF_INT_MODE_CURRENT] != int_m_value[Defines.DEF_INT_MODE_REQUEST]) {
+        if (int_m_value[Defines.DEF_INT_MODE_CURRENT] != int_m_value[Defines.DEF_INT_MODE_REQUEST])
+        {
             int_m_value[Defines.DEF_INT_MODE_CURRENT] = int_m_value[Defines.DEF_INT_MODE_REQUEST];
             int_m_value[Defines.DEF_INT_COUNTER] = 0;
             initModeFlag = true;
@@ -56,16 +80,16 @@ public class Mobile
         }
 
         // モードごとに処理分岐
-        switch (int_m_value[Defines.DEF_INT_MODE_CURRENT]) {
+        switch (int_m_value[Defines.DEF_INT_MODE_CURRENT])
+        {
             case Defines.DEF_MODE_UNDEF:
-                // スクラッチパッドアクセス
 
-                //gp.outSavaData();
-                //gp.inSavaData();
-                if (!loadMenuData()) {
+                if (!loadMenuData())
+                {
                     initConfig();
                     saveMenuData(false);//初期はホールPは保存しない
-                    if (DEF_IS_DOCOMO) {
+                    if (DEF_IS_DOCOMO)
+                    {
                         // satoh
                         //					setMode(DEF_MODE_HALL_NOTICE);
                         break;
@@ -93,11 +117,11 @@ public class Mobile
         if (initModeFlag)
         {
         }
-        if (mo.process(keyTrigger))
+        if (mOmatsuri.process(keyTrigger))
         {
             mOmatsuri.getExitReason();
         }
-        mo.restartSlot();
+        mOmatsuri.restartSlot();
         // 4TH_REEL
         int pos = (mOmatsuri.int_s_value[Defines.DEF_INT_4TH_REEL_ANGLE] % 414) * (2359296 / 414);
         ZZ.dbgDrawAll();
@@ -106,22 +130,22 @@ public class Mobile
     private void ctrlTitle()
     {
         {
-            setSetUpValue(gp.gpif_setting);
+            setSetUpValue(slotInterface.gpif_setting);
             // 分析モード
             int_m_value[Defines.DEF_INT_GMODE] = Defines.DEF_GMODE_SIMURATION;
-            mo.newSlot();
+            mOmatsuri.newSlot();
             setMode(Defines.DEF_MODE_RUN);// ゲームを走らす
         }
     }
 
     /** 広告文座標X */
-    static int message_x = 240;// TODO const
+    int message_x = 240;// TODO const
 
     /** 広告文座標 dX */
-    static readonly int message_d = ZZ.getFontHeight() / 4;
+    readonly int message_d = ZZ.getFontHeight() / 4;
 
     /** Mobile内で使うint配列 */
-    public static readonly int[] int_m_value = new int[Defines.DEF_INT_M_VALUE_MAX];
+    public readonly int[] int_m_value = new int[Defines.DEF_INT_M_VALUE_MAX];
 
     // デフォルトを変更するにはmenuImages[]の初期値を入れ替える.
     /** ヘルプ文字間隔(切り捨て) */
@@ -144,26 +168,28 @@ public class Mobile
      * 
      * @return true:あり false:なし
      */
-    public static bool isMeoshi()
+    public bool isMeoshi()
     {
         // グリパチではモードがない為
-        return gp.l_m_bEyeSupport;
+        return slotInterface.l_m_bEyeSupport;
     }
 
     /**
-	 * Menuボタンの動作可否を設定する<BR>
-	 * スロットクラスで使用する。RMODE_BETでfalse,RMODE_WAITでtrue<BR>
-	 * 
-	 * @param flag
-	 *            true:可動 false:非可動
-	 */
-    public static void setMenuAvarable(bool flag)
+     * Menuボタンの動作可否を設定する<BR>
+     * スロットクラスで使用する。RMODE_BETでfalse,RMODE_WAITでtrue<BR>
+     * 
+     * @param flag
+     *            true:可動 false:非可動
+     */
+    public void setMenuAvarable(bool flag)
     {
         int_m_value[Defines.DEF_INT_IS_MENU_AVAILABLE] = (flag) ? Defines.DEF_MENU_AVAILABLE
                 : Defines.DEF_MENU_UNAVAILABLE;
         if (flag)
         {
-        } else {
+        }
+        else
+        {
         }
     }
 
@@ -175,11 +201,12 @@ public class Mobile
      * @see Defines.DEF_JAC_CUT_OFF
      * @return
      */
-    public static bool isJacCut()
+    public bool isJacCut()
     {
         // グリパチではモードがない為
         // すべてのボーナスカット時とする
-        if (mOmatsuri.cutBonus() != 0) {
+        if (mOmatsuri.cutBonus() != 0)
+        {
             return true;
         }
         return false;
@@ -190,11 +217,12 @@ public class Mobile
      * 
      * @return 設定値0~5
      */
-    public static void setSetUpValue(int val) {
+    public void setSetUpValue(int val)
+    {
 
         int_m_value[Defines.DEF_INT_SETUP_VALUE] = val;
         // 内部設定の変更(Z80関係はこっちかな？)
-        clOHHB_V23.setWork(Defines.DEF_WAVENUM, (ushort)val);
+        v23.setWork(Defines.DEF_WAVENUM, (ushort)val);
     }
 
     /**
@@ -203,7 +231,8 @@ public class Mobile
      * 
      * @return 設定値0~5
      */
-    public static int getSetUpValue() {
+    public int getSetUpValue()
+    {
         return int_m_value[Defines.DEF_INT_SETUP_VALUE];
     }
 
@@ -216,49 +245,24 @@ public class Mobile
      * @see DEF_GMODE_BATTLE
      * @return
      */
-    public static int getGameMode()
+    public int getGameMode()
     {
         return int_m_value[Defines.DEF_INT_GMODE];
     }
 
     /**
-	 * 告知の状態を返す
-	 * 
-	 * @return
-	 */
-    public static int getKokuchi() {
+     * 告知の状態を返す
+     * 
+     * @return
+     */
+    public int getKokuchi()
+    {
         return int_m_value[Defines.DEF_INT_KOKUCHI];
     }
 
-    /**
-     * 初期化ブロックです、 ロードは既に終わっているはずなのでタイトルモードから開始するようにアプリモードを初期化。
-     */
-    static Mobile()
+
+    private void initConfig()
     {
-        int_m_value[Defines.DEF_INT_MODE_REQUEST] = Defines.DEF_MODE_UNDEF;
-        int_m_value[Defines.DEF_INT_MODE_CURRENT] = Defines.DEF_MODE_UNDEF;
-
-        // GPでは下詰めで描画する為
-        // センター
-        int_m_value[Defines.DEF_INT_BASE_OFFSET_X] = (ZZ.getWidth() - Defines.DEF_POS_WIDTH);
-        // センター
-        int_m_value[Defines.DEF_INT_BASE_OFFSET_Y] = (ZZ.getHeight() - Defines.DEF_POS_HEIGHT);
-
-        ZZ.setOrigin(int_m_value[Defines.DEF_INT_BASE_OFFSET_X], int_m_value[Defines.DEF_INT_BASE_OFFSET_Y]);
-
-        int_m_value[Defines.DEF_INT_TITLE_BG_START] = ZZ.getBitRandom(32);
-
-        // 設定初期値
-        int_m_value[Defines.DEF_INT_GMODE] = Defines.DEF_GMODE_GAME;
-        int_m_value[Defines.DEF_INT_SETUP_VALUE_CURSOL] = 3;// 設定４
-        //int_m_value[Defines.DEF_INT_SETUP_VALUE] = 3;// 設定４
-        setSetUpValue(3);	// 設定４
-        int_m_value[Defines.DEF_INT_SUB_MENU_ITEM] = -1; // 選択メニューアイテムの初期化
-        int_m_value[Defines.DEF_INT_IS_SOUND] = 1;// 音鳴るよ
-        initConfig();
-    }
-
-    private static void initConfig() {
         int_m_value[Defines.DEF_INT_VOLUME] = 40;// 音量２
         int_m_value[Defines.DEF_INT_VOLUME_KEEP] = 40;// 音量２
         //		setVolume(int_m_value[Defines.DEF_INT_VOLUME]);
@@ -271,7 +275,7 @@ public class Mobile
         int_m_value[Defines.DEF_INT_IS_VIBRATION] = Defines.DEF_SELECT_2_ON;// データパネルON
     }
 
-    public static readonly int SAVE_BUFFER = Defines.DEF_SAVE_SIZE - 2; // アクセス関数の都合上-2しないとこける
+    public readonly int SAVE_BUFFER = Defines.DEF_SAVE_SIZE - 2; // アクセス関数の都合上-2しないとこける
 
     // ///////////////////////////////////////////////////////////////////////
     // メニューデータの管理
@@ -279,9 +283,10 @@ public class Mobile
     /**
      * メニューデータの書き込み
      */
-    public static void saveMenuData(bool isHall)
+    public void saveMenuData(bool isHall)
     {
-        if (!isHall) {
+        if (!isHall)
+        {
             mOmatsuri.prevHttpTime = 0;
             mOmatsuri.kasidasiMedal = 0;
         }
@@ -291,7 +296,8 @@ public class Mobile
 
         len = ZZ.getRecord(ref buf);
 
-        if (len <= 0) {
+        if (len <= 0)
+        {
             return;
         }
 
@@ -321,18 +327,20 @@ public class Mobile
      * 
      * @return
      */
-    public static bool loadMenuData()
+    public bool loadMenuData()
     {
         var buf = new sbyte[SAVE_BUFFER];
         var len = 0;
 
         len = ZZ.getRecord(ref buf);
 
-        if (len <= 0) {
+        if (len <= 0)
+        {
             return false;
         }
         // まだデータが無いとき
-        if (buf[Defines.DEF_SAVE_WRITTEN] == 0) {
+        if (buf[Defines.DEF_SAVE_WRITTEN] == 0)
+        {
             return false;
         }
 
@@ -364,7 +372,7 @@ public class Mobile
      *            カレントモード
      * @return ノーマルモード
      */
-    private static int getNormalMode(int a)
+    private int getNormalMode(int a)
     {
         return Defines.DEF_MODE_NORMAL_BITS & a;
     }
@@ -376,7 +384,8 @@ public class Mobile
      *            カレントモード
      * @return メニューモード
      */
-    private static int getMenuMode(int a) {
+    private int getMenuMode(int a)
+    {
         return Defines.DEF_MODE_MENU_BIT | getNormalMode(a);
     }
 
@@ -386,126 +395,15 @@ public class Mobile
      * @param m
      *            変更要求するアプリモード
      */
-    private static void setMode(int m) {
+    private void setMode(int m)
+    {
         int_m_value[Defines.DEF_INT_MODE_REQUEST] = m;
-    }
-
-    /**
-     * 起動モードによってメニューが違うのでココで定義 モード初期化で変更 MENU_IDは問題なければMENUの画像IDにしようかな？
-     */
-    private static readonly int[][] menuDefine = {
-	// ﾀｲﾄﾙからﾒﾆｭｰ
-			new int[]{ Defines.DEF_MENU_ID_CONFIG,// ゲーム設定
-					Defines.DEF_MENU_ID_HELP,// ヘルプ
-					Defines.DEF_MENU_ID_EXIT,// 終了
-			},
-			// 実践ﾓｰﾄﾞﾒﾆｭｰ
-			new int[]{ Defines.DEF_MENU_ID_CONFIG,// ゲーム設定
-					Defines.DEF_MENU_ID_INFO,// ゲームデータ
-					Defines.DEF_MENU_ID_HELP,// ヘルプ
-					Defines.DEF_MENU_ID_TITLE,// タイトルへ戻る
-					Defines.DEF_MENU_ID_EXIT,// 終了
-			},
-			// 分析ﾓｰﾄﾞ
-			new int[]{ Defines.DEF_MENU_ID_CONFIG,// ゲーム設定
-					Defines.DEF_MENU_ID_INFO,// ゲームデータ
-					Defines.DEF_MENU_ID_HELP,// ヘルプ
-					Defines.DEF_MENU_ID_TITLE,// タイトルへ戻る
-					Defines.DEF_MENU_ID_EXIT,// 終了
-			},
-			// ﾎｰﾙﾓｰﾄﾞ
-			new int[]{ Defines.DEF_MENU_ID_CONFIG,// ゲーム設定
-					Defines.DEF_MENU_ID_INFO,// ゲームデータ
-					Defines.DEF_MENU_ID_HELP,// ヘルプ
-					Defines.DEF_MENU_ID_EXIT,// 終了
-			},
-			};
-
-    /**
-     * 起動モードによってメニューが違うのでココで定義 モード初期化で変更 MENU_IDは問題なければMENUの画像IDにしようかな？
-     */
-    private static readonly int[][] configDefine = {
-			// ﾀｲﾄﾙからﾒﾆｭｰ
-			new int[]{ Defines.DEF_MENU_ID_VOLUME,// 音量設定
-					Defines.DEF_MENU_ID_SPEED,// リール速度
-					Defines.DEF_MENU_ID_JACCUT,// JACｶｯﾄ
-					Defines.DEF_MENU_ID_DATAPANEL,// データパネル
-					Defines.DEF_MENU_ID_VAIB,//バイブ
-					Defines.DEF_MENU_ID_ORDER,// 押し順
-					Defines.DEF_MENU_ID_INIT,// 設定初期化
-			},
-			// 実践ﾓｰﾄﾞﾒﾆｭｰ
-			new int[]{ Defines.DEF_MENU_ID_VOLUME,// 音量設定
-					Defines.DEF_MENU_ID_SPEED,// リール速度
-					Defines.DEF_MENU_ID_JACCUT,// JACｶｯﾄ
-					Defines.DEF_MENU_ID_DATAPANEL,// データパネル
-					Defines.DEF_MENU_ID_VAIB,//バイブ
-					Defines.DEF_MENU_ID_ORDER,// 押し順
-					Defines.DEF_MENU_ID_INIT,// 設定初期化
-			},
-			// 分析ﾓｰﾄﾞ
-			new int[]{ Defines.DEF_MENU_ID_VOLUME,// 音量設定
-					Defines.DEF_MENU_ID_SPEED,// リール速度
-					Defines.DEF_MENU_ID_MEOSHI,// ボーナス目押し
-					Defines.DEF_MENU_ID_JACCUT,// JACｶｯﾄ
-					Defines.DEF_MENU_ID_DATAPANEL,// データパネル
-					Defines.DEF_MENU_ID_KOKUCHI,// 小役告知
-					Defines.DEF_MENU_ID_VAIB,//バイブ
-					Defines.DEF_MENU_ID_ORDER,// 押し順
-					Defines.DEF_MENU_ID_INIT,// 設定初期化
-			},
-			// ﾎｰﾙﾓｰﾄﾞ
-			new int[]{ Defines.DEF_MENU_ID_VOLUME,// 音量設定
-					Defines.DEF_MENU_ID_SPEED,// リール速度
-					Defines.DEF_MENU_ID_DATAPANEL,// データパネル
-					Defines.DEF_MENU_ID_VAIB,//バイブ
-					Defines.DEF_MENU_ID_ORDER,// 押し順
-					Defines.DEF_MENU_ID_INIT,// 設定初期化
-			},
-		};
-
-    /**
-     * 現在のモードを入れる場所
-     */
-    private static int[] selectedMenu;
-
-    private static void drawstringR(string str, int rx, int y) {
-        ZZ.drawstring(str, rx - ZZ.stringWidth(str), y);
-    }
-
-    private static string getAve(int bunsi, int bunbo) {
-        string res = "";
-        if (bunbo != 0) {
-            int val = bunsi * 1000 / bunbo;
-            res += (val / 1000) + "." + shosu2(val % 1000);
-            return res;
-        } else {
-            return "--.--";
-        }
-    }
-
-    private static string shosu2(int sho) {
-        string res = "";
-        if (sho < 100) {
-            res += "0";
-        } else {
-            res += "";
-        }
-        if (sho % 10 < 5) {
-            return res += sho / 10;
-        } else {
-            return res += (sho / 10) + 1;
-        }
-    }
-
-    private static string getPercent(int bunsi, int bunbo) {
-        return getAve(bunsi * 100, bunbo);
     }
 
     /**
      * スロットによって出す情報が違うので順番に依存します（汗）
      */
-    private static readonly int[] infoGameData = { 65536, 65536, 65536, // NULLはだめ
+    private readonly int[] infoGameData = { 65536, 65536, 65536, // NULLはだめ
 	};
 
     /**
@@ -517,7 +415,7 @@ public class Mobile
      * @see Df#SOUND_MULTI_BGM
      * @see Df#SOUND_UNDEF
      */
-    public static void stopSound(int mode)
+    public void stopSound(int mode)
     {
         if (Defines.DEF_USE_MULTI_SOUND)
         {
@@ -544,7 +442,7 @@ public class Mobile
         }
     }
 
-    public static void playSound(int id, bool isRepeat, int mode)
+    public void playSound(int id, bool isRepeat, int mode)
     {
         if (Defines.DEF_USE_MULTI_SOUND)
         {
@@ -557,9 +455,9 @@ public class Mobile
     }
 
     /**
-	 * リールスピードを取得します
-	 */
-    public static int getReelSpeed()
+     * リールスピードを取得します
+     */
+    public int getReelSpeed()
     {
         return (Defines.GP_DEF_INT_SPEED - 20) * 3 + 100;
     }

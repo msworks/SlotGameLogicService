@@ -22,8 +22,8 @@ namespace GameLogicService
         {
             var machineFactory = new[]
             {
-                new { gameId = "1", createFunc = (Func<IMachine>)CreateOohanabi },
-                new { gameId = "2", createFunc = (Func<IMachine>)CreateTheOcean },
+                new { gameId = "1", createFunc = (Func<IMachine>)CreateTheOcean },
+                new { gameId = "2", createFunc = (Func<IMachine>)CreateOohanabi },
             };
 
             return machineFactory.Where(table => table.gameId == gameId)
@@ -61,7 +61,7 @@ namespace GameLogicService
 
         MACHINE_STATE _state;
 
-        Mobile core;
+        Mobile mobile;
 
         public Oohababi()
         {
@@ -70,7 +70,7 @@ namespace GameLogicService
 
         public Associative Config(Associative param)
         {
-            core = new Mobile();
+            mobile = new Mobile();
 
             var result = new Associative();
 
@@ -113,7 +113,7 @@ namespace GameLogicService
             foreach (var i in Enumerable.Range(0, 100))
             {
                 ZZ.int_value[Defines.DEF_Z_INT_KEYPRESS] |= (1 << 5);
-                core.exec();
+                mobile.exec();
             }
 
             var result = new Associative();
