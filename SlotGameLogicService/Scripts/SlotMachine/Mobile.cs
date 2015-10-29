@@ -17,14 +17,19 @@ public class Mobile
 
     public Mobile()
     {
+        //
         // 相互参照しまくりなのだが解決した方がいいのだろうか
+        //
         mOmatsuri = new Omatsuri();
         slotInterface = new SlotInterface(this, mOmatsuri);
         ZZ = new ZZ();
+        ZZ.setThreadSpeed(20);
         v23 = new clOHHB_V23(mOmatsuri, ZZ);
+        ZZ.SetV23(v23);
 
         mOmatsuri.SetSlotInterface(slotInterface);
         mOmatsuri.SetclOHHB_V23(v23);
+        mOmatsuri.SetMobile(this);
 
         int_m_value[Defines.DEF_INT_MODE_REQUEST] = Defines.DEF_MODE_UNDEF;
         int_m_value[Defines.DEF_INT_MODE_CURRENT] = Defines.DEF_MODE_UNDEF;

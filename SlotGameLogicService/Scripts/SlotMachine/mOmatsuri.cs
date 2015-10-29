@@ -4,7 +4,7 @@ public class Omatsuri
 {
     SlotInterface slotInterface = null;
     Mobile mobile;
-    ZZ zz;
+    ZZ ZZ;
     clOHHB_V23 v23;
 
     public long reelwait = 0;
@@ -89,6 +89,16 @@ public class Omatsuri
         this.v23 = v23;
     }
 
+    public void SetZZ(ZZ ZZ)
+    {
+        this.ZZ = ZZ;
+    }
+
+    public void SetMobile(Mobile mobile)
+    {
+        this.mobile = mobile;
+    }
+
     /**
      * データパネル色.
      * 
@@ -100,18 +110,19 @@ public class Omatsuri
      * @see df.Df#GAME_NUM
      */
     private int[] panel_colors = {
-			ZZ.getColor(0x00, 0x00, 0x00),// なし
-			ZZ.getColor(Defines.DEF_POS_CELL_COLOR_ETC_R, Defines.DEF_POS_CELL_COLOR_ETC_G,
-					Defines.DEF_POS_CELL_COLOR_ETC_B),// 通常
-			ZZ.getColor(Defines.DEF_POS_CELL_COLOR_BB_R, Defines.DEF_POS_CELL_COLOR_BB_G,
-					Defines.DEF_POS_CELL_COLOR_BB_B),// BB
-			ZZ.getColor(Defines.DEF_POS_CELL_COLOR_RB_R, Defines.DEF_POS_CELL_COLOR_RB_G,
-					Defines.DEF_POS_CELL_COLOR_RB_B),// RB
-			ZZ.getColor(0xFF, 0x00, 0xFF), };// カレント
+	    ZZ.getColor(0x00, 0x00, 0x00),// なし
+	    ZZ.getColor(Defines.DEF_POS_CELL_COLOR_ETC_R,
+                    Defines.DEF_POS_CELL_COLOR_ETC_G,
+			        Defines.DEF_POS_CELL_COLOR_ETC_B),// 通常
+	    ZZ.getColor(Defines.DEF_POS_CELL_COLOR_BB_R,
+                    Defines.DEF_POS_CELL_COLOR_BB_G,
+			        Defines.DEF_POS_CELL_COLOR_BB_B),// BB
+	    ZZ.getColor(Defines.DEF_POS_CELL_COLOR_RB_R,
+                    Defines.DEF_POS_CELL_COLOR_RB_G,
+			        Defines.DEF_POS_CELL_COLOR_RB_B),// RB
+	    ZZ.getColor(0xFF, 0x00, 0xFF),
+    };
 
-    // ======================================================
-    // TOBE [メソッド]
-    // ======================================================
     /**
      * 次のランプ用ステータスを取得する
      * 
@@ -120,7 +131,6 @@ public class Omatsuri
      */
     public int getLampStatus(int idx)
     {
-        //private  int getLampStatus(int idx) {
         if ((int_s_value[Defines.DEF_INT_LAMP_1 + (idx / 32)] & (1 << (idx % 32))) != 0)
         {
             return Defines.DEF_LAMP_STATUS_ON;
@@ -761,7 +771,7 @@ public class Omatsuri
                     _lampTime = Util.GetMilliSeconds() + Defines.DEF_WAIT_LAMP;
 
                     // 払い出しコイン枚数
-                    int_s_value[Defines.DEF_INT_WIN_COIN_NUM] = clOHHB_V23.mPayMedal();
+                    int_s_value[Defines.DEF_INT_WIN_COIN_NUM] = v23.mPayMedal();
 
                     int_s_value[Defines.DEF_INT_TOTAL_PAY] += int_s_value[Defines.DEF_INT_WIN_COIN_NUM];
                     /**/
@@ -2157,6 +2167,12 @@ public class Omatsuri
 
         // satoh#暫定
         // 0: 点滅スピード(ms)
+
+        var v001 = int_s_value[Defines.DEF_INT_MODE_COUNTER];
+        var v002 = FLLXX[int_s_value[Defines.DEF_INT_TOP_LAMP]][0];
+        var v003 = int_s_value[Defines.DEF_INT_LOOP_SPEED];
+
+
         if ((int_s_value[Defines.DEF_INT_MODE_COUNTER] % (FLLXX[int_s_value[Defines.DEF_INT_TOP_LAMP]][0]
                 / int_s_value[Defines.DEF_INT_LOOP_SPEED] + 1)) == 0)
         {

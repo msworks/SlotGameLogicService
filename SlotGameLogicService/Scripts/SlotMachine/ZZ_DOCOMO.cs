@@ -12,6 +12,11 @@ public partial class ZZ
         this.v23 = v23;
     }
 
+    public void SetV23(clOHHB_V23 v23)
+    {
+        this.v23 = v23;
+    }
+
     // TOBE ソフトきー
 	/** ソフトきー */
 	public static string[] m_strSoftKeyName =  {"",""};

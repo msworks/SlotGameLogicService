@@ -1,22 +1,23 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.IO;
 using System.Text;
-using System;
 
 /// <summary>
 /// セーブデータ管理クラス
 /// </summary>
-public class SaveData {
-
+public class SaveData
+{
     public const string SAVE_FILE_NAME = "save.dat";
-    public const string PATH_DATA_CHIP = "ClZ80RAM_big";
+    public const string PATH_DATA_CHIP = "ClZ80RAM_big.txt";
 
     /// <summary>
     /// セーブデータ書き込み
     /// </summary>
     /// <param name="saveData">書き込むデータ/param>
-    public static void Save(sbyte[] saveData) {
+    public static void Save(sbyte[] saveData)
+    {
         PlayerPrefs.SetString(SAVE_FILE_NAME, new string(Array.ConvertAll<sbyte, char>(saveData, v => (char)v)));
     }
 
@@ -24,7 +25,8 @@ public class SaveData {
     /// セーブデータ読み込み
     /// </summary>
     /// <param name="loadData">読み込み先バッファ</param>
-    public static void Load(ref sbyte[] loadData) {
+    public static void Load(ref sbyte[] loadData)
+    {
         string buffer = PlayerPrefs.GetString(SAVE_FILE_NAME);
         Buffer.BlockCopy(buffer.ToCharArray(), 0, loadData, 0, buffer.ToCharArray().Length);
     }
@@ -33,11 +35,15 @@ public class SaveData {
     /// チップデータ読み込み
     /// </summary>
     /// <returns></returns>
-    public static sbyte[] LoadChipData() {
-        try {
-            TextAsset a = Resources.Load<TextAsset>(PATH_DATA_CHIP);
-            return Array.ConvertAll<byte, sbyte>(a.bytes, v => (sbyte)v);
-        } catch (Exception e) {
+    public static sbyte[] LoadChipData()
+    {
+        try
+        {
+            var a = File.ReadAllBytes(PATH_DATA_CHIP);
+            return Array.ConvertAll<byte, sbyte>(a, v => (sbyte)v);
+        }
+        catch(Exception e)
+        {
             Defines.TRACE("LoadBinary失敗:" + e.ToString());
             return null;
         }
