@@ -13,7 +13,7 @@ namespace GameLogicService
         Associative Config(Associative param);
         Associative Init(Associative param);
         Associative Play(Associative param);
-        Associative Correct(Associative param);
+        Associative Collect(Associative param);
     }
 
     class MachineFactory
@@ -124,7 +124,7 @@ namespace GameLogicService
             return result;
         }
 
-        public Associative Correct(Associative param)
+        public Associative Collect(Associative param)
         {
             var reelstopleft = null as string;
             var reelstopcenter = null as string;
@@ -157,6 +157,6 @@ namespace GameLogicService
         public Associative Config(Associative param) { return new Associative(); }
         public Associative Init(Associative param) { return new Associative(); }
         public Associative Play(Associative param) { return new Associative(); }
-        public Associative Correct(Associative param) { return new Associative(); }
+        public Associative Collect(Associative param) { return new Associative(); }
     }
 }

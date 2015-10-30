@@ -47,7 +47,7 @@ namespace GameLogicService
                 new { path = "/config", response = (Func<Associative, Json>) ConfigResponse },
                 new { path = "/init", response = (Func<Associative, Json>)InitResponse },
                 new { path = "/play", response = (Func<Associative, Json>)PlayResponse },
-                new { path = "/correct", response = (Func<Associative, Json>)CorrectResponse },
+                new { path = "/collect", response = (Func<Associative, Json>)CollectResponse },
             };
 
             while (true)
@@ -227,7 +227,7 @@ namespace GameLogicService
             return res;
         }
 
-        Json CorrectResponse(Associative param)
+        Json CollectResponse(Associative param)
         {
             var gameId = null as GameId;
             var userId = null as UserId;
@@ -253,7 +253,7 @@ namespace GameLogicService
 
             machine = machines[key];
 
-            var table = machine.Correct(param);
+            var table = machine.Collect(param);
 
             var res = "{" +
                       string.Join(",", table.Select(e => e.Key.DQ() + ":" + e.Value)) +
