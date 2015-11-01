@@ -58,7 +58,34 @@ namespace GameLogicService
 
                 var url = req.Url;
                 var localPath = url.LocalPath;
-                var reqparams = Query2KeyValues(url.Query);
+                var reqparams = null as Associative;
+                    
+                if (req.HttpMethod == "POST")
+                {
+                    if (!req.HasEntityBody)
+                    {
+                        reqparams = new Associative();
+                    }
+                    else
+                    {
+                        using (var body = req.InputStream)
+                        {
+                            using (var reader = new StreamReader(body, req.ContentEncoding))
+                            {
+                                var param = reader.ReadToEnd();
+                                reqparams = PostBody2KeyValues(param);
+                            }
+                        }
+                    }
+                }
+                else if(req.HttpMethod == "GET")
+                {
+                    reqparams = Query2KeyValues(url.Query);
+                }
+                else
+                {
+                    throw new Exception("[ERROR]NOT REQUEST POST/GET METHOD");
+                }
 
                 var responseString = pathTable.Where(pt => pt.path == localPath)
                                               .Select(pt => pt.response(reqparams))
@@ -70,6 +97,31 @@ namespace GameLogicService
                 res.OutputStream.Write(buffer, 0, buffer.Length);
                 res.Close();
             }
+        }
+
+        /// <summary>
+        /// POST Body => Associative Array
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        Associative PostBody2KeyValues(string body)
+        {
+            var result = new Associative();
+
+            try
+            {
+                body.Split('&')
+                    .Select(str => str.Split('='))
+                    .Select(strs => new KeyValuePair<string, string>(strs[0], strs[1]))
+                    .ToList()
+                    .ForEach(kv => result.Add(kv.Key, kv.Value));
+            }
+            catch (Exception ex)
+            {
+                writer.WriteLine(ex);
+            }
+
+            return result;
         }
 
         /// <summary>
