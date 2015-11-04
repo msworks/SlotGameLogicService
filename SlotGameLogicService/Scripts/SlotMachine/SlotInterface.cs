@@ -50,15 +50,17 @@ public class SlotInterface
 
     Mobile mobile;
     Omatsuri omatsuri;
+    GameManager GameManager;
 
     /// <summary>
     /// コンストラクタ
     /// </summary>
     /// <param name="mobile"></param>
-    public SlotInterface( Mobile mobile, Omatsuri omatsuri )
+    public SlotInterface( Mobile mobile, Omatsuri omatsuri, GameManager GameManager )
     {
         this.mobile = mobile;
         this.omatsuri = omatsuri;
+        this.GameManager = GameManager;
     }
 
 	// キー press時にtrue。gpif_lock_f時は常にfalse
@@ -227,14 +229,14 @@ public class SlotInterface
 	public void onBonusBB()
 	{
 		Defines.TRACE("★ビッグボーナス入賞");
-        GameManager.Instance.OnBonusBB();
+        GameManager.OnBonusBB();
 	}
 
 	// ボーナス当選RB時に呼ばれる
 	public void onBonusRB()
 	{
 		Defines.TRACE("★レギュラーボーナス入賞");
-        GameManager.Instance.OnBonusRB();
+        GameManager.OnBonusRB();
 	}
 
 	// ボーナス中JACIN時に呼ばれる
@@ -246,7 +248,7 @@ public class SlotInterface
 	public void onBonusEND()
 	{
         // 大当たり間ゲーム数カウントクリア
-        GameManager.Instance.OnBonusEnd(bonus_incount);
+        GameManager.OnBonusEnd(bonus_incount);
         bonus_incount = 0;
 	}
 
@@ -263,7 +265,7 @@ public class SlotInterface
 	// レバーON（回転数が＋1※リプレイ含む）時に呼ばれる
 	public void onCountUp()
 	{
-        GameManager.Instance.OnCountUp();
+        GameManager.OnCountUp();
         if (!omatsuri.IS_BONUS())
         {
             bonus_incount++;

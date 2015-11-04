@@ -6,6 +6,8 @@ public class Omatsuri
     Mobile mobile;
     ZZ ZZ;
     clOHHB_V23 v23;
+    GameManager GameManager;
+    Mascot3D Mascot3D;
 
     public long reelwait = 0;
     public bool reqMenuFg2 = false;	// リール停止時にメニューを表示する
@@ -97,6 +99,16 @@ public class Omatsuri
     public void SetMobile(Mobile mobile)
     {
         this.mobile = mobile;
+    }
+
+    public void SetGameManager(GameManager GameManager)
+    {
+        this.GameManager = GameManager;
+    }
+
+    public void SetMascot3D(Mascot3D Mascot3D)
+    {
+        this.Mascot3D = Mascot3D;
     }
 
     /**
@@ -468,7 +480,7 @@ public class Omatsuri
                         // ボーナス当選時
                         slotInterface.onBonusNaibu();
                         // セルフオート停止フラグを立てる
-                        GameManager.Instance.StopAutoPlay("たまや点灯");
+                        GameManager.StopAutoPlay("たまや点灯");
                     }
 
                     // さらに大当たりで止まっていたらかっきーん！
@@ -759,7 +771,7 @@ public class Omatsuri
                     int_s_value[Defines.DEF_INT_REEL_ANGLE_R1] -= int_s_value[Defines.DEF_INT_REEL_SPEED] * 2 / 4;
                     int_s_value[Defines.DEF_INT_REEL_ANGLE_R2] -= int_s_value[Defines.DEF_INT_REEL_SPEED] * 2 / 4;
 
-                    GameManager.Instance.OnStartPlay();
+                    GameManager.OnStartPlay();
 
                     break;
 
@@ -1081,7 +1093,7 @@ public class Omatsuri
                             GPW_chgCredit(-1);
 
                             // コイン投入時処理
-                            GameManager.Instance.OnCoinInsert();
+                            GameManager.OnCoinInsert();
                         }
                         int_s_value[Defines.DEF_INT_BONUS_GOT]--;
                         int_s_value[Defines.DEF_INT_BETTED_COUNT]++;
@@ -1478,7 +1490,7 @@ public class Omatsuri
                         REQ_MODE(Defines.DEF_RMODE_BB_FANFARE); // ＢＢファンファーレへ遷移
 
                         // セルフオート停止フラグを立てる
-                        GameManager.Instance.StopAutoPlay("BB入賞");
+                        GameManager.StopAutoPlay("BB入賞");
                         break;
                     }
                     REQ_MODE(Defines.DEF_RMODE_FIN_WAIT);
@@ -1716,12 +1728,12 @@ public class Omatsuri
     {
         if (getLampStatus(Defines.DEF_LAMP_4TH) == Defines.DEF_LAMP_STATUS_ON)
         {
-            GameManager.Instance.Set4thReelTexture(true);
+            GameManager.Set4thReelTexture(true);
             Mascot3D.setTexture(0);
         }
         else
         {
-            GameManager.Instance.Set4thReelTexture(false);
+            GameManager.Set4thReelTexture(false);
             Mascot3D.setTexture(1);
         }
     }
@@ -1798,7 +1810,7 @@ public class Omatsuri
                 int id = 0;
 
                 // soy TODO リールランプ処理
-                GameManager.Instance.SetReelTexture(rlnum, i, state[j] == 1);
+                GameManager.SetReelTexture(rlnum, i, state[j] == 1);
 
                 id = Defines.DEF_RES_R1_01 + (Defines.DEF_RES_R1_02 - Defines.DEF_RES_R1_01) * sym + state[j];
                 ZZ.drawImage(id, x[i], y[j] + Defines.GP_DRAW_OFFSET_Y);
@@ -2721,7 +2733,7 @@ public class Omatsuri
     /// </summary>
     /// <param name="n">nﾋﾞｯﾄ左ｼﾌﾄ</param>
     /// <returns>ビット</returns>
-    [Obsolete("削除予定とのコメントあり")]
+    //[Obsolete("削除予定とのコメントあり")]
     public int BIT(int n)
     {
         return 1 << n;
@@ -3921,7 +3933,7 @@ public class Omatsuri
         this.int_s_value[Defines.DEF_INT_IS_BB_RB_END] = 1;
 
         // セルフオート停止フラグを立てる
-        GameManager.Instance.StopAutoPlay("ボーナス終了");
+        GameManager.StopAutoPlay("ボーナス終了");
 
         mobile.stopSound(Defines.DEF_SOUND_MULTI_BGM); // BGMを止める
 

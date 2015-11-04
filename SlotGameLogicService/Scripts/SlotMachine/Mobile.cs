@@ -13,23 +13,36 @@ public class Mobile
     SlotInterface slotInterface;
     Omatsuri mOmatsuri;
     clOHHB_V23 v23;
-    ZZ ZZ;
+    GameManager gameManager;
+    public ZZ ZZ;
+
+    public int Seed {
+        get
+        {
+            return gameManager.Seed;
+        }
+    }
 
     public Mobile()
     {
         //
         // 相互参照しまくりなのだが解決した方がいいのだろうか
         //
+        gameManager = new GameManager();
         mOmatsuri = new Omatsuri();
-        slotInterface = new SlotInterface(this, mOmatsuri);
+        slotInterface = new SlotInterface(this, mOmatsuri, gameManager);
         ZZ = new ZZ();
         ZZ.setThreadSpeed(20);
         v23 = new clOHHB_V23(mOmatsuri, ZZ);
         ZZ.SetV23(v23);
+        ZZ.SetGameManager(gameManager);
 
         mOmatsuri.SetSlotInterface(slotInterface);
         mOmatsuri.SetclOHHB_V23(v23);
         mOmatsuri.SetMobile(this);
+        mOmatsuri.SetZZ(ZZ);
+        mOmatsuri.SetGameManager(gameManager);
+        mOmatsuri.SetMascot3D(new Mascot3D(ZZ));
 
         int_m_value[Defines.DEF_INT_MODE_REQUEST] = Defines.DEF_MODE_UNDEF;
         int_m_value[Defines.DEF_INT_MODE_CURRENT] = Defines.DEF_MODE_UNDEF;
@@ -147,25 +160,25 @@ public class Mobile
     int message_x = 240;// TODO const
 
     /** 広告文座標 dX */
-    readonly int message_d = ZZ.getFontHeight() / 4;
+    int message_d = ZZ.getFontHeight() / 4;
 
     /** Mobile内で使うint配列 */
-    public readonly int[] int_m_value = new int[Defines.DEF_INT_M_VALUE_MAX];
+    public int[] int_m_value = new int[Defines.DEF_INT_M_VALUE_MAX];
 
     // デフォルトを変更するにはmenuImages[]の初期値を入れ替える.
     /** ヘルプ文字間隔(切り捨て) */
-    public static readonly int HELP_string_H = Defines.DEF_POS_HEIGHT / Defines.DEF_HELP_CHAR_Y_NUM;
+    static public int HELP_string_H = Defines.DEF_POS_HEIGHT / Defines.DEF_HELP_CHAR_Y_NUM;
 
     /** ヘルプ文字の表示開始位置（高さ） */
-    public static readonly int HELP_WINDOW_Y = (Defines.DEF_POS_HEIGHT - HELP_string_H
+    public int HELP_WINDOW_Y = (Defines.DEF_POS_HEIGHT - HELP_string_H
             * Defines.DEF_HELP_CHAR_Y_NUM) / 2;
 
     /** ヘルプ文字の左右の幅 */
-    public static readonly int HELP_WINDOW_W = ZZ.stringWidth("あ")
+    static public int HELP_WINDOW_W = ZZ.stringWidth("あ")
             * Defines.DEF_HELP_CHAR_X_NUM;
 
     /** ヘルプ文字の左右の位置 */
-    public static readonly int HELP_WINDOW_X = (Defines.DEF_POS_WIDTH - HELP_WINDOW_W) / 2;
+    public int HELP_WINDOW_X = (Defines.DEF_POS_WIDTH - HELP_WINDOW_W) / 2;
 
     /**
      * 目押しサポートあり？<BR>

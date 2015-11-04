@@ -6,6 +6,7 @@ using System.Threading;
 public partial class ZZ
 {
     clOHHB_V23 v23;
+    GameManager GameManager;
 
     public ZZ(clOHHB_V23 v23)
     {
@@ -17,158 +18,166 @@ public partial class ZZ
         this.v23 = v23;
     }
 
-    // TOBE ソフトきー
-	/** ソフトきー */
-	public static string[] m_strSoftKeyName =  {"",""};
-	
-	/**
-     * バイブレータ状態フラグ
-     */
-    private static bool isVibrator;
-
-	/**
-	 * @see #processSound(int)
-	 * @see #resume()
-	 */
-	private static bool isResumePass;
-
-	/** @see #processSound */
-	private static int[] audioCurrentTime = { -1, -1};
-
-
-// /** TOBE その場で鳴らすに変更 */
-//	private static readonly bool PLAY_SE_IMMEDIATELY = true;
-
-	/** int 変数 */
-	public static readonly int[] int_value = new int[Defines.DEF_Z_INT_MAX];
-
-	/** bool 変数 */
-    // TODO 予約語なのでis -> is_valueに変更。
-	static readonly bool[] is_value = new bool[Defines.DEF_IS_MAX]; // フィールドで宣言してるので
-
-
-	/** イメージ */
-	static readonly Image[] images = new Image[Defines.DEF_RES_IMAGE_MAX];
-    public class Image {}// TODO C#移植 スタブ
-
-	/** 音 */
-	static readonly MediaSound[] medias = new MediaSound[Defines.DEF_RES_SOUND_MAX];
-    class MediaSound {}// TODO C#移植 スタブ
-
-	/** TOBE サウンド処理キュー */
-	static readonly int[,] soundQueue = new int[2,Defines.DEF_Z_SOUND_QUE_MAX];
-
-	/** jar test */
-	//private static JarInflater[] jif = new JarInflater[Defines.DEF_RES_JAR_MAX];
-	/** reschar */
-	public static readonly char[][] reschar = new char[Defines.DEF_RES_JAR_MAX][];
-
-	/** ActionTableのFrame*/
-	static int[] arrFrame = new int[Defines.DEF_RES_ACTIONTABLE_MAX];
-	/** ActionTableNo */
-	static int[] arrActNo = new int[Defines.DEF_RES_FIGURE_MAX];
-
-	/** Graphics */
-	static Graphics grp;
-
-	/** for clippiingRegion */
-	public static readonly int[] clipRegion = new int[4];
-
-	/** メインキャンバス */
-	static MainCanvas canvas;
-
-	/** TOBE フォント QVGA 用なのでフォント大きくしていいですか */
-	static readonly Font font = Font.getFont(Font.SIZE_TINY); // SIZE_MEDIUM=(24)
-															// :SIZE_SMALL=機種ごとに変わってしまうので、つかってはダメ
-															// :SIZE_TINY=(12)
-    class Font {// TODO C#移植 スタブ
-        public const int SIZE_TINY = 0;
-        public static Font getFont(int size) { return new Font();}
+    public void SetGameManager(GameManager GameManager)
+    {
+        this.GameManager = GameManager;
     }
 
-	/** TOBE オーディオ */
-	static readonly int[] volume = {100,100
+    // TOBE ソフトきー
+    /** ソフトきー */
+    public string[] m_strSoftKeyName = { "", "" };
+
+    /**
+     * バイブレータ状態フラグ
+     */
+    private bool isVibrator;
+
+    /**
+     * @see #processSound(int)
+     * @see #resume()
+     */
+    private bool isResumePass;
+
+    /** @see #processSound */
+    private int[] audioCurrentTime = { -1, -1 };
+
+
+    // /** TOBE その場で鳴らすに変更 */
+    //	private  readonly bool PLAY_SE_IMMEDIATELY = true;
+
+    /** int 変数 */
+    public readonly int[] int_value = new int[Defines.DEF_Z_INT_MAX];
+
+    /** bool 変数 */
+    // TODO 予約語なのでis -> is_valueに変更。
+    readonly bool[] is_value = new bool[Defines.DEF_IS_MAX]; // フィールドで宣言してるので
+
+
+    /** イメージ */
+    readonly Image[] images = new Image[Defines.DEF_RES_IMAGE_MAX];
+    public class Image { }// TODO C#移植 スタブ
+
+    /** 音 */
+    readonly MediaSound[] medias = new MediaSound[Defines.DEF_RES_SOUND_MAX];
+    class MediaSound { }// TODO C#移植 スタブ
+
+    /** TOBE サウンド処理キュー */
+    readonly int[,] soundQueue = new int[2, Defines.DEF_Z_SOUND_QUE_MAX];
+
+    /** jar test */
+    //private  JarInflater[] jif = new JarInflater[Defines.DEF_RES_JAR_MAX];
+    /** reschar */
+    public readonly char[][] reschar = new char[Defines.DEF_RES_JAR_MAX][];
+
+    /** ActionTableのFrame*/
+    int[] arrFrame = new int[Defines.DEF_RES_ACTIONTABLE_MAX];
+    /** ActionTableNo */
+    int[] arrActNo = new int[Defines.DEF_RES_FIGURE_MAX];
+
+    /** Graphics */
+    Graphics grp;
+
+    /** for clippiingRegion */
+    public readonly int[] clipRegion = new int[4];
+
+    /** メインキャンバス */
+    MainCanvas canvas;
+
+    /** TOBE フォント QVGA 用なのでフォント大きくしていいですか */
+    readonly Font font = Font.getFont(Font.SIZE_TINY); // SIZE_MEDIUM=(24)
+    // :SIZE_SMALL=機種ごとに変わってしまうので、つかってはダメ
+    // :SIZE_TINY=(12)
+
+    class Font
+    {// TODO C#移植 スタブ
+        static public int SIZE_TINY = 0;
+        static public Font getFont(int size) { return new Font(); }
+    }
+
+    /** TOBE オーディオ */
+    readonly int[] volume = {100,100
 	};
 
 
-	/** offsetX */
-	static int ofX;
+    /** offsetX */
+    int ofX;
 
-	/** offsetY */
-	static int ofY;
+    /** offsetY */
+    int ofY;
 
 
-	/** 再描画するかどうか */
-	static bool isRepaint;
+    /** 再描画するかどうか */
+    bool isRepaint;
 
-	// Mobile.class,Hanabi.classが直に参照してるのでリファクタリング禁止
-	/** 実行中かどうか */
-	static bool isRunning;
+    // Mobile.class,Hanabi.classが直に参照してるのでリファクタリング禁止
+    /** 実行中かどうか */
+    bool isRunning;
 
-	/** ロード終了したかどうか? */
-	static bool isLoaded;
+    /** ロード終了したかどうか? */
+    bool isLoaded;
 
-	/** 起動時間 */
-	static long startTime;
+    /** 起動時間 */
+    long startTime;
 
-	/** 1ループ時間(ms) */
-	static int threadSpeed;
+    /** 1ループ時間(ms) */
+    int threadSpeed;
 
-	/** 接続先URL */
-	static string serverURL;
+    /** 接続先URL */
+    string serverURL;
 
-	/** 通信フラグ */
-	static bool isUpdate;
+    /** 通信フラグ */
+    bool isUpdate;
 
-	/** サーバーコイン:初期値 -2 */
-	static int serverCoin;
+    /** サーバーコイン:初期値 -2 */
+    int serverCoin;
 
-	/** 獲得コイン数 */
-	static int winCoin;
+    /** 獲得コイン数 */
+    int winCoin;
 
-	/** 送信パラメータ */
-	static int[] sendParam;
+    /** 送信パラメータ */
+    int[] sendParam;
 
-	/** ブラウザ連携 */
-	static bool isWebTo;
+    /** ブラウザ連携 */
+    bool isWebTo;
 
-	/** ブラウザリンク先ＵＲＬ */
-	private static string webURL = ""; // TOBE ＷＥＢ　ＴＯ変更
+    /** ブラウザリンク先ＵＲＬ */
+    private string webURL = ""; // TOBE ＷＥＢ　ＴＯ変更
 
-	/** バージョンアップ */
-	private static bool isWebToVerUp; // TOBE 旧バージョンアプリ 
+    /** バージョンアップ */
+    private bool isWebToVerUp; // TOBE 旧バージョンアプリ 
 
-	/** サウンド */
-	static bool isSESetting = false;
-	/** サウンド */
-	static bool isBGMSetting = false;
-	
-	/** 広告文 */
-	public static string http_content = "";
-	
-	private static int authResult = Defines.DEF_AUTHMEMBER_NON;//DEF_AUTH_ERROR;
+    /** サウンド */
+    bool isSESetting = false;
+    /** サウンド */
+    bool isBGMSetting = false;
 
-//////////////////////
+    /** 広告文 */
+    public string http_content = "";
 
-	/**
-	 * @see com.nttdocomo.ui.IApplication#start()
-	 */
-	public void start() {
-//		mainapp = this;
+    private int authResult = Defines.DEF_AUTHMEMBER_NON;//DEF_AUTH_ERROR;
 
-//		if(DEF_IS_DEBUG_AUTH_THROUGH == false){
-//
-//			if(checkAuth_SP()){
-//				Display.setCurrent(this.p); //認証 パネルを表示
-//				this.p.go();
-//			}else{
-//				startCanvas(); // 認証が不必要なので、ゲーム画面へ
-//			}
-//
-//		}else{
-			// TODO デバッグ
-			startCanvas(); // 認証スルーでゲーム画面起動
-//		}
+    //////////////////////
+
+    /**
+     * @see com.nttdocomo.ui.IApplication#start()
+     */
+    public void start()
+    {
+        //		mainapp = this;
+
+        //		if(DEF_IS_DEBUG_AUTH_THROUGH == false){
+        //
+        //			if(checkAuth_SP()){
+        //				Display.setCurrent(this.p); //認証 パネルを表示
+        //				this.p.go();
+        //			}else{
+        //				startCanvas(); // 認証が不必要なので、ゲーム画面へ
+        //			}
+        //
+        //		}else{
+        // TODO デバッグ
+        startCanvas(); // 認証スルーでゲーム画面起動
+        //		}
 #if __COM_TYPE__
 #else
 		HParam = getParameter("hall");
@@ -178,11 +187,12 @@ public partial class ZZ
 //			cache_clear();// キャッシュをクリアする
 //		}
 #endif
-	}
-	/**
-	 * @see com.nttdocomo.ui.IApplication#resume()
-	 */
-	public void resume() {
+    }
+    /**
+     * @see com.nttdocomo.ui.IApplication#resume()
+     */
+    public void resume()
+    {
 #if _UNITY_CONVERT_
 #else
 		// キーバッファの初期化
@@ -200,12 +210,13 @@ public partial class ZZ
 		
 		gp.GP_resume();
 #endif
-	}
-	
-	/**
-	 * ゲーム画面の呼び出し
-	 */
-	public void startCanvas(){
+    }
+
+    /**
+     * ゲーム画面の呼び出し
+     */
+    public void startCanvas()
+    {
         // TODO C#移植　エントリーポイントっぽいところ
 #if _UNITY_CONVERT_
 #else
@@ -218,47 +229,54 @@ public partial class ZZ
 #else
 //		this.p = null;
 #endif
-	}
-	
-	/** アプリバージョンを取得 */
-	private static int getAppVersion() {
-		int ret=0;
-		string str = Defines.DEF_APPLI_VER;
-		string strTmp = "";
-		char cTmp;
-		try {
-			for(int i=0; i<str.Length; i++){
-				cTmp = str[i];// TODO C#移植 str.charAt(i) -> str[i]に変更
-				if(cTmp == '.'){
-					continue;
-				}
-				strTmp = strTmp + cTmp;
-//				Defines.TRACE("strTmp = "+strTmp);
-			}
-		} catch (Exception e) { // TODO C#移植 Throwable -> Exceptionに変更
-			Defines.TRACE("ダメ = "+e);
-		}
+    }
 
-		ret = int.Parse(strTmp);// TODO C#移植 Integer.parseInt -> int.Parseに変更
-// satoh
-		Defines.TRACE("アプリバージョン:(10進)"+ret);
-		return ret;
-	}
-	
-	/**
-	 * 今のソフトキーのラベル取得
-	 * @return ソフトキーが無い場合はnullを返す
-	 * TOBE ソフトキー２を使うときは、．．．
-	 */
-	public static string getSoftKeyName()
-	{
-		return m_strSoftKeyName[0];
-	}
+    /** アプリバージョンを取得 */
+    private int getAppVersion()
+    {
+        int ret = 0;
+        string str = Defines.DEF_APPLI_VER;
+        string strTmp = "";
+        char cTmp;
+        try
+        {
+            for (int i = 0; i < str.Length; i++)
+            {
+                cTmp = str[i];// TODO C#移植 str.charAt(i) -> str[i]に変更
+                if (cTmp == '.')
+                {
+                    continue;
+                }
+                strTmp = strTmp + cTmp;
+                //				Defines.TRACE("strTmp = "+strTmp);
+            }
+        }
+        catch (Exception e)
+        { // TODO C#移植 Throwable -> Exceptionに変更
+            Defines.TRACE("ダメ = " + e);
+        }
 
-	/**
-	 * 初期化ブロック
-	 */
-	public ZZ(){
+        ret = int.Parse(strTmp);// TODO C#移植 Integer.parseInt -> int.Parseに変更
+        // satoh
+        Defines.TRACE("アプリバージョン:(10進)" + ret);
+        return ret;
+    }
+
+    /**
+     * 今のソフトキーのラベル取得
+     * @return ソフトキーが無い場合はnullを返す
+     * TOBE ソフトキー２を使うときは、．．．
+     */
+    public string getSoftKeyName()
+    {
+        return m_strSoftKeyName[0];
+    }
+
+    /**
+     * 初期化ブロック
+     */
+    public ZZ()
+    {
 #if _UNITY_CONVERT_
 #else
 		if(DEF_IS_DEBUG){
@@ -286,27 +304,30 @@ public partial class ZZ
 		startTime = System.currentTimeMillis();
 		isLoaded = false;
 #endif
-	}
+    }
 
-	/**
-	 * TODO 認証結果を取得（アクセッサ）
-	 */
-	public static int getAuthResult(){
-		if( Defines.DEF_IS_DEBUG_AUTH_THROUGH ){
-			return Defines.DEF_AUTHMEMBER_PAYING;
-		}
-		return authResult;
-	}
+    /**
+     * TODO 認証結果を取得（アクセッサ）
+     */
+    public int getAuthResult()
+    {
+        if (Defines.DEF_IS_DEBUG_AUTH_THROUGH)
+        {
+            return Defines.DEF_AUTHMEMBER_PAYING;
+        }
+        return authResult;
+    }
 
-	// //////////////////////////////////////////////////////////////
-	// ユーティリティ
-	// //////////////////////////////////////////////////////////////
-    
+    // //////////////////////////////////////////////////////////////
+    // ユーティリティ
+    // //////////////////////////////////////////////////////////////
+
 #if _UNITY_CONVERT_
     [Obsolete]
-    public static int read(object input, byte[] buf) {
-    return 0; // TODO スタブ
-}
+    public int read(object input, byte[] buf)
+    {
+        return 0; // TODO スタブ
+    }
 #else
 	/**
 	 * 中断されてもきっちり読む為に
@@ -316,7 +337,7 @@ public partial class ZZ
 	 * @return 読み込んだバイト数
 	 * @throws IOException
 	 */
-	public static int read(InputStream in, byte[] buf) {
+	public  int read(InputStream in, byte[] buf) {
     // TODO
         //int size = 0;
         //while (size < buf.Length) {
@@ -329,11 +350,12 @@ public partial class ZZ
         //return size;
 	}
 #endif
-    
+
 #if _UNITY_CONVERT_
     [Obsolete]
-	public static byte[] toByteArray(object input, int size){
-    return null; // TODO スタブ
+    public byte[] toByteArray(object input, int size)
+    {
+        return null; // TODO スタブ
     }
 #else
 	/**
@@ -346,7 +368,7 @@ public partial class ZZ
 	 * @return 読み出したバイト列
 	 * @exception IOException
 	 */
-	public static byte[] toByteArray(InputStream in, int size){
+	public  byte[] toByteArray(InputStream in, int size){
 		ByteArrayOutputStream bout;
 		try {
 			/* バッファ確保 */
@@ -366,115 +388,124 @@ public partial class ZZ
 	}
 #endif
 
-	// //////////////////////////////////////////////////////////////
-	// ランダム
-	// //////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////
+    // ランダム
+    // //////////////////////////////////////////////////////////////
 
-	/** ランダム */
-	public static Random RANDOM = new Random();
+    /** ランダム */
+    public Random RANDOM = new Random();
 
-	/**
-	 * ランダム取得 上位ビットほどランダム具合がいいので２の乗数の時は #getBitRandom(int) を使うこと！
-	 *
-	 * @see #getBitRandom(int)
-	 * @param n
-	 *			値の範囲
-	 * @return (RANDOM.nextInt() >>> 1) % n;
-	 */
-	public static int getRandom(int n) {
-		return getBitRandom(31) % n;
-	}
+    /**
+     * ランダム取得 上位ビットほどランダム具合がいいので２の乗数の時は #getBitRandom(int) を使うこと！
+     *
+     * @see #getBitRandom(int)
+     * @param n
+     *			値の範囲
+     * @return (RANDOM.nextInt() >>> 1) % n;
+     */
+    public int getRandom(int n)
+    {
+        return getBitRandom(31) % n;
+    }
 
-	/**
-	 * ランダム値の取得にはこれを使う
-	 *
-	 * @param n
-	 *			値のビット数のランダム 1-32
-	 * @return 32 を渡した場合負値も含まれるので注意
-	 * @see Random#nextInt()
-	 */
-	public static int getBitRandom(int n) {
-		return RANDOM.Next() >> (32 - n);
-	}
+    /**
+     * ランダム値の取得にはこれを使う
+     *
+     * @param n
+     *			値のビット数のランダム 1-32
+     * @return 32 を渡した場合負値も含まれるので注意
+     * @see Random#nextInt()
+     */
+    public int getBitRandom(int n)
+    {
+        return RANDOM.Next() >> (32 - n);
+    }
 
-	// //////////////////////////////////////////////////////////////
-	// システム
-	// //////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////
+    // システム
+    // //////////////////////////////////////////////////////////////
 
-	/**
-	 * メインスレッドの間隔取得
-	 *
-	 * @return ミリ秒
-	 */
-	public static int getThreadSpeed() {
-		return threadSpeed;
-	}
+    /**
+     * メインスレッドの間隔取得
+     *
+     * @return ミリ秒
+     */
+    public int getThreadSpeed()
+    {
+        return threadSpeed;
+    }
 
-	/**
-	 * メインスレッドの間隔取得
-	 *
-	 * @return ミリ秒
-	 */
-	public static void setThreadSpeed(int n) {
-		threadSpeed = n;
-	}
+    /**
+     * メインスレッドの間隔取得
+     *
+     * @return ミリ秒
+     */
+    public void setThreadSpeed(int n)
+    {
+        threadSpeed = n;
+    }
 
-	/**
-	 * 終了
-	 */
-	public static void exit() {
-		isRunning = false;
-	}
+    /**
+     * 終了
+     */
+    public void exit()
+    {
+        isRunning = false;
+    }
 
-	// //////////////////////////////////////////////////////////////
-	// 通信
-	// //////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////
+    // 通信
+    // //////////////////////////////////////////////////////////////
 
-	/**
-	 * ＷＥＢＴＯフラグセット＆ＵＲＬを指定
-	 * TOBE ＷＥＢ　ＴＯ変更
-	 * 
-	 * @param b	WEB TO ﾌﾗｸﾞ
-	 * @param bVer	VERSION UP ﾌﾗｸﾞ
-	 * @param url	WEB TO URL / VERSION UP URL(for Only SoftBank) 	
-	 * 
-	 */
-	public static void setWebTo(bool b, bool bVer, string url){
-		isWebToVerUp = bVer; // TOBE 旧バージョンアプリ
-		isWebTo = b;
-		webURL = url;
-	}
+    /**
+     * ＷＥＢＴＯフラグセット＆ＵＲＬを指定
+     * TOBE ＷＥＢ　ＴＯ変更
+     * 
+     * @param b	WEB TO ﾌﾗｸﾞ
+     * @param bVer	VERSION UP ﾌﾗｸﾞ
+     * @param url	WEB TO URL / VERSION UP URL(for Only SoftBank) 	
+     * 
+     */
+    public void setWebTo(bool b, bool bVer, string url)
+    {
+        isWebToVerUp = bVer; // TOBE 旧バージョンアプリ
+        isWebTo = b;
+        webURL = url;
+    }
 
-	/**
-	 * 通信フラグを立ててサーバーコイン数を返す 初期値:-2 エラー:-3
-	 * 
-	 * @param coin
-	 *            コイン数
-	 * @return 0>=:サーバコイン数 -1:ユーザではない -2:初期値 -3:エラー
-	 */
-	public static int updateCoin(int coin) {
-		return updateCoin(new int[]{coin});
-	}
-	
-	/**
-	 * 通信フラグを立ててサーバーコイン数を返す 初期値:-2 エラー:-3
-	 * 
-	 * @param coin
-	 *            送信パラメータ
-	 * @return 0>=:サーバコイン数 -1:ユーザではない -2:初期値 -3:エラー
-	 */
-	public static int updateCoin(int[] param) {
-		/* 後で通信するときに使う */
-		sendParam = param;
-		if (serverCoin == Defines.DEF_SERVER_INI) {
-			/* serviceRepaint()後通信するようにする */
-			isUpdate = true;
-		}
-		int result = serverCoin;
-		/* 通信結果を初期化 */
-		serverCoin = Defines.DEF_SERVER_INI;
-		return result;
-	}
+    /**
+     * 通信フラグを立ててサーバーコイン数を返す 初期値:-2 エラー:-3
+     * 
+     * @param coin
+     *            コイン数
+     * @return 0>=:サーバコイン数 -1:ユーザではない -2:初期値 -3:エラー
+     */
+    public int updateCoin(int coin)
+    {
+        return updateCoin(new int[] { coin });
+    }
+
+    /**
+     * 通信フラグを立ててサーバーコイン数を返す 初期値:-2 エラー:-3
+     * 
+     * @param coin
+     *            送信パラメータ
+     * @return 0>=:サーバコイン数 -1:ユーザではない -2:初期値 -3:エラー
+     */
+    public int updateCoin(int[] param)
+    {
+        /* 後で通信するときに使う */
+        sendParam = param;
+        if (serverCoin == Defines.DEF_SERVER_INI)
+        {
+            /* serviceRepaint()後通信するようにする */
+            isUpdate = true;
+        }
+        int result = serverCoin;
+        /* 通信結果を初期化 */
+        serverCoin = Defines.DEF_SERVER_INI;
+        return result;
+    }
 #if __COM_TYPE__
 
 #else
@@ -566,7 +597,7 @@ public partial class ZZ
 //	 * @return int
 //	 * @throws Exception
 //	 */
-//	static int coin_up(string path) throws Exception {
+//	 int coin_up(string path) throws Exception {
 //		int size;
 //		byte[] buf = new byte[DEF_BUFFER_SIZE];
 //		{
@@ -615,7 +646,7 @@ public partial class ZZ
 	 * @return 読み込んだサイズ
 	 * @throws IOException
 	 */
-	public static int read(HttpConnection con, byte[] buf)
+	public  int read(HttpConnection con, byte[] buf)
 			throws IOException {
 		int size;
 		try {
@@ -632,14 +663,15 @@ public partial class ZZ
 	}
 #endif
 
-	// //////////////////////////////////////////////////////////////
-	// ロード
-	// //////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////
+    // ロード
+    // //////////////////////////////////////////////////////////////
 
-	/**
-	 * ゲージを描く
-	 */
-	static void incrimentGauge() {        
+    /**
+     * ゲージを描く
+     */
+    void incrimentGauge()
+    {
 #if _UNITY_CONVERT_
         // TODO C#移植 ゲージ描画
 #else 
@@ -680,267 +712,286 @@ public partial class ZZ
 		fillRect(GAUGE_X + bound, GAUGE_Y, GAUGE_W - bound, GAUGE_H); // 右側
 		setColor(getColor(255, 255, 255)); // デフォルト文字色に戻す
 #endif
-	}
+    }
 
-	/**
-	 * リソースのロード <code>
-	 *  0 12345678 12
-	 * +-+--------+--+-~+
-	 * |T|DEVTYPE |S | ~|
-	 * |I|(2:KDDI |I | ~|
-	 * |P|   ONLY)|Z | ~|
-	 * |E|		|E | ~|
-	 * +-+--------+--+-~+
-	 * </code>
-	 *
-	 * @throws InterruptedException
-	 * @throws IOException
-	 */
-	void loadResources()
-	{
-	}
-	
-	/**
-	 * バックライトのオンオフ
-	 *
-	 * @param isOn
-	 *			つけるかどうか
-	 */
-	public static void setBacKLight(bool isOn) {
+    /**
+     * リソースのロード <code>
+     *  0 12345678 12
+     * +-+--------+--+-~+
+     * |T|DEVTYPE |S | ~|
+     * |I|(2:KDDI |I | ~|
+     * |P|   ONLY)|Z | ~|
+     * |E|		|E | ~|
+     * +-+--------+--+-~+
+     * </code>
+     *
+     * @throws InterruptedException
+     * @throws IOException
+     */
+    void loadResources()
+    {
+    }
+
+    /**
+     * バックライトのオンオフ
+     *
+     * @param isOn
+     *			つけるかどうか
+     */
+    public void setBacKLight(bool isOn)
+    {
 #if _UNITY_CONVERT_
 #else
 		PhoneSystem.setAttribute(PhoneSystem.DEV_BACKLIGHT,
 				isOn ? PhoneSystem.ATTR_BACKLIGHT_ON
 						: PhoneSystem.ATTR_BACKLIGHT_OFF);
 #endif
-	}
+    }
 
-	/**
-	 * バイブレータのオンオフ
-	 *
-	 * @param isOn
-	 *			つけるかどうか
-	 */
-	public static void setVibrator(bool isOn) {
-		// TOBE もし IllegalArgumentException が発生するようなら try - catch しましょう
-		//PhoneSystem.setAttribute(PhoneSystem.DEV_VIBRATOR,
-		//		isOn ? PhoneSystem.ATTR_VIBRATOR_ON
-		//				: PhoneSystem.ATTR_VIBRATOR_OFF);
-		//isVibrator = isOn;
-	}
+    /**
+     * バイブレータのオンオフ
+     *
+     * @param isOn
+     *			つけるかどうか
+     */
+    public void setVibrator(bool isOn)
+    {
+        // TOBE もし IllegalArgumentException が発生するようなら try - catch しましょう
+        //PhoneSystem.setAttribute(PhoneSystem.DEV_VIBRATOR,
+        //		isOn ? PhoneSystem.ATTR_VIBRATOR_ON
+        //				: PhoneSystem.ATTR_VIBRATOR_OFF);
+        //isVibrator = isOn;
+    }
 
-	// //////////////////////////////////////////////////////////////
-	// キー
-	// //////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////
+    // キー
+    // //////////////////////////////////////////////////////////////
 
-	/**
-	 * キーを取得する、渡したらクリアする
-	 *
-	 * @return キービット
-	 */
-	public static int getKeyPressed() {
-		// if(Defines.DEF_IS_DEBUG)
-		// Defines.TRACE("getKeyPressed called ="+int_value[Defines.DEF_Z_INT_KEYPRESS]);
-		int returnKey = int_value[Defines.DEF_Z_INT_KEYPRESS];
-		int_value[Defines.DEF_Z_INT_KEYPRESS] = 0;
-		return returnKey;
-	}
+    /**
+     * キーを取得する、渡したらクリアする
+     *
+     * @return キービット
+     */
+    public int getKeyPressed()
+    {
+        // if(Defines.DEF_IS_DEBUG)
+        // Defines.TRACE("getKeyPressed called ="+int_value[Defines.DEF_Z_INT_KEYPRESS]);
+        int returnKey = int_value[Defines.DEF_Z_INT_KEYPRESS];
+        int_value[Defines.DEF_Z_INT_KEYPRESS] = 0;
+        return returnKey;
+    }
 
-	/**
-	 * キーを取得する、渡したらクリアする
-	 *
-	 * @return キービット
-	 */
-	public static int getKeyReleased() {
-		// if(Defines.DEF_IS_DEBUG)
-		// Defines.TRACE("getKeyPressed called
-		// ="+int_value[Defines.DEF_Z_INT_KEYRELEASE]);
-		int returnKey = int_value[Defines.DEF_Z_INT_KEYRELEASE];
-		int_value[Defines.DEF_Z_INT_KEYRELEASE] = 0;
-		return returnKey;
-	}
-	/**
-	 * 押されているキーを取得する
-	 *
-	 * @return キービット
-	 */
-	public static int getKeyPressing() {
-		return int_value[Defines.DEF_Z_INT_KEYPRESSING];
-	}
-	
-	// //////////////////////////////////////////////////////////////
-	// フォント
-	// //////////////////////////////////////////////////////////////
+    /**
+     * キーを取得する、渡したらクリアする
+     *
+     * @return キービット
+     */
+    public int getKeyReleased()
+    {
+        // if(Defines.DEF_IS_DEBUG)
+        // Defines.TRACE("getKeyPressed called
+        // ="+int_value[Defines.DEF_Z_INT_KEYRELEASE]);
+        int returnKey = int_value[Defines.DEF_Z_INT_KEYRELEASE];
+        int_value[Defines.DEF_Z_INT_KEYRELEASE] = 0;
+        return returnKey;
+    }
+    /**
+     * 押されているキーを取得する
+     *
+     * @return キービット
+     */
+    public int getKeyPressing()
+    {
+        return int_value[Defines.DEF_Z_INT_KEYPRESSING];
+    }
 
-	/**
-	 * 設定フォントの長さを求める
-	 *
-	 * @param s
-	 *			対象文字列
-	 * @return int 1文字の横幅
-	 * @see Font#stringWidth(java.lang.string)
-	 */
-	public static int stringWidth(string s) {
+    // //////////////////////////////////////////////////////////////
+    // フォント
+    // //////////////////////////////////////////////////////////////
+
+    /**
+     * 設定フォントの長さを求める
+     *
+     * @param s
+     *			対象文字列
+     * @return int 1文字の横幅
+     * @see Font#stringWidth(java.lang.string)
+     */
+    static public int stringWidth(string s)
+    {
         return 0;
         // TODO C#移植 一旦コメントアウト
         //return font.stringWidth(s);
-	}
+    }
 
-	/**
-	 * 設定フォントの高さを求める
-	 *
-	 * @return int 1文字の高さ
-	 * @see Font#getHeight()
-	 */
-	public static int getFontHeight() {
+    /**
+     * 設定フォントの高さを求める
+     *
+     * @return int 1文字の高さ
+     * @see Font#getHeight()
+     */
+    static public int getFontHeight()
+    {
         return 0;
         // TODO C#移植 一旦コメントアウト
         //return font.getHeight();
-	}
+    }
 
-	// //////////////////////////////////////////////////////////////
-	// 色
-	// //////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////
+    // 色
+    // //////////////////////////////////////////////////////////////
 
-	/**
-	 * 色は必ずこれで作成する
-	 *
-	 * @param r
-	 *			赤成分 0-255
-	 * @param g
-	 *			緑成分 0-255
-	 * @param b
-	 *			青成分 0-255
-	 * @return 色
-	 * @see Graphics#getColorOfRGB(int, int, int)
-	 */
-	public static int getColor(int r, int g, int b) {
+    /**
+     * 色は必ずこれで作成する
+     *
+     * @param r
+     *			赤成分 0-255
+     * @param g
+     *			緑成分 0-255
+     * @param b
+     *			青成分 0-255
+     * @return 色
+     * @see Graphics#getColorOfRGB(int, int, int)
+     */
+    static public int getColor(int r, int g, int b)
+    {
         return 0;
         // TODO C#移植 一旦コメントアウト
         //return Graphics.getColorOfRGB(r, g, b);
-	}
+    }
 
-	/**
-	 * 色をセットする
-	 *
-	 * @param col
-	 *			セットする色
-	 * @see #getColor(int, int, int)
-	 * @see Graphics#setColor(int)
-	 */
-	public static void setColor(int col) {
+    /**
+     * 色をセットする
+     *
+     * @param col
+     *			セットする色
+     * @see #getColor(int, int, int)
+     * @see Graphics#setColor(int)
+     */
+    public void setColor(int col)
+    {
         // TODO C#移植 一旦コメントアウト
         //grp.setColor(col);
-	}
+    }
 
-	// //////////////////////////////////////////////////////////////
-	// 画面
-	// //////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////
+    // 画面
+    // //////////////////////////////////////////////////////////////
 
-	/**
-	 * 画面サイズ
-	 *
-	 * @return 幅
-	 * @see Frame#getWidth()
-	 */
-	public static int getWidth() {
+    /**
+     * 画面サイズ
+     *
+     * @return 幅
+     * @see Frame#getWidth()
+     */
+    public int getWidth()
+    {
         return 0;
         // TODO C#移植 一旦コメントアウト
         //return canvas.getWidth();
-	}
+    }
 
-	/**
-	 * 画面サイズ
-	 *
-	 * @return 高さ
-	 * @see Frame#getHeight()
-	 */
-	public static int getHeight() {
+    /**
+     * 画面サイズ
+     *
+     * @return 高さ
+     * @see Frame#getHeight()
+     */
+    public int getHeight()
+    {
         return 0;
         // TODO C#移植 一旦コメントアウト
         //return canvas.getHeight();
-	}
+    }
 
-	/**
-	 * オフセット位置
-	 *
-	 * @return X座標
-	 */
-	public static int getOffsetX() {
-		return ofX;
-	}
+    /**
+     * オフセット位置
+     *
+     * @return X座標
+     */
+    public int getOffsetX()
+    {
+        return ofX;
+    }
 
-	/**
-	 * オフセット位置
-	 *
-	 * @return Y座標
-	 */
-	public static int getOffsetY() {
-		return ofY;
-	}
+    /**
+     * オフセット位置
+     *
+     * @return Y座標
+     */
+    public int getOffsetY()
+    {
+        return ofY;
+    }
 
-	// //////////////////////////////////////////////////////////////
-	// 再描画
-	// //////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////
+    // 再描画
+    // //////////////////////////////////////////////////////////////
 
-	/**
-	 * 再描画の必要が有るかどうか このメソッドを呼び出すと必要性はクリアされる
-	 *
-	 * @return 再描画の必要有り
-	 */
-	public static bool setIsRepaint() {
+    /**
+     * 再描画の必要が有るかどうか このメソッドを呼び出すと必要性はクリアされる
+     *
+     * @return 再描画の必要有り
+     */
+    public bool setIsRepaint()
+    {
         return false;
-	}
+    }
 
-	/**
-	 * 再描画必要と設定
-	 *
-	 * @see #isRepaint()
-	 * @deprecated 互換性の為においてあるだけだが容量の関係で外れるかもしれない
-	 */
-	public static void setRepaint() {}
+    /**
+     * 再描画必要と設定
+     *
+     * @see #isRepaint()
+     * @deprecated 互換性の為においてあるだけだが容量の関係で外れるかもしれない
+     */
+    public void setRepaint() { }
 
-	// //////////////////////////////////////////////////////////////
-	// 描画
-	// //////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////
+    // 描画
+    // //////////////////////////////////////////////////////////////
 
-	/**
-	 * 原点をずらす
-	 *
-	 * @param x
-	 * @param y
-	 * @see Graphics#setOrigin(int, int)
-	 */
-	public static void setOrigin(int x, int y) {
-		if (Defines.DEF_IS_DEBUG) {
-			// Defines.TRACE("setOrigin(" + x + ", " + y + ")");
-		}
-		ofX = x;
-		ofY = y;
-		// grp.setOrigin(x, y);
-	}
+    /**
+     * 原点をずらす
+     *
+     * @param x
+     * @param y
+     * @see Graphics#setOrigin(int, int)
+     */
+    public void setOrigin(int x, int y)
+    {
+        if (Defines.DEF_IS_DEBUG)
+        {
+            // Defines.TRACE("setOrigin(" + x + ", " + y + ")");
+        }
+        ofX = x;
+        ofY = y;
+        // grp.setOrigin(x, y);
+    }
 
     // TODO C#移植 スタブ作成
-    public class Graphics {
+    public class Graphics
+    {
     }
-    public class Graphics3D : Graphics {
+    public class Graphics3D : Graphics
+    {
     }
 
-	/**
-	 * 矩形をクリッピングする
-	 *
-	 * @param x
-	 *			X座標
-	 * @param y
-	 *			Y座標
-	 * @param w
-	 *			幅
-	 * @param h
-	 *			高さ
-	 * @see Graphics#setClip(int, int, int, int)
-	 */
-	public static void setClip(int x, int y, int w,
-			int h) {
+    /**
+     * 矩形をクリッピングする
+     *
+     * @param x
+     *			X座標
+     * @param y
+     *			Y座標
+     * @param w
+     *			幅
+     * @param h
+     *			高さ
+     * @see Graphics#setClip(int, int, int, int)
+     */
+    public void setClip(int x, int y, int w,
+            int h)
+    {
         // TODO C#移植 一旦コメントアウト
         //clipRegion[0] = x;
         //clipRegion[1] = y;
@@ -952,188 +1003,211 @@ public partial class ZZ
         //}
         //grp.setClip(x + ofX, y + ofY, w, h);
         //((Graphics3D)grp).setClipRect3D(x + ofX, y + ofY, w, h);//3D clip
-	}
+    }
 
-	/**
-	 * drawImage
-	 *
-	 * @param id
-	 *			イメージID
-	 * @param x
-	 *			X座標
-	 * @param y
-	 *			Y座標
-	 * @see Graphics#drawImage(com.nttdocomo.ui.Image, int, int)
-	 */
-	public static void drawImage(int id, int x, int y) {
-		if (Defines.DEF_IS_DEBUG) {
-			if (id >= images.Length) {
-				Defines.TRACE("だめお" + id);
-				return;
-			}
-			if (images[id] == null) {
-				Defines.TRACE("images[" + id + "]:" + images[id]);
-			}
-		}
+    /**
+     * drawImage
+     *
+     * @param id
+     *			イメージID
+     * @param x
+     *			X座標
+     * @param y
+     *			Y座標
+     * @see Graphics#drawImage(com.nttdocomo.ui.Image, int, int)
+     */
+    public void drawImage(int id, int x, int y)
+    {
+        if (Defines.DEF_IS_DEBUG)
+        {
+            if (id >= images.Length)
+            {
+                Defines.TRACE("だめお" + id);
+                return;
+            }
+            if (images[id] == null)
+            {
+                Defines.TRACE("images[" + id + "]:" + images[id]);
+            }
+        }
 
         // TODO C#移植 一旦コメントアウト
         //// grp.drawImage(images[id], x, y);
         //grp.drawImage(images[id], x + ofX, y + ofY);
-	}
-	public static void drawImage(Image img, int x, int y) {
-		if (img == null) {
-			Defines.TRACE("画像ががない");
-		}
-		else
-		{
+    }
+    public void drawImage(Image img, int x, int y)
+    {
+        if (img == null)
+        {
+            Defines.TRACE("画像ががない");
+        }
+        else
+        {
             // TODO C#移植 一旦コメントアウト
             //grp.drawImage(img, x + ofX, y + ofY);
-		}
-	}
+        }
+    }
 
-	/**
-	 *
-	 * 元のクリッピング領域と新たなクリッピング領域が重なったら領域を作り直す
-	 * 重なりが見られなければ、とりあえず（0,0,0,0）の領域をクリッピングしておく（表示しない）
-	 *
-	 * @deprecated SO902iで使ってはいけない
-	 *
-	 * @param x x
-	 * @param y y
-	 * @param w width
-	 * @param h height
-	 */
-	private static void setClipIntersect(
-		int x, int y, int w, int h
-	) {
+    /**
+     *
+     * 元のクリッピング領域と新たなクリッピング領域が重なったら領域を作り直す
+     * 重なりが見られなければ、とりあえず（0,0,0,0）の領域をクリッピングしておく（表示しない）
+     *
+     * @deprecated SO902iで使ってはいけない
+     *
+     * @param x x
+     * @param y y
+     * @param w width
+     * @param h height
+     */
+    private void setClipIntersect(
+        int x, int y, int w, int h
+    )
+    {
 
-		bool intersect = true;
+        bool intersect = true;
 
-		int nx, ny, nw, nh;
-		int nsx, nsy, nex, ney;
+        int nx, ny, nw, nh;
+        int nsx, nsy, nex, ney;
 
-		nx = x;
-		ny = y;
-		nw = w;
-		nh = h;
-		nsx = nsy = nex = ney = 0;
+        nx = x;
+        ny = y;
+        nw = w;
+        nh = h;
+        nsx = nsy = nex = ney = 0;
 
-		// Defines.TRACE("-------------------------------------------");
+        // Defines.TRACE("-------------------------------------------");
 
-		int xmin, xmax, ymin, ymax = 0; // 元のクリッピング座標
-		xmin = clipRegion[0];
-		xmax = clipRegion[0] + clipRegion[2];
-		ymin = clipRegion[1];
-		ymax = clipRegion[1] + clipRegion[3];
-		// Defines.TRACE("最初のクリッピング座標＝ (" + xmin + ", " + ymin + ", " +
-		// xmax + ", " + ymax + ")");
+        int xmin, xmax, ymin, ymax = 0; // 元のクリッピング座標
+        xmin = clipRegion[0];
+        xmax = clipRegion[0] + clipRegion[2];
+        ymin = clipRegion[1];
+        ymax = clipRegion[1] + clipRegion[3];
+        // Defines.TRACE("最初のクリッピング座標＝ (" + xmin + ", " + ymin + ", " +
+        // xmax + ", " + ymax + ")");
 
-		int xxmin, xxmax, yymin, yymax = 0; // 次のクリッピング座標
-		xxmin = x;
-		xxmax = x + w;
-		yymin = y;
-		yymax = y + h;
-		// Defines.TRACE("次のクリッピング座標＝ (" + xxmin + ", " + yymin + ", " +
-		// xxmax + ", " + yymax + ")");
+        int xxmin, xxmax, yymin, yymax = 0; // 次のクリッピング座標
+        xxmin = x;
+        xxmax = x + w;
+        yymin = y;
+        yymax = y + h;
+        // Defines.TRACE("次のクリッピング座標＝ (" + xxmin + ", " + yymin + ", " +
+        // xxmax + ", " + yymax + ")");
 
-		intersect = true;
+        intersect = true;
 
-		// 交差してなくねぇ？
-		if (xmax <= xxmin) {
-			intersect = false;
-		}
+        // 交差してなくねぇ？
+        if (xmax <= xxmin)
+        {
+            intersect = false;
+        }
 
-		if (xxmax <= xmin) {
-			intersect = false;
-		}
+        if (xxmax <= xmin)
+        {
+            intersect = false;
+        }
 
-		if (ymax <= yymin) {
-			intersect = false;
-		}
+        if (ymax <= yymin)
+        {
+            intersect = false;
+        }
 
-		if (yymax <= ymin) {
-			intersect = false;
-		}
+        if (yymax <= ymin)
+        {
+            intersect = false;
+        }
 
-		// 交差していないことが判明したら処理中断
-		if (intersect == false) {
+        // 交差していないことが判明したら処理中断
+        if (intersect == false)
+        {
             // TODO C#移植 一旦コメントアウト
             //grp.setClip(0, 0, 0, 0);
-			return;
-		}
+            return;
+        }
 
-		// 交差具合
-		nsx = (xmin > xxmin) ? xmin : xxmin; // ｘ始点
-		nex = (xmax < xxmax) ? xmax : xxmax; // ｘ終点
+        // 交差具合
+        nsx = (xmin > xxmin) ? xmin : xxmin; // ｘ始点
+        nex = (xmax < xxmax) ? xmax : xxmax; // ｘ終点
 
-		nsy = (ymin > yymin) ? ymin : yymin; // ｙ始点
-		ney = (ymax < yymax) ? ymax : yymax; // ｙ終点
+        nsy = (ymin > yymin) ? ymin : yymin; // ｙ始点
+        ney = (ymax < yymax) ? ymax : yymax; // ｙ終点
 
-		nx = nsx;
-		nw = nex - nsx;
-		ny = nsy;
-		nh = ney - nsy;
-	}
+        nx = nsx;
+        nw = nex - nsx;
+        ny = nsy;
+        nh = ney - nsy;
+    }
 
-	public static void drawstring(string str, int x, int y) {}
-	public static void drawstringRight(string str, int y) {}
-	public static void drawstringCenter(string str, int y) {}
-	public static void fillRect(int x, int y, int w, int h) {}
-	public static void drawRect(int x, int y, int w, int h) {}
-	public static void drawLine(int x1, int y1, int x2, int y2) {}
-	public static void clear() {}
+    public void drawstring(string str, int x, int y) { }
+    public void drawstringRight(string str, int y) { }
+    public void drawstringCenter(string str, int y) { }
+    public void fillRect(int x, int y, int w, int h) { }
+    public void drawRect(int x, int y, int w, int h) { }
+    public void drawLine(int x1, int y1, int x2, int y2) { }
+    public void clear() { }
 
-	/**
-	 * オンオフ
-	 *
-	 * @return スイッチが入っているかどうか true: 鳴る
-	 */
-	public static bool changeSound() {
-		try {
-		} catch (Exception) {
-			return is_value[Defines.DEF_IS_SQ_ON];
-		}
+    /**
+     * オンオフ
+     *
+     * @return スイッチが入っているかどうか true: 鳴る
+     */
+    public bool changeSound()
+    {
+        try
+        {
+        }
+        catch (Exception)
+        {
+            return is_value[Defines.DEF_IS_SQ_ON];
+        }
 
-		is_value[Defines.DEF_IS_SQ_ON] = !is_value[Defines.DEF_IS_SQ_ON];
+        is_value[Defines.DEF_IS_SQ_ON] = !is_value[Defines.DEF_IS_SQ_ON];
 
-		return is_value[Defines.DEF_IS_SQ_ON];
-	}
+        return is_value[Defines.DEF_IS_SQ_ON];
+    }
 
-	/**
-	 * サウンド設定 利便性の為に作ってあるが，直接キューに入れて構わない。
-	 */
-	public static void stopSound() {
-		stopSound(Defines.DEF_SOUND_MULTI_SE);
-		stopSound(Defines.DEF_SOUND_MULTI_BGM);
-	}
+    /**
+     * サウンド設定 利便性の為に作ってあるが，直接キューに入れて構わない。
+     */
+    public void stopSound()
+    {
+        stopSound(Defines.DEF_SOUND_MULTI_SE);
+        stopSound(Defines.DEF_SOUND_MULTI_BGM);
+    }
 
-	/**
-	 * サウンド設定 利便性の為に作ってあるが，直接キューに入れて構わない。
-	 *
-	 * @param id
-	 *			定義されていない負値を入れると落ちる
-	 * @param isRepeat
-	 *			この曲をリピートするかどうか
-	 */
-	public static void playSound( int id, bool isRepeat ){
-		try{
-			playSound( id, isRepeat, Defines.DEF_SOUND_MULTI_SE );
-		}
-		catch( Exception e ){
-			if( Defines.DEF_IS_DEBUG ){
+    /**
+     * サウンド設定 利便性の為に作ってあるが，直接キューに入れて構わない。
+     *
+     * @param id
+     *			定義されていない負値を入れると落ちる
+     * @param isRepeat
+     *			この曲をリピートするかどうか
+     */
+    public void playSound(int id, bool isRepeat)
+    {
+        try
+        {
+            playSound(id, isRepeat, Defines.DEF_SOUND_MULTI_SE);
+        }
+        catch (Exception e)
+        {
+            if (Defines.DEF_IS_DEBUG)
+            {
                 Console.WriteLine(e.StackTrace);
-			}
-		}
-	}
+            }
+        }
+    }
 
-	/**
-	 * サウンド設定 利便性の為に作ってあるが，直接キューに入れて構わない。
-	 *
-	 * @param mode
-	 *			サウンドモード
-	 */
-	public static void stopSound(int mode) {
-        switch (mode) { 
+    /**
+     * サウンド設定 利便性の為に作ってあるが，直接キューに入れて構わない。
+     *
+     * @param mode
+     *			サウンドモード
+     */
+    public void stopSound(int mode)
+    {
+        switch (mode)
+        {
             case Defines.DEF_SOUND_MULTI_BGM:
                 GameManager.StopBGM();
                 break;
@@ -1142,56 +1216,62 @@ public partial class ZZ
                 break;
 
         }
-	}
+    }
 
-	/**
-	 * サウンド設定 利便性の為に作ってあるが，直接キューに入れて構わない。
-	 *
-	 * @param id
-	 *			定義されていない負値を入れると落ちる
-	 * @param isRepeat
-	 *			この曲をリピートするかどうか
-	 * @param mode
-	 *			サウンドモード
-	 */
-	public static void playSound(int id, bool isRepeat, int mode)
+    /**
+     * サウンド設定 利便性の為に作ってあるが，直接キューに入れて構わない。
+     *
+     * @param id
+     *			定義されていない負値を入れると落ちる
+     * @param isRepeat
+     *			この曲をリピートするかどうか
+     * @param mode
+     *			サウンドモード
+     */
+    public void playSound(int id, bool isRepeat, int mode)
     {
-		if (id < 0 || Defines.DEF_RES_SOUND_MAX <= id) {
-			return;
-		}
+        if (id < 0 || Defines.DEF_RES_SOUND_MAX <= id)
+        {
+            return;
+        }
 
         GameManager.PlaySE(id);
-	}
+    }
 
-	public static void setVolume(int vol, int mode) {
-	}
+    public void setVolume(int vol, int mode)
+    {
+    }
 
-	/**
-	 * キューを進める
-	 *
-	 * @param mode
-	 */
-	static void driveQueue(int mode) {
-		if (soundQueue[mode,0] == Defines.DEF_SQ_REPEAT) {
-			// リピートの時は何もしない
-			return;
-		}
-		// ループでまわすなんて。。。
-        for (int i = 1; i < soundQueue.GetLength(1); i++) {
-			soundQueue[mode,i - 1] = soundQueue[mode,i];
-		}
-		// ちゃんとターミネート
+    /**
+     * キューを進める
+     *
+     * @param mode
+     */
+    void driveQueue(int mode)
+    {
+        if (soundQueue[mode, 0] == Defines.DEF_SQ_REPEAT)
+        {
+            // リピートの時は何もしない
+            return;
+        }
+        // ループでまわすなんて。。。
+        for (int i = 1; i < soundQueue.GetLength(1); i++)
+        {
+            soundQueue[mode, i - 1] = soundQueue[mode, i];
+        }
+        // ちゃんとターミネート
         soundQueue[mode, soundQueue.GetLength(1) - 1] = Defines.DEF_SQ_NOP;
-	}
+    }
 
-	/**
-	 * サウンドの実行
-	 *
-	 * @param mode
-	 * @throws Exception
-	 */
-	static void processSound(int mode) {
-	}
+    /**
+     * サウンドの実行
+     *
+     * @param mode
+     * @throws Exception
+     */
+    void processSound(int mode)
+    {
+    }
 
     /**
 	 * 本体からデータを読み出す.
@@ -1200,209 +1280,223 @@ public partial class ZZ
 	 *			データを読み込む配列.
 	 * @return 読み込んだサイズ.
 	 */
-	public static int getRecord(ref sbyte[] return_buff)
+    public int getRecord(ref sbyte[] return_buff)
     {
-		if (Defines.DEF_IS_DEBUG) {
+        if (Defines.DEF_IS_DEBUG)
+        {
             var cursor = 2; // TOBE 先頭は"読込済マーク"だったりするので要注意.
             Defines.TRACE("cursor: " + cursor);
-		}
+        }
 
         var read_size = 0;
 
-		try {
+        try
+        {
             SaveData.Load(ref return_buff);
             read_size = return_buff.Length;
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             if (Defines.DEF_IS_DEBUG)
                 Console.WriteLine(e.StackTrace);
             read_size = -1;
-		}
+        }
 
         Defines.TRACE("getRecord:" + read_size);
-		return read_size;
-	}
+        return read_size;
+    }
 
-	/**
-	 * 本体にデータを書き込む.
-	 *
-	 * @param data
-	 *			保存するデータ.
-	 * @return 書き込んだサイズ.
-	 */
+    /**
+     * 本体にデータを書き込む.
+     *
+     * @param data
+     *			保存するデータ.
+     * @return 書き込んだサイズ.
+     */
 
-	public static int setRecord(sbyte[] data)
+    public int setRecord(sbyte[] data)
     {
-		int write_size = 0;
+        int write_size = 0;
 
-		if (data == null) {
-			return -1;
-		}
+        if (data == null)
+        {
+            return -1;
+        }
 
-		if (Defines.DEF_IS_DEBUG)
+        if (Defines.DEF_IS_DEBUG)
         {
             int cursor = 2; // TOBE 先頭は"読込済マーク"だったりするので要注意.
             Defines.TRACE("cursor: " + cursor);
-		}
+        }
 
-        try {
+        try
+        {
             SaveData.Save(data);
             write_size = data.Length;
-        } catch (Exception e) {
-            if (Defines.DEF_IS_DEBUG) {
+        }
+        catch (Exception e)
+        {
+            if (Defines.DEF_IS_DEBUG)
+            {
                 Console.WriteLine(e);
                 Console.WriteLine(e.StackTrace);
             }
             write_size = -1;
-		}
+        }
 
         Defines.TRACE("setRecord:" + write_size);
-		return write_size;
-	}
+        return write_size;
+    }
 
-	/**
-	 * 円弧を描画.
-	 *
-	 * @param x 左上の座標x
-	 * @param y 左上の座標y
-	 * @param w width
-	 * @param h height
-	 * @param start start_angle
-	 * @param angle "start_angle"+angle
-	 */
-	public static void drawArc(int x, int y, int w, int h, int start, int angle){
-	}
-
-	/**
-	 * 楕円を描画.
-	 *
-	 * @param x 左上の座標x
-	 * @param y 左上の座標y
-	 * @param w width
-	 * @param h height
-	 */
-	public static void drawCircle(int x, int y, int w, int h){
-	}
-
-	/**
-	 * 扇形を塗りつぶし.
-	 *
-	 * @param x 左上の座標x
-	 * @param y 左上の座標y
-	 * @param w width
-	 * @param h height
-	 * @param start start_angle
-	 * @param angle "start_angle"+angle
-	 */
-	public static void fillArc(int x, int y, int w, int h, int start, int angle){}
-	public static void fillCircle(int x, int y, int w, int h){}
-
-	/**
-	 * FigureにTextureをセット.
-	 *
-	 * @param fig FigureNo
-	 * @param tex TextureNo
-	 * @deprecated
-	 */
-	public static void setTexture(int fig, int tex){
-	}
-
-	/**
-	 * FigureにTextureをセット.
-	 *
-	 * @param fig FigureNo
-	 * @param tex TextureNo_ARRAY
-	 * */
-	public static void setTextures(int fig, int[] tex){
-	}
-
-	/**
-	 * FigureにActionをセット.
-	 *
-	 * @param fig FigureNo
-	 * @param act ActionTableNo
-	 * @param no ActionNo
-	 * @param frm Frame
-	 */
-	public static void setPosture(int fig, int act, int no, int frm){
-	}
-
-	/**
-	 * FigureのActionのFrameを進める.
-	 *
-	 * @param fig FigureNo
-	 * @param act ActionTableNo
-	 * @param no ActionNo
-	 */
-	public static void incPostureFrame(int fig, int act, int no)
+    /**
+     * 円弧を描画.
+     *
+     * @param x 左上の座標x
+     * @param y 左上の座標y
+     * @param w width
+     * @param h height
+     * @param start start_angle
+     * @param angle "start_angle"+angle
+     */
+    public void drawArc(int x, int y, int w, int h, int start, int angle)
     {
-	}
+    }
 
-	/**
-	 * FigureのAction長を得る.
-	 *
-	 * @param act ActionTableNo
-	 * @return action-num
-	 */
-	public static int getActionLength(int act)
+    /**
+     * 楕円を描画.
+     *
+     * @param x 左上の座標x
+     * @param y 左上の座標y
+     * @param w width
+     * @param h height
+     */
+    public void drawCircle(int x, int y, int w, int h)
+    {
+    }
+
+    /**
+     * 扇形を塗りつぶし.
+     *
+     * @param x 左上の座標x
+     * @param y 左上の座標y
+     * @param w width
+     * @param h height
+     * @param start start_angle
+     * @param angle "start_angle"+angle
+     */
+    public void fillArc(int x, int y, int w, int h, int start, int angle) { }
+    public void fillCircle(int x, int y, int w, int h) { }
+
+    /**
+     * FigureにTextureをセット.
+     *
+     * @param fig FigureNo
+     * @param tex TextureNo
+     * @deprecated
+     */
+    public void setTexture(int fig, int tex)
+    {
+    }
+
+    /**
+     * FigureにTextureをセット.
+     *
+     * @param fig FigureNo
+     * @param tex TextureNo_ARRAY
+     * */
+    public void setTextures(int fig, int[] tex)
+    {
+    }
+
+    /**
+     * FigureにActionをセット.
+     *
+     * @param fig FigureNo
+     * @param act ActionTableNo
+     * @param no ActionNo
+     * @param frm Frame
+     */
+    public void setPosture(int fig, int act, int no, int frm)
+    {
+    }
+
+    /**
+     * FigureのActionのFrameを進める.
+     *
+     * @param fig FigureNo
+     * @param act ActionTableNo
+     * @param no ActionNo
+     */
+    public void incPostureFrame(int fig, int act, int no)
+    {
+    }
+
+    /**
+     * FigureのAction長を得る.
+     *
+     * @param act ActionTableNo
+     * @return action-num
+     */
+    public int getActionLength(int act)
     {
         return 0;
-	}
+    }
 
-	/**
-	 * FigureのActionのFrame長を得る.
-	 *
-	 * @param act ActionTableNo
-	 * @param no ActionNo
-	 * @return frame_length
-	 */
-	public static int getActionFrameLength(int act, int no)
+    /**
+     * FigureのActionのFrame長を得る.
+     *
+     * @param act ActionTableNo
+     * @param no ActionNo
+     * @return frame_length
+     */
+    public int getActionFrameLength(int act, int no)
     {
         return 0;
     }
 
 
-	public static void incPostureNo(int fig, int act){}
+    public void incPostureNo(int fig, int act) { }
 
-	/** 3D用中心座標 */
-	public static int centerX = Defines.DEF_CONST3D_CENTER_X;
-	/** 3D用中心座標 */
-	public static int centerY = Defines.DEF_CONST3D_CENTER_Y;
-	/** 3D用スケール */
-	public static int scaleX = Defines.DEF_CONST3D_SCALE_X;
-	/** 3D用スケール */
-	public static int scaleY = Defines.DEF_CONST3D_SCALE_Y;
+    /** 3D用中心座標 */
+    public int centerX = Defines.DEF_CONST3D_CENTER_X;
+    /** 3D用中心座標 */
+    public int centerY = Defines.DEF_CONST3D_CENTER_Y;
+    /** 3D用スケール */
+    public int scaleX = Defines.DEF_CONST3D_SCALE_X;
+    /** 3D用スケール */
+    public int scaleY = Defines.DEF_CONST3D_SCALE_Y;
 
-	static void set3Denv(){}
-	public static void setLight(int x, int y, int z, int d, int a){}
-	public static void drawFigure(int fig){}
-	public static void drawFigure(int fig, int x, int y){}
-	public static void flush3D(){}
-	public static void activateEnvMap(){}
-	public static void rotateX(int d){}
-	public static void rotateY(int d){}
-	public static void rotateZ(int d){}
+    void set3Denv() { }
+    public void setLight(int x, int y, int z, int d, int a) { }
+    public void drawFigure(int fig) { }
+    public void drawFigure(int fig, int x, int y) { }
+    public void flush3D() { }
+    public void activateEnvMap() { }
+    public void rotateX(int d) { }
+    public void rotateY(int d) { }
+    public void rotateZ(int d) { }
 
-	public static void rotateV(int d, int x, int y, int z){}
+    public void rotateV(int d, int x, int y, int z) { }
 
-	public static void scale3D(int percent){}
+    public void scale3D(int percent) { }
 
-	private static UnityEngine.Vector3 view_trans_position;
-	private static UnityEngine.Vector3 view_trans_look;
-	private static UnityEngine.Vector3 view_trans_up;
+    private UnityEngine.Vector3 view_trans_position;
+    private UnityEngine.Vector3 view_trans_look;
+    private UnityEngine.Vector3 view_trans_up;
 
-    public static void setViewTrans(
-		int px, int py, int pz,
-		int lx, int ly, int lz,
-		int ux, int uy, int uz
-	){}
+    public void setViewTrans(
+        int px, int py, int pz,
+        int lx, int ly, int lz,
+        int ux, int uy, int uz
+    ) { }
 
-	static void setViewTrans(
-		UnityEngine.Vector3 position,
-		UnityEngine.Vector3 look,
-		UnityEngine.Vector3 up
-	){}
-	public static void drawPolygonRect(int[] poly, int[] col){}
-	public static void drawPolygonRectAdd(int[] poly, int[] col){}
-	public static void drawPolygonRectSub(int[] poly, int[] col){}
-	public static void executeCommandListTextures(int[] cmd_list){}
+    void setViewTrans(
+       UnityEngine.Vector3 position,
+       UnityEngine.Vector3 look,
+       UnityEngine.Vector3 up
+   ) { }
+    public void drawPolygonRect(int[] poly, int[] col) { }
+    public void drawPolygonRectAdd(int[] poly, int[] col) { }
+    public void drawPolygonRectSub(int[] poly, int[] col) { }
+    public void executeCommandListTextures(int[] cmd_list) { }
 }

@@ -74,13 +74,16 @@ namespace GameLogicService
 
             var result = new Associative();
 
+            var seed = mobile.Seed.ToString();
+
             // TODO settingの値を6に固定しているのでサーバーから取得する
-            // TODO seedの値を0に固定しているので、どうやって決める？？
-            result.Add("setting", "6");
+            var setting = "6";
+
+            result.Add("setting", setting);
             result.Add("reelleft", "0");
             result.Add("reelcenter", "0");
             result.Add("reelright", "0");
-            result.Add("seed", "0");
+            result.Add("seed", seed);
 
             State = MACHINE_STATE.CONFIG;
 
@@ -112,7 +115,7 @@ namespace GameLogicService
             // Play
             foreach (var i in Enumerable.Range(0, 100))
             {
-                ZZ.int_value[Defines.DEF_Z_INT_KEYPRESS] |= (1 << 5);
+                mobile.ZZ.int_value[Defines.DEF_Z_INT_KEYPRESS] |= (1 << 5);
                 mobile.exec();
             }
 
