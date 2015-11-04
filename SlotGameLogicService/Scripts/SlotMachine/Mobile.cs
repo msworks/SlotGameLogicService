@@ -16,6 +16,34 @@ public class Mobile
     GameManager gameManager;
     public ZZ ZZ;
 
+    /// <summary>
+    /// コイン投入
+    /// </summary>
+    /// <param name="coinnum">投入枚数</param>
+    public void InsertCoin(int coinnum)
+    {
+        mOmatsuri.GPW_chgCredit(coinnum);
+    }
+
+    /// <summary>
+    /// 機械割設定
+    /// </summary>
+    /// <param name="rate">1～6</param>
+    public void SetRate(int rate)
+    {
+        slotInterface.gpif_setting = rate;
+    }
+
+    /// <summary>
+    /// リールが停止しているか、状態を取得
+    /// </summary>
+    /// <returns>true:全停止 false:全停止ではない</returns>
+    public bool IsReelsStopped()
+    {
+        // TODO 実装
+        return false;
+    }
+
     public int Seed {
         get
         {
@@ -32,7 +60,8 @@ public class Mobile
         mOmatsuri = new Omatsuri();
         slotInterface = new SlotInterface(this, mOmatsuri, gameManager);
         ZZ = new ZZ();
-        ZZ.setThreadSpeed(20);
+        ZZ.setThreadSpeed(1);
+        //ZZ.setThreadSpeed(20);
         v23 = new clOHHB_V23(mOmatsuri, ZZ);
         ZZ.SetV23(v23);
         ZZ.SetGameManager(gameManager);
@@ -87,13 +116,13 @@ public class Mobile
         {
             keyPressingCount++;
         }
+        
         // モード切り替えチェック
         if (int_m_value[Defines.DEF_INT_MODE_CURRENT] != int_m_value[Defines.DEF_INT_MODE_REQUEST])
         {
             int_m_value[Defines.DEF_INT_MODE_CURRENT] = int_m_value[Defines.DEF_INT_MODE_REQUEST];
             int_m_value[Defines.DEF_INT_COUNTER] = 0;
             initModeFlag = true;
-
         }
 
         // モードごとに処理分岐
@@ -156,7 +185,7 @@ public class Mobile
     }
 
     /** 広告文座標X */
-    int message_x = 240;
+    //int message_x = 240;
 
     /** 広告文座標 dX */
     int message_d = ZZ.getFontHeight() / 4;

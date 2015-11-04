@@ -1560,21 +1560,13 @@ public class clOHHB_V23 : clZ80RAM
         int j;
         sbyte[] ramData;
 
-        try
-        {
-            ramData = SlotInterfaceResource.getResourceData("ClZ80RAM_big.dat");
-            mDataTable = new ushort[ramData.Length / 2];
+        ramData = SlotInterfaceResource.getResourceData("ClZ80RAM_big.dat");
+        mDataTable = new ushort[ramData.Length / 2];
 
-            for (i = 0, j = 0; i < ramData.Length; i += 2, j++)
-            {
-                mDataTable[j] = (ushort)((ramData[i] << 8) & 0xFF);
-                mDataTable[j] |= (ushort)(ramData[i + 1] & 0xFF);
-            }
-        }
-        catch (Exception)
+        for (i = 0, j = 0; i < ramData.Length; i += 2, j++)
         {
-            mDataTable[-1] = 00; // ROMデータの読み込み失敗(強制落とし)
+            mDataTable[j] = (ushort)((ramData[i] << 8) & 0xFF);
+            mDataTable[j] |= (ushort)(ramData[i + 1] & 0xFF);
         }
     }
-
 };

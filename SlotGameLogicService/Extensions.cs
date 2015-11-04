@@ -36,5 +36,10 @@ namespace GameLogicService
             builder.Append(quart);
             return builder.ToString();
         }
+
+        static public int ParseInt(this string source)
+        {
+            return int.Parse(source);
+        }
     }
 }

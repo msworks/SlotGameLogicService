@@ -25,7 +25,7 @@ public class Omatsuri
     private bool reelStartFg;	// リールスタートキーがすでに押されている場合
     private bool reqMenuFg = false;	// リール停止時にメニューを表示する
 
-    int mes_x = 0;
+    //int mes_x = 0;
     bool IS_HALL() { return mobile.getGameMode() == Defines.DEF_GMODE_HALL; }
 
     /** int プール */
@@ -433,9 +433,11 @@ public class Omatsuri
             keyTrigger = 0;
             return false;
         }
+
         // コイン枚数の更新
         int_s_value[Defines.DEF_INT_SLOT_COIN_NUM] = slotInterface.gpif_coin;
-        //DfMain.TRACE(("gp.gpif_coin:" + gp.gpif_coin);
+
+        Console.WriteLine("[INFO]COIN:" + int_s_value[Defines.DEF_INT_SLOT_COIN_NUM]);
 
         // 40ms*10毎にタイミングを取ってみる
         pressingSpan++;
@@ -2744,12 +2746,12 @@ public class Omatsuri
         }
         else
         {
-            // 非重畳の場合はボーナスゲームのＢＧＭを優先して鳴らす（＝ボーナスゲームでないときだけ鳴らせる）
-            if (!IS_BONUS_GAME())
-            {
-                // 非重畳の場合は第三引数に意味はない！！
-                mobile.playSound(id, false, Defines.DEF_SOUND_MULTI_SE);
-            }
+            //// 非重畳の場合はボーナスゲームのＢＧＭを優先して鳴らす（＝ボーナスゲームでないときだけ鳴らせる）
+            //if (!IS_BONUS_GAME())
+            //{
+            //    // 非重畳の場合は第三引数に意味はない！！
+            //    mobile.playSound(id, false, Defines.DEF_SOUND_MULTI_SE);
+            //}
         }
     }
 
@@ -3428,14 +3430,10 @@ public class Omatsuri
     // コイン枚数の変化(ボーナス)
     public void GPW_chgCreditBonus()
     {
-
-
     }
 
     public int GPW_chgProba()
-    {	// ボーナスの確率をアップさせる
-        //int 
-
+    {
         if (slotInterface.gpif_triple_f == true)
         {	//トリプルセブンアイテム使用時
             //(num * gpif_kakuhen_n)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GameLogicService
@@ -77,9 +78,10 @@ namespace GameLogicService
             var seed = mobile.Seed.ToString();
 
             // TODO settingの値を6に固定しているのでサーバーから取得する
-            var setting = "6";
+            var setting = 6;
+            mobile.SetRate(setting);
 
-            result.Add("setting", setting);
+            result.Add("setting", setting.ToString());
             result.Add("reelleft", "0");
             result.Add("reelcenter", "0");
             result.Add("reelright", "0");
@@ -112,11 +114,21 @@ namespace GameLogicService
                 return new Associative() { {"result", "error".DQ()} };
             }
 
+            var bet = betcount.ParseInt();
+            mobile.InsertCoin(bet);
+
+            //--------------------------------------
+            // 内部のスロットマシンにコインを入れて
+            // レバーを引いてリールが停止するまで
+            // 同期で待つ
+            //--------------------------------------
+
             // Play
             foreach (var i in Enumerable.Range(0, 100))
             {
                 mobile.ZZ.int_value[Defines.DEF_Z_INT_KEYPRESS] |= (1 << 5);
                 mobile.exec();
+                Thread.Sleep(20);
             }
 
             var result = new Associative();
@@ -126,6 +138,13 @@ namespace GameLogicService
             State = MACHINE_STATE.PLAY;
             return result;
         }
+
+        enum PLAYSTATE
+        {
+            InsertCoin,
+            Lever,
+            AllReelStopped,
+        };
 
         public Associative Collect(Associative param)
         {

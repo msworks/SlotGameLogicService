@@ -10,7 +10,7 @@ public class clRAND8 {
     public static ushort mRndwl;
     public static ushort mRndwh;
     public static ushort[] mRndbuf = new ushort[256];
-    static ushort mRandomA;
+    //static ushort mRandomA;
 
 
 	public static void mInitializaion(int count)
