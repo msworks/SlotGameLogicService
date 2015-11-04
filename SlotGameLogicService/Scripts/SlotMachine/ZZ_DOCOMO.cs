@@ -80,9 +80,6 @@ public partial class ZZ
     /** for clippiingRegion */
     public readonly int[] clipRegion = new int[4];
 
-    /** メインキャンバス */
-    MainCanvas canvas;
-
     /** TOBE フォント QVGA 用なのでフォント大きくしていいですか */
     readonly Font font = Font.getFont(Font.SIZE_TINY); // SIZE_MEDIUM=(24)
     // :SIZE_SMALL=機種ごとに変わってしまうので、つかってはダメ

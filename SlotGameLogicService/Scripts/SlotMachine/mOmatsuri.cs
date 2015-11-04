@@ -7,7 +7,6 @@ public class Omatsuri
     ZZ ZZ;
     clOHHB_V23 v23;
     GameManager GameManager;
-    Mascot3D Mascot3D;
 
     public long reelwait = 0;
     public bool reqMenuFg2 = false;	// リール停止時にメニューを表示する
@@ -104,11 +103,6 @@ public class Omatsuri
     public void SetGameManager(GameManager GameManager)
     {
         this.GameManager = GameManager;
-    }
-
-    public void SetMascot3D(Mascot3D Mascot3D)
-    {
-        this.Mascot3D = Mascot3D;
     }
 
     /**
@@ -320,7 +314,7 @@ public class Omatsuri
         int_s_value[Defines.DEF_INT_IS_REEL_STOPPED] = 7; // リールストップ
 
         // 3D関係
-        Mascot3D.initModel();
+        //Mascot3D.initModel();
         ZZ.setLight(0, 0, 100, 2024 * 100 / 4048, 1012 * 100 / 4048);
 
         Defines.TRACE("全体描画");
@@ -1729,12 +1723,10 @@ public class Omatsuri
         if (getLampStatus(Defines.DEF_LAMP_4TH) == Defines.DEF_LAMP_STATUS_ON)
         {
             GameManager.Set4thReelTexture(true);
-            Mascot3D.setTexture(0);
         }
         else
         {
             GameManager.Set4thReelTexture(false);
-            Mascot3D.setTexture(1);
         }
     }
 

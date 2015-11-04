@@ -42,7 +42,6 @@ public class Mobile
         mOmatsuri.SetMobile(this);
         mOmatsuri.SetZZ(ZZ);
         mOmatsuri.SetGameManager(gameManager);
-        mOmatsuri.SetMascot3D(new Mascot3D(ZZ));
 
         int_m_value[Defines.DEF_INT_MODE_REQUEST] = Defines.DEF_MODE_UNDEF;
         int_m_value[Defines.DEF_INT_MODE_CURRENT] = Defines.DEF_MODE_UNDEF;
@@ -157,7 +156,7 @@ public class Mobile
     }
 
     /** 広告文座標X */
-    int message_x = 240;// TODO const
+    int message_x = 240;
 
     /** 広告文座標 dX */
     int message_d = ZZ.getFontHeight() / 4;
@@ -456,7 +455,7 @@ public class Mobile
         }
         else
         {
-            ZZ.stopSound();
+            //ZZ.stopSound();
         }
     }
 
@@ -468,7 +467,7 @@ public class Mobile
         }
         else
         {
-            ZZ.playSound(id, isRepeat);
+            //ZZ.playSound(id, isRepeat);
         }
     }
 
