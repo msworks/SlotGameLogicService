@@ -123,28 +123,62 @@ namespace GameLogicService
             // 同期で待つ
             //--------------------------------------
 
-            // Play
-            foreach (var i in Enumerable.Range(0, 100))
+            foreach (var state in PlaystateCheck(mobile))
             {
+                Console.WriteLine("[INFO]STATE" + state);
+                mobile.ZZ.int_value[Defines.DEF_Z_INT_KEYPRESS] |= 0;
+                mobile.exec();
                 mobile.ZZ.int_value[Defines.DEF_Z_INT_KEYPRESS] |= (1 << 5);
                 mobile.exec();
                 Thread.Sleep(20);
             }
 
+            Console.WriteLine("[INFO]ALL REEL STOPPED");
+
+            var yaku = mobile.Yaku;
+            Console.WriteLine("[INFO]YAKU:" + yaku);
+
             var result = new Associative();
-            result.Add("yaku", "0");
+            result.Add("yaku", ((int)yaku).ToString());
             result.Add("route", "0");
 
             State = MACHINE_STATE.PLAY;
             return result;
         }
 
-        enum PLAYSTATE
+        public IEnumerable<PLAYSTATE> PlaystateCheck(Mobile mobile)
         {
-            InsertCoin,
-            Lever,
-            AllReelStopped,
-        };
+            var state = PLAYSTATE.InsertCoin;
+
+            while (true)
+            {
+                if (mobile.Playstate == PLAYSTATE.Lever)
+                {
+                    state = PLAYSTATE.Lever;
+                    break;
+                } 
+
+                yield return state;
+            }
+
+            while (true)
+            {
+                if (mobile.IsReelsStopped())
+                {
+                    mobile.Playstate = PLAYSTATE.AllReelStopped;
+                }
+
+                if (mobile.Playstate == PLAYSTATE.AllReelStopped)
+                {
+                    state = PLAYSTATE.AllReelStopped;
+                    break;
+                }
+
+                yield return state;
+            }
+
+            yield return state;
+        }
 
         public Associative Collect(Associative param)
         {
@@ -165,7 +199,6 @@ namespace GameLogicService
                 return new Associative() { { "result", "error".DQ() } };
             }
 
-            // TODO Correct
             var result = new Associative();
             result.Add("result", "WIN".DQ());
 
@@ -182,3 +215,10 @@ namespace GameLogicService
         public Associative Collect(Associative param) { return new Associative(); }
     }
 }
+
+public enum PLAYSTATE
+{
+    InsertCoin,
+    Lever,
+    AllReelStopped,
+};

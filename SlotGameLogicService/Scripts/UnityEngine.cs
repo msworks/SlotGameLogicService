@@ -46,23 +46,10 @@ namespace UnityEngine
 
     public sealed class Font { }
 
-    public struct Vector3 { }
-
-    public class Texture { }
-
     public class Application {
         public static void OpenURL(string url) { return; }
         public static RuntimePlatform platform { get; set; }
         public static void Quit() { }
-    }
-
-    public sealed class AudioListener
-    {
-        public AudioListener() { }
-        public static bool pause { get; set; }
-        public static float volume { get; set; }
-        public static void GetOutputData(float[] samples, int channel) { }
-        public static float[] GetOutputData(int numSamples, int channel) { return null; }
     }
 
     public sealed class PlayerPrefs
@@ -81,18 +68,5 @@ namespace UnityEngine
         public static void SetFloat(string key, float value) { }
         public static void SetInt(string key, int value) { }
         public static void SetString(string key, string value) { }
-    }
-
-    public class TextAsset : Object
-    {
-        public TextAsset() { }
-        public byte[] bytes { get { return null; } set { } }
-        public string text { get { return null; } set { } }
-        public override string ToString() { return ""; }
-    }
-
-    public sealed class Resources
-    {
-        public static T Load<T>(string path) { return default(T); }
     }
 }

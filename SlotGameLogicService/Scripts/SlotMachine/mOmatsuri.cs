@@ -295,7 +295,7 @@ public class Omatsuri
 
         try
         {
-            var seed = GameManager.GetRandomSeed();
+            var seed = GameManager.Seed;
             v23.mInitializaion(seed);
         }
         catch (Exception ex)

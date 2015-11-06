@@ -1,6 +1,16 @@
 ﻿using System.Collections;
 using System.Text;
 
+public enum YAKU
+{
+    YAKU_CHRY = 0x01,
+    YAKU_BELL = 0x02,
+    YAKU_WMLN = 0x04,
+    YAKU_REP = 0x08,
+    YAKU_RB = 0x10,
+    YAKU_BB = 0x20,
+}
+
 public class Mobile
 {
     public const bool DEF_IS_DOCOMO = true; // TODO C#移植 DOCOMO準拠と仮定
@@ -15,6 +25,19 @@ public class Mobile
     clOHHB_V23 v23;
     GameManager gameManager;
     public ZZ ZZ;
+
+    PLAYSTATE _state;
+
+    public PLAYSTATE Playstate
+    {
+        set { _state = value; }
+        get { return _state; }
+    }
+
+    public YAKU Yaku
+    {
+        get { return (YAKU)v23.getWork(Defines.DEF_WAVEBIT); }
+    }
 
     /// <summary>
     /// コイン投入
@@ -40,8 +63,9 @@ public class Mobile
     /// <returns>true:全停止 false:全停止ではない</returns>
     public bool IsReelsStopped()
     {
-        // TODO 実装
-        return false;
+        return mOmatsuri.IsReelStopped(0) && 
+               mOmatsuri.IsReelStopped(1) && 
+               mOmatsuri.IsReelStopped(2);
     }
 
     public int Seed {
@@ -56,7 +80,7 @@ public class Mobile
         //
         // 相互参照しまくりなのだが解決した方がいいのだろうか
         //
-        gameManager = new GameManager();
+        gameManager = new GameManager(this);
         mOmatsuri = new Omatsuri();
         slotInterface = new SlotInterface(this, mOmatsuri, gameManager);
         ZZ = new ZZ();
