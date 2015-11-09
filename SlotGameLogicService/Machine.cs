@@ -106,7 +106,7 @@ namespace GameLogicService
 
             try
             {
-                betcount = param["betcount"];
+                betcount = param["betCount"];
                 rate = param["rate"];
             }
             catch
@@ -189,9 +189,9 @@ namespace GameLogicService
 
             try
             {
-                reelstopleft = param["reelstopleft"];
-                reelstopcenter = param["reelstopcenter"];
-                reelstopright = param["reelstopright"];
+                reelstopleft = param["reelStopLeft"];
+                reelstopcenter = param["reelStopCenter"];
+                reelstopright = param["reelStopRight"];
                 oshijun = param["oshijun"];
             }
             catch
