@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 namespace GameLogicService
 {
     using Associative = Dictionary<string, string>;
+    using GameId = String;
+    using UserId = String;
+    using Json = String;
 
     interface IMachine
     {
@@ -19,25 +22,25 @@ namespace GameLogicService
 
     class MachineFactory
     {
-        static public IMachine Create(string gameId)
+        static public IMachine Create(GameId gameId, UserId userId)
         {
             var machineFactory = new[]
             {
-                new { gameId = "1", createFunc = (Func<IMachine>)CreateTheOcean },
-                new { gameId = "2", createFunc = (Func<IMachine>)CreateOohanabi },
+                new { gameId = "1", createFunc = (Func<GameId, UserId, IMachine>)CreateTheOcean },
+                new { gameId = "2", createFunc = (Func<GameId, UserId, IMachine>)CreateOohanabi },
             };
 
             return machineFactory.Where(table => table.gameId == gameId)
-                                 .Select(table => table.createFunc())
+                                 .Select(table => table.createFunc(gameId, userId))
                                  .FirstOrDefault();
         }
 
-        static IMachine CreateOohanabi()
+        static IMachine CreateOohanabi(GameId gameId, UserId userId)
         {
-            return new Oohababi();
+            return new Oohababi(gameId, userId);
         }
 
-        static IMachine CreateTheOcean()
+        static IMachine CreateTheOcean(GameId gameId, UserId userId)
         {
             return new TheOcean();
         }
@@ -61,12 +64,15 @@ namespace GameLogicService
         }
 
         MACHINE_STATE _state;
-
         Mobile mobile;
+        GameId gameId;
+        UserId userId;
 
-        public Oohababi()
+        public Oohababi(GameId gameId, UserId userId)
         {
             State = MACHINE_STATE.CREATED;
+            this.gameId = gameId;
+            this.userId = userId;
         }
 
         public Associative Config(Associative param)
@@ -125,7 +131,7 @@ namespace GameLogicService
 
             foreach (var state in PlaystateCheck(mobile))
             {
-                Console.WriteLine("[INFO]STATE" + state);
+                //Console.WriteLine("[INFO]STATE" + state);
                 mobile.ZZ.int_value[Defines.DEF_Z_INT_KEYPRESS] |= 0;
                 mobile.exec();
                 mobile.ZZ.int_value[Defines.DEF_Z_INT_KEYPRESS] |= (1 << 5);
@@ -222,3 +228,4 @@ public enum PLAYSTATE
     Lever,
     AllReelStopped,
 };
+

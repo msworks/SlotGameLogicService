@@ -437,7 +437,7 @@ public class Omatsuri
         // コイン枚数の更新
         int_s_value[Defines.DEF_INT_SLOT_COIN_NUM] = slotInterface.gpif_coin;
 
-        Console.WriteLine("[INFO]COIN:" + int_s_value[Defines.DEF_INT_SLOT_COIN_NUM]);
+        // Console.WriteLine("[INFO]COIN:" + int_s_value[Defines.DEF_INT_SLOT_COIN_NUM]);
 
         // 40ms*10毎にタイミングを取ってみる
         pressingSpan++;

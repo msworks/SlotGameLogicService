@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Net;
+using System.Threading;
 
 namespace GameLogicService
 {
@@ -42,6 +43,17 @@ namespace GameLogicService
 
             writer.WriteLine("[INFO]GAMELOGIC SERVER RUN PORT:9876");
 
+            while (true)
+            {
+                var context = listener.GetContext();
+
+                // マルチスレッド対応
+                ThreadPool.QueueUserWorkItem(o => HandleRequest(context));
+            }
+        }
+
+        void HandleRequest(HttpListenerContext context)
+        {
             var pathTable = new[]
             {
                 new { path = "/config", response = (Func<Associative, Json>) ConfigResponse },
@@ -50,53 +62,49 @@ namespace GameLogicService
                 new { path = "/collect", response = (Func<Associative, Json>)CollectResponse },
             };
 
-            while (true)
-            {
-                var context = listener.GetContext();
-                var req = context.Request;
-                var res = context.Response;
+            var req = context.Request;
+            var res = context.Response;
 
-                var url = req.Url;
-                var localPath = url.LocalPath;
-                var reqparams = null as Associative;
-                    
-                if (req.HttpMethod == "POST")
+            var url = req.Url;
+            var localPath = url.LocalPath;
+            var reqparams = null as Associative;
+
+            if (req.HttpMethod == "POST")
+            {
+                if (!req.HasEntityBody)
                 {
-                    if (!req.HasEntityBody)
-                    {
-                        reqparams = new Associative();
-                    }
-                    else
-                    {
-                        using (var body = req.InputStream)
-                        {
-                            using (var reader = new StreamReader(body, req.ContentEncoding))
-                            {
-                                var param = reader.ReadToEnd();
-                                reqparams = PostBody2KeyValues(param);
-                            }
-                        }
-                    }
-                }
-                else if(req.HttpMethod == "GET")
-                {
-                    reqparams = Query2KeyValues(url.Query);
+                    reqparams = new Associative();
                 }
                 else
                 {
-                    throw new Exception("[ERROR]NOT REQUEST POST/GET METHOD");
+                    using (var body = req.InputStream)
+                    {
+                        using (var reader = new StreamReader(body, req.ContentEncoding))
+                        {
+                            var param = reader.ReadToEnd();
+                            reqparams = PostBody2KeyValues(param);
+                        }
+                    }
                 }
-
-                var responseString = pathTable.Where(pt => pt.path == localPath)
-                                              .Select(pt => pt.response(reqparams))
-                                              .FirstOrDefault() ?? defaultResponse(reqparams);
-
-                var buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
-
-                res.ContentLength64 = buffer.Length;
-                res.OutputStream.Write(buffer, 0, buffer.Length);
-                res.Close();
             }
+            else if (req.HttpMethod == "GET")
+            {
+                reqparams = Query2KeyValues(url.Query);
+            }
+            else
+            {
+                throw new Exception("[ERROR]NOT REQUEST POST/GET METHOD");
+            }
+
+            var responseString = pathTable.Where(pt => pt.path == localPath)
+                                          .Select(pt => pt.response(reqparams))
+                                          .FirstOrDefault() ?? defaultResponse(reqparams);
+
+            var buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
+
+            res.ContentLength64 = buffer.Length;
+            res.OutputStream.Write(buffer, 0, buffer.Length);
+            res.Close();
         }
 
         /// <summary>
@@ -189,7 +197,7 @@ namespace GameLogicService
                 writer.WriteLine("[INFO] DESTROY MACHINE GAMEID:" + gameId + " USERID:" + userId);
             }
 
-            machine = MachineFactory.Create(gameId);
+            machine = MachineFactory.Create(gameId, userId);
             if (machine == null)
             {
                 writer.WriteLine("[ERROR] CREATE MACHINE FAILD GAMEID:" + gameId + " USERID:" + userId);
