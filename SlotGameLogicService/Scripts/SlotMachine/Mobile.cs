@@ -3,12 +3,12 @@ using System.Text;
 
 public enum YAKU
 {
-    YAKU_CHRY = 0x01,
-    YAKU_BELL = 0x02,
+    CHERRY = 0x01,
+    BELL = 0x02,
     YAKU_WMLN = 0x04,
-    YAKU_REP = 0x08,
-    YAKU_RB = 0x10,
-    YAKU_BB = 0x20,
+    REPLAY = 0x08,
+    REGULER_BONUS = 0x10,
+    BIG_BONUD = 0x20,
 }
 
 public class Mobile
@@ -27,6 +27,14 @@ public class Mobile
     public ZZ ZZ;
 
     PLAYSTATE _state;
+
+    public int CoinCount
+    {
+        get
+        {
+            return mOmatsuri.int_s_value[Defines.DEF_INT_SLOT_COIN_NUM];
+        }
+    }
 
     public PLAYSTATE Playstate
     {
@@ -84,8 +92,8 @@ public class Mobile
         mOmatsuri = new Omatsuri();
         slotInterface = new SlotInterface(this, mOmatsuri, gameManager);
         ZZ = new ZZ();
-        ZZ.setThreadSpeed(1);
-        //ZZ.setThreadSpeed(20);
+        //ZZ.setThreadSpeed(1);
+        ZZ.setThreadSpeed(20);
         v23 = new clOHHB_V23(mOmatsuri, ZZ);
         ZZ.SetV23(v23);
         ZZ.SetGameManager(gameManager);
@@ -208,29 +216,8 @@ public class Mobile
         }
     }
 
-    /** 広告文座標X */
-    //int message_x = 240;
-
-    /** 広告文座標 dX */
-    int message_d = ZZ.getFontHeight() / 4;
-
     /** Mobile内で使うint配列 */
     public int[] int_m_value = new int[Defines.DEF_INT_M_VALUE_MAX];
-
-    // デフォルトを変更するにはmenuImages[]の初期値を入れ替える.
-    /** ヘルプ文字間隔(切り捨て) */
-    static public int HELP_string_H = Defines.DEF_POS_HEIGHT / Defines.DEF_HELP_CHAR_Y_NUM;
-
-    /** ヘルプ文字の表示開始位置（高さ） */
-    public int HELP_WINDOW_Y = (Defines.DEF_POS_HEIGHT - HELP_string_H
-            * Defines.DEF_HELP_CHAR_Y_NUM) / 2;
-
-    /** ヘルプ文字の左右の幅 */
-    static public int HELP_WINDOW_W = ZZ.stringWidth("あ")
-            * Defines.DEF_HELP_CHAR_X_NUM;
-
-    /** ヘルプ文字の左右の位置 */
-    public int HELP_WINDOW_X = (Defines.DEF_POS_WIDTH - HELP_WINDOW_W) / 2;
 
     /**
      * 目押しサポートあり？<BR>
@@ -329,7 +316,6 @@ public class Mobile
     {
         return int_m_value[Defines.DEF_INT_KOKUCHI];
     }
-
 
     private void initConfig()
     {
@@ -508,7 +494,6 @@ public class Mobile
         }
         else
         {
-            //ZZ.stopSound();
         }
     }
 
@@ -520,7 +505,6 @@ public class Mobile
         }
         else
         {
-            //ZZ.playSound(id, isRepeat);
         }
     }
 

@@ -103,7 +103,15 @@ namespace GameLogicService
             var buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
 
             res.ContentLength64 = buffer.Length;
-            res.OutputStream.Write(buffer, 0, buffer.Length);
+            try
+            {
+                res.OutputStream.Write(buffer, 0, buffer.Length);
+            }
+            catch(Exception)
+            {
+                Console.WriteLine("Stream Crashed");
+            }
+
             res.Close();
         }
 

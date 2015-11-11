@@ -46,7 +46,7 @@ public partial class ZZ
     /** 1ループ時間(ms) */
     int threadSpeed;
 
-    public Random RANDOM = new Random();
+    Random RANDOM = new Random();
 
     public ZZ() { }
 

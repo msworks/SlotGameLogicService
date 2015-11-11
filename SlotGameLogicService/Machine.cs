@@ -107,6 +107,8 @@ namespace GameLogicService
 
         public Associative Play(Associative param)
         {
+            Console.WriteLine("[INFO]PLAY");
+
             var betcount = null as string;
             var rate = null as string;
 
@@ -120,8 +122,13 @@ namespace GameLogicService
                 return new Associative() { {"result", "error".DQ()} };
             }
 
+            var beforeCoinCount = mobile.CoinCount;
+            Console.WriteLine("[INFO]Coin:" + beforeCoinCount);
+
             var bet = betcount.ParseInt();
             mobile.InsertCoin(bet);
+
+            Console.WriteLine("[INFO]Bet:" + bet);
 
             //--------------------------------------
             // 内部のスロットマシンにコインを入れて
@@ -131,7 +138,6 @@ namespace GameLogicService
 
             foreach (var state in PlaystateCheck(mobile))
             {
-                //Console.WriteLine("[INFO]STATE" + state);
                 mobile.ZZ.int_value[Defines.DEF_Z_INT_KEYPRESS] |= 0;
                 mobile.exec();
                 mobile.ZZ.int_value[Defines.DEF_Z_INT_KEYPRESS] |= (1 << 5);
@@ -139,14 +145,25 @@ namespace GameLogicService
                 Thread.Sleep(20);
             }
 
-            Console.WriteLine("[INFO]ALL REEL STOPPED");
+            foreach(var n in Enumerable.Range(0,100))
+            {
+                mobile.exec();
+                Thread.Sleep(20);
+            }
 
             var yaku = mobile.Yaku;
+            var afterCoinCount = mobile.CoinCount;
+            var payout = afterCoinCount - beforeCoinCount;
+
+            Console.WriteLine("[INFO]ALL REEL STOPPED");
             Console.WriteLine("[INFO]YAKU:" + yaku);
+            Console.WriteLine("[INFO]Coin:" + afterCoinCount);
+            Console.WriteLine("[INFO]PAYOUT:" + payout);
 
             var result = new Associative();
             result.Add("yaku", ((int)yaku).ToString());
             result.Add("route", "0");
+            result.Add("payout", payout.ToString());
 
             State = MACHINE_STATE.PLAY;
             return result;

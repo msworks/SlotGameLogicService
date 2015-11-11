@@ -63,8 +63,6 @@ public partial class Defines
     // 格納サイズ
     public const int SVR_DATA_MAJ_ERSION = 12; // サーバー用バージョンデータ
     public const int SVR_DATA_SUB_VERSION = 0; // サーバー用バージョンデータ
-
-
     public const int SVR_DATA_SIZE = 2; // バージョン情報
 
     // RAM関係
@@ -84,7 +82,6 @@ public partial class Defines
 
     // サーバーと送受信を行なうアプリデータ
     public const int APP_SERVER_DATA_SIZE = (SVR_DATA_SIZE + SYSTEM_SIZE + RAND_SEED_MAX_SIZE + APP_WORK_SIZE + GP_APP_DATA_SIZE + GP_APP_DATA_SIZE_M);
-
 
     // ボーナス時のカット枚数
     public const int BIG_BONUS_AVENUM = (584); //平均獲得枚数

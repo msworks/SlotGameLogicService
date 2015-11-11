@@ -507,7 +507,7 @@ public class Omatsuri
                     }
                     // コイン７セグ描画用変数を初期化
                     int_s_value[Defines.DEF_INT_BETTED_COUNT] = 0;
-                    Defines.TRACE("待機中");
+                    //Defines.TRACE("待機中");
 
                     // 演出帳のデータを転送する
                     GPW_eventProcess((int)Defines.EVENT_PROC.EVENT_PROC_WEB, -1);
