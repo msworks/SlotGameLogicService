@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace GameLogicService
 {
@@ -12,50 +10,7 @@ namespace GameLogicService
     using UserId = String;
     using Json = String;
 
-    interface IMachine
-    {
-        Associative Config(Associative param);
-        Associative Init(Associative param);
-        Associative Play(Associative param);
-        Associative Collect(Associative param);
-    }
-
-    class MachineFactory
-    {
-        static public IMachine Create(GameId gameId, UserId userId)
-        {
-            var machineFactory = new[]
-            {
-                new { gameId = "1", createFunc = (Func<GameId, UserId, IMachine>)CreateTheOcean },
-                new { gameId = "2", createFunc = (Func<GameId, UserId, IMachine>)CreateOohanabi },
-            };
-
-            return machineFactory.Where(table => table.gameId == gameId)
-                                 .Select(table => table.createFunc(gameId, userId))
-                                 .FirstOrDefault();
-        }
-
-        static IMachine CreateOohanabi(GameId gameId, UserId userId)
-        {
-            return new Oohababi(gameId, userId);
-        }
-
-        static IMachine CreateTheOcean(GameId gameId, UserId userId)
-        {
-            return new TheOcean();
-        }
-    }
-
-    enum MACHINE_STATE
-    {
-        CREATED,
-        CONFIG,
-        INIT,
-        PLAY,
-        CORRECT,
-    }
-
-    class Oohababi : IMachine
+    public class Oohababi : IMachine
     {
         public MACHINE_STATE State
         {
@@ -119,7 +74,7 @@ namespace GameLogicService
             }
             catch
             {
-                return new Associative() { {"result", "error".DQ()} };
+                return new Associative() { { "result", "error".DQ() } };
             }
 
             var beforeCoinCount = mobile.CoinCount;
@@ -145,7 +100,7 @@ namespace GameLogicService
                 Thread.Sleep(20);
             }
 
-            foreach(var n in Enumerable.Range(0,100))
+            foreach (var n in Enumerable.Range(0, 100))
             {
                 mobile.exec();
                 Thread.Sleep(20);
@@ -179,7 +134,7 @@ namespace GameLogicService
                 {
                     state = PLAYSTATE.Lever;
                     break;
-                } 
+                }
 
                 yield return state;
             }
@@ -229,20 +184,4 @@ namespace GameLogicService
             return result;
         }
     }
-
-    class TheOcean : IMachine
-    {
-        public Associative Config(Associative param) { return new Associative(); }
-        public Associative Init(Associative param) { return new Associative(); }
-        public Associative Play(Associative param) { return new Associative(); }
-        public Associative Collect(Associative param) { return new Associative(); }
-    }
 }
-
-public enum PLAYSTATE
-{
-    InsertCoin,
-    Lever,
-    AllReelStopped,
-};
-
