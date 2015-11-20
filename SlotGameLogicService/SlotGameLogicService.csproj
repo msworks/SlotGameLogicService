@@ -56,52 +56,56 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Extensions.cs" />
-    <Compile Include="Machine.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Common\Extensions.cs" />
+    <Compile Include="Ocean\Enumerates.cs" />
+    <Compile Include="Ocean\StateMachine\Kakuhen.cs" />
+    <Compile Include="GameLogicService\Machine.cs" />
+    <Compile Include="Ocean\MainLogic.cs" />
+    <Compile Include="GameLogicService\Oohababi.cs" />
+    <Compile Include="GameLogicService\Program.cs" />
+    <Compile Include="Ocean\StateMachine\ReelMachine.cs" />
+    <Compile Include="Ocean\StateMachine\RoundMachine.cs" />
+    <Compile Include="Ocean\RouteDeterminer.cs" />
+    <Compile Include="Ocean\StateMachine\TheOceanMachine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Scripts\Defines\DfBinaryDigit.cs" />
-    <Compile Include="Scripts\Defines\DfDebug.cs" />
-    <Compile Include="Scripts\Defines\DfDirector.cs" />
-    <Compile Include="Scripts\Defines\DfHallParam.cs" />
-    <Compile Include="Scripts\Defines\DfKey.cs" />
-    <Compile Include="Scripts\Defines\DfMain.cs" />
-    <Compile Include="Scripts\Defines\DfMenu.cs" />
-    <Compile Include="Scripts\Defines\DfMobile.cs" />
-    <Compile Include="Scripts\Defines\DfOhanabi.cs" />
-    <Compile Include="Scripts\Defines\DfOHHB_V23_DEF.cs" />
-    <Compile Include="Scripts\Defines\DfPos_240x240.cs" />
-    <Compile Include="Scripts\Defines\DfRes.cs" />
-    <Compile Include="Scripts\Defines\DfRes_240x240im.cs" />
-    <Compile Include="Scripts\Defines\DfSlotState.cs" />
-    <Compile Include="Scripts\Defines\DfSoundFull.cs" />
-    <Compile Include="Scripts\Defines\DfZ.cs" />
-    <Compile Include="Scripts\Defines\DfZDebug.cs" />
-    <Compile Include="Scripts\Defines\PublicDefine.cs" />
-    <Compile Include="Scripts\GameManager.cs" />
-    <Compile Include="Scripts\SaveData.cs" />
-    <Compile Include="Scripts\SlotMachine\clOHHB_V23.cs" />
-    <Compile Include="Scripts\SlotMachine\GpLocalMember.cs" />
-    <Compile Include="Scripts\SlotMachine\Mascot3D.cs" />
-    <Compile Include="Scripts\SlotMachine\Mobile.cs" />
-    <Compile Include="Scripts\SlotMachine\mOmatsuri.cs" />
-    <Compile Include="Scripts\SlotMachine\mOmatsuri_GpWork.cs" />
-    <Compile Include="Scripts\SlotMachine\SlotInterface.cs" />
-    <Compile Include="Scripts\SlotMachine\SlotInterfaceResource.cs" />
-    <Compile Include="Scripts\SlotMachine\Tool.cs" />
-    <Compile Include="Scripts\SlotMachine\ZZ.cs" />
-    <Compile Include="Scripts\SlotMachine\ZZDebug.cs" />
-    <Compile Include="Scripts\SlotMachine\ZZ_DOCOMO.cs" />
-    <Compile Include="Scripts\SlotMachine\ZZ_MainCanvas2.cs" />
-    <Compile Include="Scripts\UnityEngine.cs" />
-    <Compile Include="Scripts\Util.cs" />
-    <Compile Include="Scripts\Z80\clZ80RAM.cs" />
-    <Compile Include="Scripts\Z80\clZ80RAM_clRAND8.cs" />
+    <Compile Include="Oohanabi\Defines\DfBinaryDigit.cs" />
+    <Compile Include="Oohanabi\Defines\DfDebug.cs" />
+    <Compile Include="Oohanabi\Defines\DfDirector.cs" />
+    <Compile Include="Oohanabi\Defines\DfHallParam.cs" />
+    <Compile Include="Oohanabi\Defines\DfKey.cs" />
+    <Compile Include="Oohanabi\Defines\DfMain.cs" />
+    <Compile Include="Oohanabi\Defines\DfMenu.cs" />
+    <Compile Include="Oohanabi\Defines\DfMobile.cs" />
+    <Compile Include="Oohanabi\Defines\DfOhanabi.cs" />
+    <Compile Include="Oohanabi\Defines\DfOHHB_V23_DEF.cs" />
+    <Compile Include="Oohanabi\Defines\DfPos_240x240.cs" />
+    <Compile Include="Oohanabi\Defines\DfRes.cs" />
+    <Compile Include="Oohanabi\Defines\DfRes_240x240im.cs" />
+    <Compile Include="Oohanabi\Defines\DfSlotState.cs" />
+    <Compile Include="Oohanabi\Defines\DfSoundFull.cs" />
+    <Compile Include="Oohanabi\Defines\DfZ.cs" />
+    <Compile Include="Oohanabi\Defines\DfZDebug.cs" />
+    <Compile Include="Oohanabi\Defines\PublicDefine.cs" />
+    <Compile Include="Oohanabi\GameManager.cs" />
+    <Compile Include="Oohanabi\SaveData.cs" />
+    <Compile Include="Oohanabi\SlotMachine\clOHHB_V23.cs" />
+    <Compile Include="Oohanabi\SlotMachine\Mobile.cs" />
+    <Compile Include="Oohanabi\SlotMachine\mOmatsuri.cs" />
+    <Compile Include="Oohanabi\SlotMachine\SlotInterface.cs" />
+    <Compile Include="Oohanabi\SlotMachine\SlotInterfaceResource.cs" />
+    <Compile Include="Oohanabi\SlotMachine\Tool.cs" />
+    <Compile Include="Oohanabi\SlotMachine\ZZDebug.cs" />
+    <Compile Include="Oohanabi\SlotMachine\ZZ_DOCOMO.cs" />
+    <Compile Include="Oohanabi\UnityEngine.cs" />
+    <Compile Include="Oohanabi\Util.cs" />
+    <Compile Include="Oohanabi\Z80\clZ80RAM.cs" />
+    <Compile Include="Oohanabi\Z80\clZ80RAM_clRAND8.cs" />
+    <Compile Include="GameLogicService\TheOcean.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -127,6 +131,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

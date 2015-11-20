@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-public static class Util
+﻿public static class Util
 {
     public static long GetMilliSeconds()
     {

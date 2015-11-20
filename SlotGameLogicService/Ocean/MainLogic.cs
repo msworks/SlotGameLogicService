@@ -8,8 +8,6 @@ namespace TheOcean
     /// </summary>
     public class MainLogic
     {
-        Kenri kenri;
-
         /// <summary>
         /// 乱数テーブル
         /// </summary>
@@ -29,24 +27,18 @@ namespace TheOcean
         /// </summary>
         /// <param name="KenriKaisu">権利回数（０でなければ確変中）</param>
         /// <returns></returns>
-        public bool DrawLot(int KenriKaisu)
+        public Yaku Chusen(KakuhenMode mode)
         {
-            var chusen = (KenriKaisu == 0) ? NML_Chusen : KH_Chusen;
-            var Atari = chusen[RndFFFF];
-            return Atari;
-        }
+            var chusen = (mode==KakuhenMode.Normal) ? NormalChusenTable : KakuhenChusenTable;
+            var atari = chusen[RndFFFF];
+            var result = Yaku.Hazure;
 
-        /// <summary>
-        /// 権利回数を返す
-        /// </summary>
-        /// <returns></returns>
-        int KenriKaisu
-        {
-            get
+            if(atari==true)
             {
-                // TODO 実装
-                return -1;
+                result = Yaku.Atari;
             }
+
+            return result;
         }
 
         /// <summary>
@@ -56,16 +48,19 @@ namespace TheOcean
         {
             get
             {
-                var CHUSEN_LEN = 65536;       // 抽選のサイズ
-                return rnd.Next(CHUSEN_LEN);
+                return rnd.RndFFFF();
             }
         }
 
-        // 通常時抽選テーブル
-        static bool[] NML_Chusen;
+        /// <summary>
+        /// 通常時抽選テーブル
+        /// </summary>
+        static bool[] NormalChusenTable;
 
-        // 確変時抽選テーブル
-        static bool[] KH_Chusen;             
+        /// <summary>
+        /// 確変時抽選テーブル
+        /// </summary>
+        static bool[] KakuhenChusenTable;             
 
         /// <summary>
         /// 静的コンストラクタ
@@ -80,12 +75,12 @@ namespace TheOcean
             // 大当たり抽選テーブルの初期化
             var ATARI = Enumerable.Range(0, ATARI_NUM).Select(v => true);
             var HAZURE = Enumerable.Range(0, HAZURE_NUM).Select(v => false);
-            NML_Chusen = ATARI.Concat(HAZURE).ToArray();
+            NormalChusenTable = ATARI.Concat(HAZURE).ToArray();
 
             // 大当たり（確変）抽選テーブルの初期化
             var KH_ATARI = Enumerable.Range(0, KH_ATARI_NUM).Select(v => true);
             var KH_HAZURE = Enumerable.Range(0, KH_HAZURE_NUM).Select(v => false);
-            KH_Chusen = KH_ATARI.Concat(KH_HAZURE).ToArray();
+            KakuhenChusenTable = KH_ATARI.Concat(KH_HAZURE).ToArray();
         }
     }
 }

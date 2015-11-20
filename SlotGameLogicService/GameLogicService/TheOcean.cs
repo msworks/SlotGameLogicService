@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TheOcean;
 
 namespace GameLogicService
 {
@@ -12,14 +13,15 @@ namespace GameLogicService
     /// </summary>
     public class TheOcean : IMachine
     {
+        GameId gameId;
+        UserId userId;
+        TheOceanMachine machine;
+
         public MACHINE_STATE State
         {
             get;
             private set;
         }
-
-        GameId gameId;
-        UserId userId;
 
         public TheOcean(GameId gameId, UserId userId)
         {
@@ -30,17 +32,23 @@ namespace GameLogicService
 
         public Associative Config(Associative param)
         {
-            var result = new Associative();
+            var seed = (((int)(Util.GetMilliSeconds())) & 0xFFFF);
+            Console.WriteLine("[INFO][TheOcean]Seed:" + seed);
 
             // TODO settingの値を6に固定しているのでサーバーから取得する
             var setting = 6;
-            var seed = 0;
+            Console.WriteLine("[INFO][TheOcean]Setting:" + setting);
 
-            result.Add("setting", setting.ToString());
-            result.Add("reelleft", "0");
-            result.Add("reelcenter", "0");
-            result.Add("reelright", "0");
-            result.Add("seed", seed.ToString());
+            machine = new TheOceanMachine(seed:seed, setting:setting);
+
+            var result = new Associative()
+            {
+                { "setting", setting.ToString() },
+                { "reelleft", "0" },
+                { "reelcenter", "0" },
+                { "reelright", "0" },
+                { "seed", seed.ToString() },
+            };
 
             State = MACHINE_STATE.CONFIG;
 
@@ -58,24 +66,50 @@ namespace GameLogicService
         {
             var betcount = null as string;
             var rate = null as string;
+            var power = null as string;
+            var pow = 0;
 
             try
             {
                 betcount = param["betCount"];
                 rate = param["rate"];
+                power = param["power"];
+                pow = int.Parse(power);
             }
             catch
             {
                 return new Associative() { { "result", "error".DQ() } };
             }
 
-            var yaku = 0;
-            var payout = 0;
+            var shootResult = null as TheOceanMachine.ShootResult;
+
+            if (betcount == "0" && power == "0")
+            {
+                shootResult = machine.Progress();
+            }
+            else
+            {
+                // 玉発射
+                shootResult = machine.Shoot(pow);
+            }
 
             var result = new Associative();
-            result.Add("yaku", ((int)yaku).ToString());
-            result.Add("route", "0");
-            result.Add("payout", payout.ToString());
+            result.Add("yaku", ((int)shootResult.yaku).ToString());
+            result.Add("route", ((int)shootResult.route).ToString());
+            result.Add("payout", ((int)shootResult.payout).ToString());
+
+            if (shootResult.route != Route.Abandon)
+            {
+                Console.WriteLine("G:{5} U:{6} power:{3} rate:{4} yaku:{0} route:{1} payout:{2}",
+                shootResult.yaku,
+                              shootResult.route,
+                              shootResult.payout,
+                              power,
+                              rate,
+                              gameId,
+                              userId
+                              );
+            }
 
             State = MACHINE_STATE.PLAY;
             return result;

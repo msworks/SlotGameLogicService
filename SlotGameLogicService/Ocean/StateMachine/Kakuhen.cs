@@ -2,7 +2,7 @@
 
 namespace TheOcean
 {
-    enum KakuhenMode
+    public enum KakuhenMode
     {
         Normal,
         Kakuhen3,
@@ -10,9 +10,21 @@ namespace TheOcean
         Kakuhen1,
     }
 
-    class Kakuhen
+    /// <summary>
+    /// 確変の状態遷移マシン
+    /// </summary>
+    class KakuhenMachine
     {
-        KakuhenMode mode = KakuhenMode.Normal;
+        public KakuhenMode Mode
+        {
+            get;
+            private set;
+        }
+
+        public KakuhenMachine()
+        {
+            Mode = KakuhenMode.Normal;
+        }
 
         public void Syoka()
         {
@@ -24,7 +36,7 @@ namespace TheOcean
                 new { pre = KakuhenMode.Kakuhen1, post = KakuhenMode.Normal },
             };
 
-            mode = table.Where(t => t.pre == mode)
+            Mode = table.Where(t => t.pre == Mode)
                         .First()
                         .post;
         }
