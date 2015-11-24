@@ -194,6 +194,7 @@ public class SlotInterface
 	public void onCreditZero()
 	{
 		Defines.TRACE("call onCreditZero");
+        gpif_coin++;
 	}
 
 	// クレジット加算（コイン＋1時）時に呼ばれる

@@ -3384,21 +3384,36 @@ public class Omatsuri
         Defines.ForceYakuFlag flag = Defines.ForceYakuFlag.NONE;
 
         if (slotInterface.gpif_bonus_n == 1)
-        {	// BB強制
-
+        {
+            // BB強制
             flag = Defines.ForceYakuFlag.BIG;
             slotInterface.gpif_bonus_n = 0;
         }
         else if (slotInterface.gpif_bonus_n == 2)
-        {	// RB強制
+        {
+            // RB強制
             flag = Defines.ForceYakuFlag.REG;
             slotInterface.gpif_bonus_n = 0;
+        }
+
+        if (GameManager.SettingZeroMode == true)
+        {
+            // 設定０のとき、17の倍数ゲーム（17､34､51､68・・・）に
+            // 強制フラグでハズレフラグに差し替える
+
+            var draw = GameManager.setting0Machine.Draw();
+            if (draw == DrawSetting0.Hazure)
+            {
+                Console.WriteLine("[INFO]FORCE HAZURE");
+                v23.mSetForceFlag(Defines.ForceYakuFlag.NONE);
+            }
         }
 
         flag = GameManager.forceYakuValue;
 
         if (flag != 0)
-        {// 強制役のセット
+        {
+            // 強制役のセット
             v23.mSetForceFlag(flag);
         }
     }

@@ -88,7 +88,7 @@ namespace TheOcean
 
             if( route==Route.Chacker7 || route==Route.Chacker )
             {
-                yaku = mainLogic.Chusen(kakuhenMachine.Mode);
+                yaku = mainLogic.Chusen(kakuhenMachine.Mode, setting);
 
                 //デバッグ用 大当たり固定
                 //yaku = Yaku.Atari;

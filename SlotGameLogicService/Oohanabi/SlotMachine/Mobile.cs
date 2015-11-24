@@ -76,6 +76,8 @@ public class Mobile
                mOmatsuri.IsReelStopped(2);
     }
 
+    public GameManager GameManager { private set; get; }
+
     public int Seed {
         get
         {
@@ -89,6 +91,7 @@ public class Mobile
         // 相互参照しまくりなのだが解決した方がいいのだろうか
         //
         gameManager = new GameManager(this);
+        GameManager = gameManager;
         mOmatsuri = new Omatsuri();
         slotInterface = new SlotInterface(this, mOmatsuri, gameManager);
         ZZ = new ZZ();

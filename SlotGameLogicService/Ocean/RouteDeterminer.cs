@@ -15,7 +15,7 @@ namespace TheOcean
         int seed;
 
         /// <summary>
-        /// 機械割１～６
+        /// 機械割 0..6
         /// </summary>
         int setting;
 
@@ -105,6 +105,7 @@ namespace TheOcean
                 new { setting = 3, atari=6.0f,  chacker7=3.0f  },
                 new { setting = 2, atari=5.0f,  chacker7=3.0f  },
                 new { setting = 1, atari=4.0f,  chacker7=3.0f  },
+                new { setting = 0, atari=4.0f,  chacker7=3.0f  },
             };
 
             // in:当たり確率 out:入賞テーブル

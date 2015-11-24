@@ -40,7 +40,17 @@ namespace GameLogicService
 
             // TODO settingの値を6に固定しているのでサーバーから取得する
             var setting = 6;
-            mobile.SetRate(setting);
+
+            if (setting == 0)
+            {
+                mobile.GameManager.SettingZeroMode = true;
+                mobile.SetRate(1);
+            }
+            else
+            {
+                mobile.GameManager.SettingZeroMode = false;
+                mobile.SetRate(setting);
+            }
 
             result.Add("setting", setting.ToString());
             result.Add("reelleft", "0");
@@ -78,7 +88,7 @@ namespace GameLogicService
             }
 
             var beforeCoinCount = mobile.CoinCount;
-            Console.WriteLine("[INFO]Coin:" + beforeCoinCount);
+            //Console.WriteLine("[INFO]Coin:" + beforeCoinCount);
 
             var bet = betcount.ParseInt();
             mobile.InsertCoin(bet);
@@ -110,9 +120,11 @@ namespace GameLogicService
             var afterCoinCount = mobile.CoinCount;
             var payout = afterCoinCount - beforeCoinCount;
 
-            Console.WriteLine("[INFO]ALL REEL STOPPED");
+            if (payout < 0) payout = 0;
+
+            //Console.WriteLine("[INFO]ALL REEL STOPPED");
             Console.WriteLine("[INFO]YAKU:" + yaku);
-            Console.WriteLine("[INFO]Coin:" + afterCoinCount);
+            //Console.WriteLine("[INFO]Coin:" + afterCoinCount);
             Console.WriteLine("[INFO]PAYOUT:" + payout);
 
             var result = new Associative();

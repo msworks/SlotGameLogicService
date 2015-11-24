@@ -7,6 +7,9 @@ public class GameManager
 
     public Defines.ForceYakuFlag forceYakuValue;
 
+    public bool SettingZeroMode = false;
+    public Setting0Machine setting0Machine = new Setting0Machine();
+
     public int Seed
     {
         get
@@ -26,19 +29,19 @@ public class GameManager
     public void OnCoinInsert()
     {
         mobile.Playstate = PLAYSTATE.InsertCoin;
-        Console.WriteLine("[INFO]CoinInsert");
+        //Console.WriteLine("[INFO]CoinInsert");
     }
 
     public void OnStartPlay()
     {
         mobile.Playstate = PLAYSTATE.Lever;
-        Console.WriteLine("[INFO]Lever");
+        //Console.WriteLine("[INFO]Lever");
     }
 
     public void OnAllReelStopped()
     {
         mobile.Playstate = PLAYSTATE.AllReelStopped;
-        Console.WriteLine("[INFO]ALL REEL STOPPED");
+        //Console.WriteLine("[INFO]ALL REEL STOPPED");
     }
 
     public void PlayBGM(int soundID, bool isLoop){}
