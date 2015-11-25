@@ -328,6 +328,5 @@ namespace GameLogicService
 
             return res;
         }
-
     }
 }

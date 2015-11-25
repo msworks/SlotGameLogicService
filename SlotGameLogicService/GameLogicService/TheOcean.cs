@@ -35,8 +35,7 @@ namespace GameLogicService
             var seed = (((int)(Util.GetMilliSeconds())) & 0xFFFF);
             Console.WriteLine("[INFO][TheOcean]Seed:" + seed);
 
-            // TODO settingの値を6に固定しているのでサーバーから取得する
-            var setting = 6;
+            var setting = Setting.Get(gameId);
             Console.WriteLine("[INFO][TheOcean]Setting:" + setting);
 
             machine = new TheOceanMachine(seed:seed, setting:setting);

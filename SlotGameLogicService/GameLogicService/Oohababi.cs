@@ -38,8 +38,8 @@ namespace GameLogicService
 
             var seed = mobile.Seed.ToString();
 
-            // TODO settingの値を6に固定しているのでサーバーから取得する
-            var setting = 6;
+            var setting = Setting.Get(gameId);
+            Console.WriteLine("[INFO][Oomatsuri]Setting:" + setting);
 
             if (setting == 0)
             {

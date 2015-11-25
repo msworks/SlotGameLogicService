@@ -1,5 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
+using System.Linq;
+
+static class EnumerableExtension
+{
+    static public IEnumerable<T> Flatten<T>(this IEnumerable<IEnumerable<T>> source)
+    {
+        return source.SelectMany(_ => _);
+    }
+}
 
 static class RandomExtension
 {
