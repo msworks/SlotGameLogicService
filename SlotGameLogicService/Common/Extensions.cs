@@ -2,6 +2,22 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using System.IO;
+
+public static class TextWriterExtension
+{
+    public static void Log(this TextWriter writer, Exception e)
+    {
+        writer.Log(e.ToString());
+    }
+
+    public static void Log(this TextWriter writer, string msg)
+    {
+        var d = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+        var s = $"{d} - {msg}";
+        writer.WriteLine(s);
+    }
+}
 
 static class EnumerableExtension
 {

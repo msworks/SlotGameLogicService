@@ -20,11 +20,37 @@ namespace GameLogicService
     {
         static public IMachine Create(GameId gameId, UserId userId)
         {
-            var machineFactory = new[]
-            {
-                new { gameId = "1", createFunc = (Func<GameId, UserId, IMachine>)CreateTheOcean },
-                new { gameId = "2", createFunc = (Func<GameId, UserId, IMachine>)CreateOohanabi },
-            };
+            var dais = 100;
+            var oceanStart = 0;
+            var hanabiStart = oceanStart + dais;
+            var pierotStart = hanabiStart + dais;
+            var otherStart = pierotStart + dais;
+
+            var oceans = Enumerable.Range(oceanStart, dais).Select(i=>
+                new {
+                    gameId = i.ToString(),
+                    createFunc = (Func<GameId, UserId, IMachine>)CreateTheOcean
+                });
+
+            var hanabi = Enumerable.Range(hanabiStart, dais).Select(i
+                => new {
+                    gameId = i.ToString(),
+                    createFunc = (Func<GameId, UserId, IMachine>)CreateOohanabi
+                });
+
+            var pierot = Enumerable.Range(pierotStart, dais).Select(i
+                => new {
+                    gameId = i.ToString(),
+                    createFunc = (Func<GameId, UserId, IMachine>)CreateOohanabi
+                });
+
+            var other = Enumerable.Range(otherStart, dais).Select(i
+                => new {
+                    gameId = i.ToString(),
+                    createFunc = (Func<GameId, UserId, IMachine>)CreateOohanabi
+                });
+
+            var machineFactory = oceans.Concat(hanabi).Concat(pierot).Concat(other);
 
             return machineFactory.Where(table => table.gameId == gameId)
                                  .Select(table => table.createFunc(gameId, userId))

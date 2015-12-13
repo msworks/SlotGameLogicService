@@ -9,7 +9,7 @@ namespace GameLogicService
     using GameId = String;
     using UserId = String;
     using Json = String;
-
+    using System.IO;
     public class Oohababi : IMachine
     {
         public MACHINE_STATE State
@@ -22,6 +22,7 @@ namespace GameLogicService
         Mobile mobile;
         GameId gameId;
         UserId userId;
+        TextWriter writer = Console.Out;
 
         public Oohababi(GameId gameId, UserId userId)
         {
@@ -39,7 +40,8 @@ namespace GameLogicService
             var seed = mobile.Seed.ToString();
 
             var setting = Setting.Get(gameId);
-            Console.WriteLine("[INFO][Oomatsuri]Setting:" + setting);
+
+            writer.Log("[INFO][Oomatsuri]Setting:" + setting);
 
             if (setting == 0)
             {
@@ -72,7 +74,7 @@ namespace GameLogicService
 
         public Associative Play(Associative param)
         {
-            Console.WriteLine("[INFO]PLAY");
+            writer.Log("[INFO]PLAY");
 
             var betcount = null as string;
             var rate = null as string;
@@ -93,7 +95,7 @@ namespace GameLogicService
             var bet = betcount.ParseInt();
             mobile.InsertCoin(bet);
 
-            Console.WriteLine("[INFO]Bet:" + bet);
+            writer.Log("[INFO]Bet:" + bet);
 
             //--------------------------------------
             // 内部のスロットマシンにコインを入れて
@@ -123,9 +125,9 @@ namespace GameLogicService
             if (payout < 0) payout = 0;
 
             //Console.WriteLine("[INFO]ALL REEL STOPPED");
-            Console.WriteLine("[INFO]YAKU:" + yaku);
+            writer.Log("[INFO]YAKU:" + yaku);
             //Console.WriteLine("[INFO]Coin:" + afterCoinCount);
-            Console.WriteLine("[INFO]PAYOUT:" + payout);
+            writer.Log("[INFO]PAYOUT:" + payout);
 
             var result = new Associative();
             result.Add("yaku", ((int)yaku).ToString());

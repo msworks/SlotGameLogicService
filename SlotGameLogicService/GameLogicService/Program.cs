@@ -16,16 +16,32 @@ namespace GameLogicService
     {
         TextWriter writer = Console.Out;
 
+        /// <summary>
+        /// Request Response Log Function
+        /// </summary>
+        Action<string> ReqResLog;
+
         Dictionary<Tuple<GameId, UserId>, IMachine> machines =
             new Dictionary<Tuple<GameId, UserId>, IMachine>();
 
         static void Main(string[] args)
         {
-            new GameLogic().Run();
+            new GameLogic().Run(args);
         }
 
-        void Run()
+        void Run(string[] args)
         {
+            if (args.Contains("debug"))
+            {
+                ReqResLog = (msg) =>
+                {
+                    writer.Log(msg);
+                };
+            } else
+            {
+                ReqResLog = (msg) => {};
+            }
+
             var listener = new HttpListener();
 
             try
@@ -35,12 +51,12 @@ namespace GameLogicService
             }
             catch (Exception e)
             {
-                writer.WriteLine("[ERROR]GAMELOGIC SERVER RUN FAILED");
-                writer.WriteLine(e);
+                writer.Log("[ERROR]GAMELOGIC SERVER RUN FAILED");
+                writer.Log(e);
                 return;
             }
 
-            writer.WriteLine("[INFO]GAMELOGIC SERVER RUN PORT:9876");
+            writer.Log("[INFO]GAMELOGIC SERVER RUN PORT:9876");
 
             while (true)
             {
@@ -63,10 +79,11 @@ namespace GameLogicService
 
             var req = context.Request;
             var res = context.Response;
-
             var url = req.Url;
             var localPath = url.LocalPath;
             var reqparams = null as Associative;
+
+            ReqResLog($"REQ => {url}");
 
             if (req.HttpMethod == "POST")
             {
@@ -81,6 +98,9 @@ namespace GameLogicService
                         using (var reader = new StreamReader(body, req.ContentEncoding))
                         {
                             var param = reader.ReadToEnd();
+
+                            ReqResLog($"REQ PARAM => {param}");
+
                             reqparams = PostBody2KeyValues(param);
                         }
                     }
@@ -99,6 +119,8 @@ namespace GameLogicService
                                           .Select(pt => pt.response(reqparams))
                                           .FirstOrDefault() ?? defaultResponse(reqparams);
 
+            ReqResLog($"RES <= {responseString}");
+
             var buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
 
             res.ContentLength64 = buffer.Length;
@@ -108,7 +130,7 @@ namespace GameLogicService
             }
             catch(Exception)
             {
-                Console.WriteLine("Stream Crashed");
+                writer.Log("Stream Crashed");
             }
 
             res.Close();
@@ -133,7 +155,7 @@ namespace GameLogicService
             }
             catch (Exception ex)
             {
-                writer.WriteLine(ex);
+                writer.Log(ex);
             }
 
             return result;
@@ -159,7 +181,7 @@ namespace GameLogicService
             }
             catch (Exception ex)
             {
-                writer.WriteLine(ex);
+                writer.Log(ex);
             }
 
             return result;
@@ -191,7 +213,7 @@ namespace GameLogicService
             }
             catch (Exception ex)
             {
-                writer.WriteLine(ex);
+                writer.Log(ex);
                 return defaultResponse(param);
             }
 
@@ -201,19 +223,19 @@ namespace GameLogicService
             if (machines.ContainsKey(key))
             {
                 machines.Remove(key);
-                writer.WriteLine("[INFO] DESTROY MACHINE GAMEID:" + gameId + " USERID:" + userId);
+                writer.Log("[INFO] DESTROY MACHINE GAMEID:" + gameId + " USERID:" + userId);
             }
 
             machine = MachineFactory.Create(gameId, userId);
             if (machine == null)
             {
-                writer.WriteLine("[ERROR] CREATE MACHINE FAILD GAMEID:" + gameId + " USERID:" + userId);
+                writer.Log("[ERROR] CREATE MACHINE FAILD GAMEID:" + gameId + " USERID:" + userId);
                 return defaultResponse(param);
             }
 
             machines.Add(key, machine);
 
-            writer.WriteLine("[INFO] CREATE MACHINE GAMEID:" + gameId + " USERID:" + userId);
+            writer.Log("[INFO] CREATE MACHINE GAMEID:" + gameId + " USERID:" + userId);
 
             var table = machine.Config(param);
 
@@ -236,7 +258,7 @@ namespace GameLogicService
             }
             catch (Exception ex)
             {
-                writer.WriteLine(ex);
+                writer.Log(ex);
                 return defaultResponse(param);
             }
 
@@ -271,7 +293,7 @@ namespace GameLogicService
             }
             catch (Exception ex)
             {
-                writer.WriteLine(ex);
+                writer.Log(ex);
                 return defaultResponse(param);
             }
 
@@ -306,7 +328,7 @@ namespace GameLogicService
             }
             catch (Exception ex)
             {
-                writer.WriteLine(ex);
+                writer.Log(ex);
                 return defaultResponse(param);
             }
 
@@ -329,4 +351,5 @@ namespace GameLogicService
             return res;
         }
     }
+
 }

@@ -4,6 +4,7 @@ using TheOcean;
 
 namespace GameLogicService
 {
+    using System.IO;
     using Associative = Dictionary<string, string>;
     using GameId = String;
     using UserId = String;
@@ -13,9 +14,11 @@ namespace GameLogicService
     /// </summary>
     public class TheOcean : IMachine
     {
+
         GameId gameId;
         UserId userId;
         TheOceanMachine machine;
+        TextWriter writer = Console.Out;
 
         public MACHINE_STATE State
         {
@@ -33,10 +36,10 @@ namespace GameLogicService
         public Associative Config(Associative param)
         {
             var seed = (((int)(Util.GetMilliSeconds())) & 0xFFFF);
-            Console.WriteLine("[INFO][TheOcean]Seed:" + seed);
+            writer.Log("[INFO][TheOcean]Seed:" + seed);
 
             var setting = Setting.Get(gameId);
-            Console.WriteLine("[INFO][TheOcean]Setting:" + setting);
+            writer.Log("[INFO][TheOcean]Setting:" + setting);
 
             machine = new TheOceanMachine(seed:seed, setting:setting);
 
@@ -99,15 +102,7 @@ namespace GameLogicService
 
             if (shootResult.route != Route.Abandon)
             {
-                Console.WriteLine("G:{5} U:{6} power:{3} rate:{4} yaku:{0} route:{1} payout:{2}",
-                shootResult.yaku,
-                              shootResult.route,
-                              shootResult.payout,
-                              power,
-                              rate,
-                              gameId,
-                              userId
-                              );
+                writer.Log($"G:{gameId} U:{userId} power:{power} rate:{rate} yaku:{shootResult.yaku} route:{shootResult.route} payout:{shootResult.payout}");
             }
 
             State = MACHINE_STATE.PLAY;
