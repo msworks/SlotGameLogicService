@@ -13,7 +13,7 @@ public static class TextWriterExtension
 
     public static void Log(this TextWriter writer, string msg)
     {
-        var d = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+        var d = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.fff");
         var s = $"{d} - {msg}";
         writer.WriteLine(s);
     }
