@@ -119,11 +119,18 @@ namespace GameLogicService
                 throw new Exception("[ERROR]NOT REQUEST POST/GET METHOD");
             }
 
+            var preTime = DateTime.Now;
+
             var responseString = pathTable.Where(pt => pt.path == localPath)
                                           .Select(pt => pt.response(reqparams))
                                           .FirstOrDefault() ?? defaultResponse(reqparams);
 
+
             ReqResLog($"RES <= {responseString}");
+
+            var timeSpan = DateTime.Now - preTime;
+
+            writer.Log($"{localPath} : takes {timeSpan}");
 
             var buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
 

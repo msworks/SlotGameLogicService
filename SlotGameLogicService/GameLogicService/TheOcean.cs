@@ -14,7 +14,6 @@ namespace GameLogicService
     /// </summary>
     public class TheOcean : IMachine
     {
-
         GameId gameId;
         UserId userId;
         TheOceanMachine machine;
