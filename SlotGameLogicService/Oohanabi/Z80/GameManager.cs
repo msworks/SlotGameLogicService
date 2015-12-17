@@ -10,19 +10,7 @@ public class GameManager
     public static Defines.ForceYakuFlag forceYakuValue;
 
     public static void PlayBGM(int soundID, bool isLoop){}
-
-    public static void PlaySE(int soundID){
-
-    }
-
-    public static void StopSE() { }
-    public static void StopBGM() { }
-
-    public void OnCoinInsert() {
-        Console.WriteLine("[INFO]OnCoinInsert");
-    }
-
-    public void SetReelTexture(int row, int col, bool isLit) { }
+    public void SetReelTexture(int row, int col, bool isLit){}
     public void Set4thReelTexture(bool isLit) {}
     public void StopAutoPlay(string log){}
     public void OnStartPlay(){}
@@ -37,5 +25,10 @@ public class GameManager
     public void UpdateCommonUIAvg(){}
     public void OnBonusEnd(int bonus_incount){}
     public void OnCountUp(){}
+
+    public static void PlaySE(int soundID){}
+    public static void StopSE() { }
+    public static void StopBGM() { }
+    public void OnCoinInsert(){}
 
 }

@@ -12,7 +12,7 @@ namespace GameLogicService
     using UserId = String;
     using Json = String;
 
-    class GameLogic
+    public class GameLogic
     {
         TextWriter writer = Console.Out;
 
@@ -24,6 +24,8 @@ namespace GameLogicService
         Dictionary<Tuple<GameId, UserId>, IMachine> machines =
             new Dictionary<Tuple<GameId, UserId>, IMachine>();
 
+        public static String settingUrl;
+
         static void Main(string[] args)
         {
             new GameLogic().Run(args);
@@ -31,6 +33,8 @@ namespace GameLogicService
 
         void Run(string[] args)
         {
+            settingUrl = args[0];
+
             if (args.Contains("debug"))
             {
                 ReqResLog = (msg) =>

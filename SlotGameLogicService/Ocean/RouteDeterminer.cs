@@ -99,13 +99,13 @@ namespace TheOcean
             // setting:機械割 atari:賞球% chacker:
             var table = new[]
             {
-                new { setting = 6, atari=9.0f,  chacker7=3.0f  },
-                new { setting = 5, atari=8.0f,  chacker7=3.0f  },
-                new { setting = 4, atari=7.0f,  chacker7=3.0f  },
-                new { setting = 3, atari=6.0f,  chacker7=3.0f  },
-                new { setting = 2, atari=5.0f,  chacker7=3.0f  },
-                new { setting = 1, atari=4.0f,  chacker7=3.0f  },
-                new { setting = 0, atari=4.0f,  chacker7=3.0f  },
+                new { setting = 6, atari=9.0f, chacker7=12.0f  },
+                new { setting = 5, atari=8.0f, chacker7=10.0f  },
+                new { setting = 4, atari=7.0f, chacker7=8.0f  },
+                new { setting = 3, atari=6.0f, chacker7=7.0f  },
+                new { setting = 2, atari=5.0f, chacker7=6.0f  },
+                new { setting = 1, atari=4.0f, chacker7=5.0f  },
+                new { setting = 0, atari=4.0f, chacker7=5.0f  },
             };
 
             // in:当たり確率 out:入賞テーブル

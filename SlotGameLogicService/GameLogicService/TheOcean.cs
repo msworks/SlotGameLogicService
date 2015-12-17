@@ -45,6 +45,7 @@ namespace GameLogicService
 
             var result = new Associative()
             {
+                //{ "status", "error".DQ() },
                 { "setting", setting.ToString() },
                 { "reelleft", "0" },
                 { "reelcenter", "0" },
