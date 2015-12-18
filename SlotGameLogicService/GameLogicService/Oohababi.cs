@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 
@@ -9,7 +10,7 @@ namespace GameLogicService
     using GameId = String;
     using UserId = String;
     using Json = String;
-    using System.IO;
+
     public class Oohababi : IMachine
     {
         public MACHINE_STATE State
@@ -24,6 +25,8 @@ namespace GameLogicService
         UserId userId;
         TextWriter writer = Console.Out;
 
+        YAKU currectYaku;
+
         public Oohababi(GameId gameId, UserId userId)
         {
             State = MACHINE_STATE.CREATED;
@@ -36,9 +39,7 @@ namespace GameLogicService
             mobile = new Mobile();
 
             var result = new Associative();
-
             var seed = mobile.Seed.ToString();
-
             var setting = Setting.Get(gameId);
 
             writer.Log("[INFO][Oomatsuri]Setting:" + setting);
@@ -93,6 +94,17 @@ namespace GameLogicService
             //Console.WriteLine("[INFO]Coin:" + beforeCoinCount);
 
             var bet = betcount.ParseInt();
+
+            // bet 0 check
+            if (bet==0)
+            {
+                if (currectYaku != YAKU.REPLAY)
+                {
+                    // bet0のとき、リプレイでなければエラー
+                    return new Associative() { { "result", "error".DQ() } };
+                }
+            }
+
             mobile.InsertCoin(bet);
 
             writer.Log("[INFO]Bet:" + bet);
@@ -121,6 +133,9 @@ namespace GameLogicService
             var yaku = mobile.Yaku;
             var afterCoinCount = mobile.CoinCount;
             var payout = afterCoinCount - beforeCoinCount;
+
+            // 役を保存しておく
+            currectYaku = yaku;
 
             if (payout < 0) payout = 0;
 
