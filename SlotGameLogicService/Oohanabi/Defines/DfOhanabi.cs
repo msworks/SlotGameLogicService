@@ -1,35 +1,10 @@
-﻿//using UnityEngine;
-using System.Collections;
-
-public partial class Defines {
-
-/*
- * DfMarineBattle.java
- * 
- * Created on 2005/06/02
- */
-
-
-/**
- * 
- * @author a05229ak
- */
-
-	// //////////////////////////////////////////////////////////////
-	// TOBE [カテゴリ]int_value
-
-
-	// //////////////////////////////
-	// int_value(モード)
-
+﻿public partial class Defines
+{
 	/** 現在のゲームモード */
 	public const int DEF_INT_CURRENT_MODE = 0;
 
 	/** 変更要求しているゲームモード */
 	public const int DEF_INT_REQUEST_MODE = 1;
-
-	// //////////////////////////////
-	// int_value(リール)
 
 	/** 左リールの角度 */
 	public const int DEF_INT_REEL_ANGLE_R0 = 2;
@@ -43,14 +18,10 @@ public partial class Defines {
 	/** 左リールの停止角度 */
 	public const int DEF_INT_REEL_STOP_R0 = 5;
 
-	/**
-	 * 中リールの停止角度
-	 */
+	/* 中リールの停止角度 */
 	public const int DEF_INT_REEL_STOP_R1 = 6;
 
-	/**
-	 * 右リールの停止角度
-	 */
+	/* 右リールの停止角度 */
 	public const int DEF_INT_REEL_STOP_R2 = 7;
 
 	/**
@@ -61,9 +32,6 @@ public partial class Defines {
 
 	/** 遊戯状態 BB & RB 終了ﾌﾗｸﾞ (!=0で終了した) */
 	public const int DEF_INT_IS_BB_RB_END = 9;
-
-	// //////////////////////////////
-	// int_value(コイン)
 
 	/** 現在の累積コイン枚数 */
 	public const int DEF_INT_SLOT_COIN_NUM = 10;
@@ -129,9 +97,7 @@ public partial class Defines {
 	/** ボーナスデータを参照する際の基準点 */
 	public const int DEF_INT_BONUS_DATA_BASE = 26;
 
-	/**
-	 * ランプの 上位16bitを直前のアクション 下位16bitをアクション
-	 */
+	/* ランプの 上位16bitを直前のアクション 下位16bitをアクション */
 	public const int DEF_INT_LAMP_1 = 27;
 
 	public const int DEF_INT_LAMP_2 = 28;
@@ -150,9 +116,7 @@ public partial class Defines {
 	/** 聴牌チェック */
 	public const int DEF_INT_IS_TEMPAI = 33;
 
-	/**
-	 * 連続演出更新用カウンタ ｹﾞｰﾑのﾓｰﾄﾞが変わっても初期化されたくない
-	 */
+	/* 連続演出更新用カウンタ ｹﾞｰﾑのﾓｰﾄﾞが変わっても初期化されたくない */
 	public const int DEF_INT_SEQUENCE_EFFECT = 34;
 
 	/** リールの回転速度 */
@@ -166,9 +130,6 @@ public partial class Defines {
 
 	/** 前回の停止出目 21(10)=10101(2)なので5bitずつ15bit使います */
 	public const int DEF_INT_PREV_GAME = 38;
-
-//	/** 内部的にカウントするｺｲﾝ 実践モードの終了条件で使います */
-//	public const int DEF_INT_SLOT_COIN_INNER_COUNT = 39;
 
 	public const int DEF_INT_FLASH_DATA = 40;
 
@@ -258,15 +219,12 @@ public partial class Defines {
 	 * newSlot()で0
 	 */
 	public const int DEF_INT_BB_END_1GAME_REGET_BB = 69; // TOBE 個別PARAM
-
 	
 	public const int DEF_INT_THIS_FLAG_GAME = 70;
 
 	public const int DEF_INT_BONUS_JAC_GOT = 71;		// GP追加 1回枚のJACゲーム時の払い出し枚数
 	
 	public const int DEF_INT_SLOT_VALUE_MAX = 72;
-
-	
 	
 	public const int DEF_EXIT_NON = 0;
 
@@ -383,13 +341,8 @@ public partial class Defines {
 	/** BB/RB AVERAGEのＭＡＸ値 */
 	public const int DEF_BONUS_AVG_MAX = 99999;
 
-	
 	/** ボーナス獲得枚数 */
 	public const int DEF_BB_GET_711 = 711;	// TOBE 個別PARAM
-	
-	//	
-	// /** ｺｲﾝMAX */
-	// public const int DEF_LIMIT_99999999 = 99999999;
 
 	// //////////////////////////////////////////////////////////////
 	// リール分割数をかえる（P504とSO504だけ２５分割それ以外は２１分割にする ２００３－０８－０１）
@@ -529,20 +482,9 @@ public partial class Defines {
 	/** 小役確率テーブル（高確率） */
 	public const int DEF_PROB_KOYAKU_HIGH = 1;
 
-	// //////////////////////////////////////////////////////////////
-	// KEYビット
-	/** 生臭キー */
-    // TODO 非DEFのKEY_BITが存在しないのでコメントアウト
-    //public const int  DEF_KEY_BIT_LAZY = DfKey.KEY_BIT_5 | KEY_BIT_SELECT;
-
-    // TODO 非DEFのKEY_BITが存在しないのでコメントアウト
-    //public const int DEF_KEY_START = KEY_BIT_1 | KEY_BIT_2 | KEY_BIT_3 | KEY_BIT_4 | KEY_BIT_5 | KEY_BIT_6 | KEY_BIT_SELECT;
-
 	/**
 	 * ボーナスパネルデータ.
-	 * 
 	 * 配列のインデックスとしても使用するので、負値はダメです.
-	 * 
 	 * @see Mobile#panel_colors privateだから見えないですが.
 	 */
 	public const int DEF_GAME_NONE = 0;
@@ -551,10 +493,8 @@ public partial class Defines {
 	public const int DEF_GAME_REG = 3;
 	public const int DEF_GAME_CURRENT = 4;
 	public const int DEF_GAME_NUM = 5;
-
 	public const int DEF_INFO_GAME_HISTORY = 10;
 	public const int DEF_INFO_GAMES = 8;
-
 	public const int DEF_UNIT_GAMES = 100;
 
 	// //////////////////////////////////////////////////////////////
@@ -633,7 +573,4 @@ public partial class Defines {
 	public const int DEF_INK_SUB = 2;
 
 	public const int DEF_TRIAL_GAME = 20;
-
-
-
 }

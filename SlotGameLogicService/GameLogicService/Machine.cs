@@ -18,7 +18,7 @@ namespace GameLogicService
 
     public class MachineFactory
     {
-        static public IMachine Create(GameId gameId, UserId userId)
+        static public IMachine Create(GameId gameId, UserId userId, int settingValue)
         {
             var dais = 100;
             var oceanStart = 0;
@@ -29,42 +29,42 @@ namespace GameLogicService
             var oceans = Enumerable.Range(oceanStart, dais).Select(i=>
                 new {
                     gameId = i.ToString(),
-                    createFunc = (Func<GameId, UserId, IMachine>)CreateTheOcean
+                    createFunc = (Func<GameId, UserId, int, IMachine>)CreateTheOcean
                 });
 
             var hanabi = Enumerable.Range(hanabiStart, dais).Select(i
                 => new {
                     gameId = i.ToString(),
-                    createFunc = (Func<GameId, UserId, IMachine>)CreateOohanabi
+                    createFunc = (Func<GameId, UserId, int, IMachine>)CreateOohanabi
                 });
 
             var pierot = Enumerable.Range(pierotStart, dais).Select(i
                 => new {
                     gameId = i.ToString(),
-                    createFunc = (Func<GameId, UserId, IMachine>)CreateOohanabi
+                    createFunc = (Func<GameId, UserId, int, IMachine>)CreateOohanabi
                 });
 
             var other = Enumerable.Range(otherStart, dais).Select(i
                 => new {
                     gameId = i.ToString(),
-                    createFunc = (Func<GameId, UserId, IMachine>)CreateOohanabi
+                    createFunc = (Func<GameId, UserId, int, IMachine>)CreateOohanabi
                 });
 
             var machineFactory = oceans.Concat(hanabi).Concat(pierot).Concat(other);
 
             return machineFactory.Where(table => table.gameId == gameId)
-                                 .Select(table => table.createFunc(gameId, userId))
+                                 .Select(table => table.createFunc(gameId, userId, settingValue))
                                  .FirstOrDefault();
         }
 
-        static IMachine CreateOohanabi(GameId gameId, UserId userId)
+        static IMachine CreateOohanabi(GameId gameId, UserId userId, int settingValue)
         {
-            return new Oohababi(gameId, userId);
+            return new Oohababi(gameId, userId, settingValue);
         }
 
-        static IMachine CreateTheOcean(GameId gameId, UserId userId)
+        static IMachine CreateTheOcean(GameId gameId, UserId userId, int settingValue)
         {
-            return new TheOcean(gameId, userId);
+            return new TheOcean(gameId, userId, settingValue);
         }
     }
 
@@ -74,7 +74,7 @@ namespace GameLogicService
         CONFIG,
         INIT,
         PLAY,
-        CORRECT,
+        COLLECT,
     }
 
 }

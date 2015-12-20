@@ -19,17 +19,20 @@ namespace GameLogicService
         TheOceanMachine machine;
         TextWriter writer = Console.Out;
 
+        int settingValue;
+
         public MACHINE_STATE State
         {
             get;
             private set;
         }
 
-        public TheOcean(GameId gameId, UserId userId)
+        public TheOcean(GameId gameId, UserId userId, int settingValue)
         {
             State = MACHINE_STATE.CREATED;
             this.gameId = gameId;
             this.userId = userId;
+            this.settingValue = settingValue;
         }
 
         public Associative Config(Associative param)
@@ -37,7 +40,7 @@ namespace GameLogicService
             var seed = (((int)(Util.GetMilliSeconds())) & 0xFFFF);
             writer.Log("[INFO][TheOcean]Seed:" + seed);
 
-            var setting = Setting.Get(gameId);
+            var setting = settingValue;
             writer.Log("[INFO][TheOcean]Setting:" + setting);
 
             machine = new TheOceanMachine(seed:seed, setting:setting);
@@ -131,7 +134,7 @@ namespace GameLogicService
             var result = new Associative();
             result.Add("result", "WIN".DQ());
 
-            State = MACHINE_STATE.CORRECT;
+            State = MACHINE_STATE.COLLECT;
             return result;
         }
     }

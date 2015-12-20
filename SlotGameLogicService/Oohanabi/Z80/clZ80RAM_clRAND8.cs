@@ -1,22 +1,11 @@
-﻿using UnityEngine;
-using System.Collections;
-
-///////////////////////////////////////////////
-// 擬似乱数クラス
-///////////////////////////////////////////////
-public class clRAND8 {
-
-    static ushort mBak;
+﻿public class clRAND8
+{
     public static ushort mRndwl;
     public static ushort mRndwh;
     public static ushort[] mRndbuf = new ushort[256];
-    //static ushort mRandomA;
-
 
 	public static void mInitializaion(int count)
 	{
-        Defines.TRACE("★mInitializaion:seed=" + count);
-
         ushort[] initdat =
 		{
 			0x82,0x7B,0x24,0xCA,0x0D,0x7A,0x0F,0x0C,0x48,0xCC,0x0B,0x29,0x42,0xC3,0xC4,0x3F,
@@ -39,15 +28,13 @@ public class clRAND8 {
 		
 		int	i;
 
-		mBak = 0xFFFF;
 		mRndwl = 0;
 		mRndwh = 31;
 
-        // TODO soy この行があると乱数が固定になる
-//count = 30568;
-
 		for(i=0;i<256;i++) mRndbuf[i] = initdat[i];
-		for(i=0;i<count;i++) {
+
+		for(i=0;i<count;i++)
+        {
 			mGetRnd8();
 		}
 	}
@@ -69,7 +56,8 @@ public class clRAND8 {
 ///////////////////////////////////////////////
 // Z80用レジスタークラス
 ///////////////////////////////////////////////
-public class clREG {
+public class clREG
+{
       public ushort AF;
       public ushort BC;
       public ushort DE;

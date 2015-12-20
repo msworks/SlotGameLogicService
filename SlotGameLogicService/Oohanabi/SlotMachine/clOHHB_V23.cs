@@ -808,12 +808,8 @@ public class clOHHB_V23 : clZ80RAM
                 //
                 ///=== 遊技開始音選択
                 //スタート音はDfOHHB_V23_DEF.DEF_FLASH+0にビット格納しているので、アプリ側で分解
-
-
             }
-
         }
-
     }
 
     void mSB_RTCK_00()
@@ -1001,7 +997,6 @@ public class clOHHB_V23 : clZ80RAM
 
     void mMN_PRND_00()
     {
-
         setA((ushort)clRAND8.mGetRnd8());
         setL(getA());
         setA((ushort)clRAND8.mGetRnd8());
@@ -1046,7 +1041,6 @@ public class clOHHB_V23 : clZ80RAM
 
     public void mMN_WCAL_00()
     {
-
         ushort MN_WCAL = 0x02;
 
         mLD_HL_Nm(Defines.DEF_RANDOMX);			// 乱数値 X [ 0-16383 ]
@@ -1192,7 +1186,8 @@ public class clOHHB_V23 : clZ80RAM
 
                 int SBC;
                 if ((lCY & 0xFF00) > 0)
-                {	// 設定別＝ボーナスしかなかったのでこれで仕分けする
+                {
+                    // 設定別＝ボーナスしかなかったのでこれで仕分けする
                     Defines.RAM_TRACE("確率変更:" + getDE() + "→" + (getDE() * omatsuri.GPW_chgProba()));
                     SBC = (int)((getHL() & 0xFFFF) - (getDE() * omatsuri.GPW_chgProba()));
                 }
@@ -1207,7 +1202,6 @@ public class clOHHB_V23 : clZ80RAM
                 Defines.RAM_TRACE("当選ﾁｪｯｸ？" + SBC);
                 // 当選か ?
                 if (SBC < 0) break;
-
 
                 setC(getC() + 1);
                 if (mDJNZ() == true)

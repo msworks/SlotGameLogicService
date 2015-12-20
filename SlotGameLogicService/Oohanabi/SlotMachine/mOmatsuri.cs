@@ -19,8 +19,6 @@ public class Omatsuri
     public int kasidasiMedal = 0;
     public int prevkasidasiMedal = 0;
     public int[] hallData = new int[Defines.DEF_H_PARAM_NUM];
-
-    private bool bigBonusFg = false;
     private bool BonusCutFg = false;
     private bool reelStartFg;	// リールスタートキーがすでに押されている場合
     private bool reqMenuFg = false;	// リール停止時にメニューを表示する
@@ -69,15 +67,8 @@ public class Omatsuri
 		Defines.DEF_RPLY, Defines.DEF_WMLN}
 	};
 
-    /**
-     * AUTO GENERATED char ARRAY BY compact.CompactClass
-     */
-    private readonly char[] width4th = "\u0075\u003F\u003B\u0037\u0040\u0038"
-            .ToCharArray();
+    private readonly char[] width4th = "\u0075\u003F\u003B\u0037\u0040\u0038".ToCharArray();
 
-    /// <summary>
-    /// コンストラクタ
-    /// </summary>
     public Omatsuri(){}
 
     public void SetSlotInterface(SlotInterface slotInterface)
@@ -105,16 +96,6 @@ public class Omatsuri
         this.GameManager = GameManager;
     }
 
-    /**
-     * データパネル色.
-     * 
-     * @see df.Df#GAME_NONE なし
-     * @see df.Df#GAME_NORMAL 通常
-     * @see df.Df#GAME_BIG ＢＩＧ
-     * @see df.Df#GAME_REG ＲＥＧ
-     * @see df.Df#GAME_CURRENT カレント
-     * @see df.Df#GAME_NUM
-     */
     private int[] panel_colors = {
 	    ZZ.getColor(0x00, 0x00, 0x00),// なし
 	    ZZ.getColor(Defines.DEF_POS_CELL_COLOR_ETC_R,
@@ -129,12 +110,6 @@ public class Omatsuri
 	    ZZ.getColor(0xFF, 0x00, 0xFF),
     };
 
-    /**
-     * 次のランプ用ステータスを取得する
-     * 
-     * @param idx
-     * @return ランプの次のステータス
-     */
     public int getLampStatus(int idx)
     {
         if ((int_s_value[Defines.DEF_INT_LAMP_1 + (idx / 32)] & (1 << (idx % 32))) != 0)
@@ -147,59 +122,29 @@ public class Omatsuri
         }
     }
 
-    /**
-     * ランプ用スイッチ
-     * 
-     * @param idx:index
-     * @param act:action
-     */
     public void lampSwitch(int idx, int act)
     {
         if (act == Defines.DEF_LAMP_ACTION_ON)
         {
-            // ビットを1にする
             int_s_value[Defines.DEF_INT_LAMP_1 + (idx / 32)] |= (1 << (idx % 32));
         }
         else if (act == Defines.DEF_LAMP_ACTION_OFF)
         {
-            // ビットを0にする
             int_s_value[Defines.DEF_INT_LAMP_1 + (idx / 32)] &= ~(1 << (idx % 32));
         }
     }
 
-    /**
-     * リール位置番号から角度を求める。 <BR>
-     * INDEX2ANGLE(n) ((ANGLE_2PI+NUM_REEL-1)/NUM_REEL*((n)%NUM_REEL)) <BR>
-     * 切り上げ計算も含む <BR>
-     * 
-     * @param n:絵柄ｲﾝﾃﾞｯｸｽ
-     *            [0, NUM_REEL)
-     * @return ﾘｰﾙ角度？
-     */
     private int INDEX2ANGLE(int n)
     {
         return 0xC31 * (n);
     }
 
-    /**
-     * 角度から次に止まれる絵柄インデックスに変換。 <BR>
-     * 端数切り上げ
-     * 
-     * @param i:角度
-     * @return 絵柄ｲﾝﾃﾞｯｸｽ [0, NUM_REEL)
-     */
     public int ANGLE2INDEX(int i)
     {
         return ((Defines.DEF_N_FRAME * i + ANGLE_2PI_MASK) >> ANGLE_2PI_BIT)
                 % Defines.DEF_N_FRAME;
     }
 
-    /**
-     * モードをリクエストする。
-     * 
-     * @param mod:スロットゲームのモード
-     * @return リクエストされたスロットゲームのモード
-     */
     private int REQ_MODE(int mod)
     {
         return int_s_value[Defines.DEF_INT_REQUEST_MODE] = mod;
@@ -207,7 +152,6 @@ public class Omatsuri
 
     public void initGameInfo()
     {
-        Defines.TRACE("ゲーム情報の初期化");
         int_s_value[Defines.DEF_INT_BIG_COUNT] = 0;
         int_s_value[Defines.DEF_INT_REG_COUNT] = 0;
         int_s_value[Defines.DEF_INT_UNTIL_BONUS_GAMES] = 0;
@@ -239,8 +183,6 @@ public class Omatsuri
                 int_s_value[i] = 0;
             }
         }
-
-        Defines.TRACE("newSlot");
 
         // メインループスピード
         int_s_value[Defines.DEF_INT_LOOP_SPEED] = ZZ.getThreadSpeed();
@@ -279,19 +221,8 @@ public class Omatsuri
         playBGM(Defines.DEF_RES_00, false);
         mobile.stopSound(Defines.DEF_SOUND_UNDEF);
 
-        // ゲーム情報の初期化
         initGameInfo();
-
-        Defines.TRACE("gp:" + slotInterface);
-        Defines.TRACE("initDataPaneHistory");
-
         initDataPaneHistory();
-
-        Defines.TRACE("Z80移植リールクラスの初期化");
-
-        // /////////////////////////////////////////
-        // Z80移植リールクラスの初期化
-        // /////////////////////////////////////////
 
         try
         {
@@ -313,31 +244,16 @@ public class Omatsuri
         int_s_value[Defines.DEF_INT_REEL_STOP_R2] = int_s_value[Defines.DEF_INT_REEL_ANGLE_R2];
         int_s_value[Defines.DEF_INT_IS_REEL_STOPPED] = 7; // リールストップ
 
-        // 3D関係
-        //Mascot3D.initModel();
         ZZ.setLight(0, 0, 100, 2024 * 100 / 4048, 1012 * 100 / 4048);
 
-        Defines.TRACE("全体描画");
         restartSlot();
     }
 
-    /**
-     * ゲーム再開。
-     * 
-     */
     public void restartSlot()
     {
         drawAll(); // 再描画要求
     }
 
-    /**
-     * ゲーム終了。 アステカ以降、清算処理失敗でゲームに戻ってきた時に、持ちメダル数として足せなかったクレジット数が残るようにした。
-     * 
-     * 例）CREDIT = 45, SLOT_COIN_NUM = 99996の状態で清算して失敗したら、CREDIT = 42,
-     * SLOT_COIN_NUM = 99999となってゲーム再開
-     * 
-     * @return 現在の獲得コイン枚数
-     */
     public int endSlot()
     {
         mobile.stopSound(Defines.DEF_SOUND_UNDEF); // サウンド停止
@@ -354,29 +270,10 @@ public class Omatsuri
         int_s_value[Defines.DEF_INT_WHAT_EXIT] = arg;
     }
 
-    // ======================================================
-    // TOBE [メイン制御]
-    // ======================================================
     private int pressingSpan = 0;
-
-    /**
-     * ここの処理はmobileクラスからゲーム実行中（MODE_RUN）のときだけ呼び出される。
-     * 
-     * スロットゲームとしての各モードにおける振る舞いを記述
-     * 
-     * @param keyTrigger
-     *            押されたキーを取得
-     * @return true=スロット終了,false=スロット継続
-     * 
-     * @see #int_s_value
-     * @see df.Df#INT_CURRENT_MODE
-     * @see df.Df#INT_REQUEST_MODE
-     */
-
-    // satoh#メニュー割り込みにアイテムを追加
     public int req_code;
 
-    public bool process(int keyTrigger)
+    public bool process(int keyTrigger, Action<int> returnCoinCount)
     {
         int_s_value[Defines.DEF_INT_REEL_SPEED] =
             ZZ.getThreadSpeed()
@@ -385,7 +282,6 @@ public class Omatsuri
             / 60000
             * mobile.getReelSpeed() / 100;
 
-        //DfMain.TRACE(("オートプレイ:" + gp.gpif_auto_f + ":" + gp.gpif_nonstop_f + ":" + gp.gpif_tatsujin_f + ":" + mobile.isMeoshi());
         if (mobile.isMeoshi() ||
             (slotInterface.gpif_auto_f == true) ||
             (slotInterface.gpif_nonstop_f == true) ||
@@ -436,18 +332,13 @@ public class Omatsuri
 
         // コイン枚数の更新
         int_s_value[Defines.DEF_INT_SLOT_COIN_NUM] = slotInterface.gpif_coin;
-
-        // Console.WriteLine("[INFO]COIN:" + int_s_value[Defines.DEF_INT_SLOT_COIN_NUM]);
-
-        // 40ms*10毎にタイミングを取ってみる
         pressingSpan++;
         pressingSpan %= 10;
         if (!IS_BONUS() && pressingSpan == 0)
         {
         }
 
-        ////////////////////////////////////
-        // このwhile文はループさせるためではなく、違うモードにすぐ遷移(conitnue)するための仕組みです。
+        // ループの中で int_s_value が副作用を発生させる
         while (int_s_value[Defines.DEF_INT_CURRENT_MODE] != int_s_value[Defines.DEF_INT_REQUEST_MODE])
         {
             if (Defines.DEF_IS_DEBUG_PRINT_RMODE)
@@ -568,12 +459,10 @@ public class Omatsuri
                         }
                     }
 
-                    // MENU遷移を禁止する
                     mobile.setMenuAvarable(false);
+                    break;
 
-                    break;// RMODE_BET
-                // TOBE [=2.RMODE_SPIN init]
-                case Defines.DEF_RMODE_SPIN: // 回転開始(モード初期)
+                case Defines.DEF_RMODE_SPIN:
                     if (!IS_REPLAY())
                     {
                         int_s_value[Defines.DEF_INT_TOTAL_BET] += int_s_value[Defines.DEF_INT_BETTED_COUNT];
@@ -582,23 +471,10 @@ public class Omatsuri
                         hallData[Defines.DEF_H_PLAYER_COIN] -= int_s_value[Defines.DEF_INT_BETTED_COUNT];
                     }
 
-                    // ///////////////////////////
-                    // Z80移植リール部分の初期化
-                    // 1プレイ遊技用初期化
                     v23.clearWork(Defines.DEF_CLR_AREA_3);
-                    // ///////////////////////////
-                    // ///////////////////////////
-                    // Z80移植
-                    // パチスロ抽選用乱数を取得
                     int rand = v23.mRandomX();
-
-                    // 設定変更チェック
                     chgWaveNum();
-
-                    // 役の変更チェック
                     chgYaku();
-
-                    // 役抽選
                     v23.mReelStart(rand, int_s_value[Defines.DEF_INT_BET_COUNT]);
 
                     if (!IS_BONUS())
@@ -626,43 +502,14 @@ public class Omatsuri
                         int_s_value[Defines.DEF_INT_THIS_FLAG_GAME]++;
                     }
 
-                    // 演出をセット
                     int flash0 = v23.getWork(Defines.DEF_FLASH + 0);
-
-                    // DfMain.TRACE(("******************************************");
-                    // DfMain.TRACE(("****FLASH+0 A:\t"+(data/128));
-                    // DfMain.TRACE(("****FLASH+0 B:\t"+((data%128)/64));
-                    // DfMain.TRACE(("****FLASH+0 C:\t"+((data%128)%64));
-                    // ; 回転表示器デモパターン抽選テーブル
-                    // ; XXX 確率値 (/128)
-                    // ; A*128+B*64+C 演出パラメータ & 演出確率
-                    // ; A 当たり確定ランプ点灯フラグ
-                    // ; B 遊技開始音選択ビット
-                    // ; C 抽選テーブル番号 ( 0~63 )
-
-                    // 演出によるチェック
                     GPW_eventProcess((int)Defines.EVENT_PROC.EVENT_PROC_CHK_LANP, (flash0 / 128));
-
-                    // 確定ランプフラグ
                     int_s_value[Defines.DEF_INT_WIN_LAMP] = flash0 / 128;
                     flash0 %= 128;
-                    // 開始音
-                    // ; A*32+B 演出パターンデータ
-                    // ; A = フラッシュ演出パターンデータ
-                    // ; ( 0~7 )
-                    // ; B = リール演出パターンデータ
-                    // ; ( 0~31 )
                     int flash1 = v23.getWork(Defines.DEF_FLASH + 1);
-                    // DfMain.TRACE(("****FLASH+1 A:\t"+(data/32));
-                    // DfMain.TRACE(("****FLASH+1 B:\t"+(data%32));
-                    // DfMain.TRACE(("******************************************");
-
-                    // 演出によるチェック
                     GPW_eventProcess((int)Defines.EVENT_PROC.EVENT_PROC_CHK_FLASH, flash1);
                     setFlash(flash1 / 32);
                     set4th(flash1 % 32);
-
-                    // 開始音を鳴らす
                     int snd_id = Defines.DEF_SOUND_19;
                     if (flash1 % 32 > 0)
                     {
@@ -678,75 +525,47 @@ public class Omatsuri
                         playSE(snd_id);
                     }
 
-                    // 回転開始時間を記録する
                     _spinTime = Util.GetMilliSeconds() + Defines.DEF_WAIT_SPIN;
                     int_s_value[Defines.DEF_INT_IS_REEL_STOPPED] = 0; // リールストップ
-
-                    // 告知はSPIN時にクリア
                     int_s_value[Defines.DEF_INT_KOKUCHI_X] = 0;
 
-                    // ボーナス（ＢＢ・ＲＢ）終了ですか？
                     if (int_s_value[Defines.DEF_INT_IS_BB_RB_END] > 0)
                     {
-                        // ここはボーナス終了ゲームの次ゲームの回転開始です
-
                         if (!IS_HALL())
                         {
-                            // データパネル更新
                             if (int_s_value[Defines.DEF_INT_BB_KIND] == Defines.DEF_BB_B7
                                     || int_s_value[Defines.DEF_INT_BB_KIND] == Defines.DEF_BB_R7)
-                            { // ＢＢ終了時のみ
+                            {
                                 shiftDataPanelHistory(
                                         int_s_value[Defines.DEF_INT_UNTIL_BONUS_GAMES],
                                         Defines.DEF_PS_BB_RUN);
                             }
                             else if (int_s_value[Defines.DEF_INT_BB_KIND] == Defines.DEF_RB_IN)
-                            { // ＲＢ終了時のみ
+                            {
                                 shiftDataPanelHistory(
                                         int_s_value[Defines.DEF_INT_UNTIL_BONUS_GAMES],
                                         Defines.DEF_PS_RB_RUN);
                             }
                         }
 
-                        // ボーナス関係のフラグたちをクリア
-                        int_s_value[Defines.DEF_INT_IS_BB_RB_END] = 0; // ボーナス終了後の次ゲームの回転でこのフラグおろす
-                        int_s_value[Defines.DEF_INT_BB_KIND] = Defines.DEF_BB_UNDEF; // ＢＢ入賞時の種別
-
-                        int_s_value[Defines.DEF_INT_BONUS_GOT] = 0; // ボーナス獲得枚数の値をクリア
-                        int_s_value[Defines.DEF_INT_BONUS_JAC_GOT] = 0;	// JAC中の獲得枚数をクリア
-                        // ボーナス間ゲーム数をボーナス終了時にクリア
+                        int_s_value[Defines.DEF_INT_IS_BB_RB_END] = 0;
+                        int_s_value[Defines.DEF_INT_BB_KIND] = Defines.DEF_BB_UNDEF;
+                        int_s_value[Defines.DEF_INT_BONUS_GOT] = 0;
+                        int_s_value[Defines.DEF_INT_BONUS_JAC_GOT] = 0;
                         int_s_value[Defines.DEF_INT_UNTIL_BONUS_GAMES] = 0;
-                        /**/
                         hallData[Defines.DEF_H_BNS_0] = 0;
-
-
-                        // TOBE 個別PARAM　BB 終了後の１ゲーム目ですよフラグを立てる
                         int_s_value[Defines.DEF_INT_BB_AFTER_1GAME] = 1;
-
                     }
 
                     if (!IS_BONUS())
                     {
-                        // 通常ゲーム中
-
-                        // ボーナス消化中のゲーム数を総回転数としてカウントしない
                         int_s_value[Defines.DEF_INT_TOTAL_GAMES]++;
-
-                        // 総回転数を増やす
-                        //DfMain.TRACE(("総回転数のカウントアップ");
                         slotInterface.onCountUp();
-
-                        /**/
                         hallData[Defines.DEF_H_GAME_COUNT]++;
-
-                        // ボーナス間累積（ゲーム情報）
                         int_s_value[Defines.DEF_INT_UNTIL_BONUS_GAMES]++;
-                        /**/
                         hallData[Defines.DEF_H_BNS_0]++;
                     }
 
-                    // データパネル情報更新（ゲーム数）
-                    // データパネル情報更新（ゲーム数）
                     if (IS_HALL())
                     {
                         setCurrentDataPanel(hallData[Defines.DEF_H_BNS_0]);
@@ -756,10 +575,7 @@ public class Omatsuri
                         setCurrentDataPanel(int_s_value[Defines.DEF_INT_UNTIL_BONUS_GAMES]);
                     }
 
-                    // キーリジェクトの値。
                     int_s_value[Defines.DEF_INT_KEY_REJECT] = 5;
-
-                    // 停止フラグ
                     int_s_value[Defines.DEF_INT_REEL_STOP_R0] = ANGLE_UNDEF;
                     int_s_value[Defines.DEF_INT_REEL_STOP_R1] = ANGLE_UNDEF;
                     int_s_value[Defines.DEF_INT_REEL_STOP_R2] = ANGLE_UNDEF;
@@ -771,31 +587,28 @@ public class Omatsuri
 
                     break;
 
-                case Defines.DEF_RMODE_FLASH: // (モード初期)
+                case Defines.DEF_RMODE_FLASH:
                     break;
 
-                case Defines.DEF_RMODE_RESULT: // (モード初期)
-                    // RESULTに入った時間を記録
+                case Defines.DEF_RMODE_RESULT:
                     _lampTime = Util.GetMilliSeconds() + Defines.DEF_WAIT_LAMP;
-
-                    // 払い出しコイン枚数
                     int_s_value[Defines.DEF_INT_WIN_COIN_NUM] = v23.mPayMedal();
+                    var winCoinCount = int_s_value[Defines.DEF_INT_WIN_COIN_NUM];
+
+                    returnCoinCount(winCoinCount);
 
                     int_s_value[Defines.DEF_INT_TOTAL_PAY] += int_s_value[Defines.DEF_INT_WIN_COIN_NUM];
-                    /**/
                     hallData[Defines.DEF_H_MEDAL_OUT] += int_s_value[Defines.DEF_INT_WIN_COIN_NUM];
-
 
                     if ((v23.getWork(Defines.DEF_HITFLAG) & Defines.DEF_HITFLAG_NR_RB) != 0)
                     {
                         Defines.TRACE("RB入賞時");
-                        bigBonusFg = false;
                     }
                     else if ((v23.getWork(Defines.DEF_HITFLAG) & Defines.DEF_HITFLAG_NR_BB) != 0)
                     {
                         Defines.TRACE("BB入賞時");
-                        bigBonusFg = true;
                     }
+
                     if (!IS_BONUS())
                     {
                         if ((v23.getWork(Defines.DEF_HITFLAG) & 0x01) != 0)
@@ -825,15 +638,14 @@ public class Omatsuri
                         int_s_value[Defines.DEF_INT_BONUS_JAC_GOT] += int_s_value[Defines.DEF_INT_WIN_COIN_NUM];
                     }
 
-                    // 払い出し音の発生(獲得枚数がなくても鳴らさなくてはならないので、ここで呼ぶ)
                     playCoinSound();
                     break;
-                // TOBE [=6.RMODE_BB_FANFARE init]
-                case Defines.DEF_RMODE_BB_FANFARE: // (モード初期)
+
+                case Defines.DEF_RMODE_BB_FANFARE:
                     int_s_value[Defines.DEF_INT_WIN_LAMP_STATUS] = 0;
                     int_s_value[Defines.DEF_INT_4TH_ACTION_FLAG] = 0;
                     lampSwitch(Defines.DEF_LAMP_4TH, Defines.DEF_LAMP_ACTION_ON);
-                    // BBﾌｧﾝﾌｧｰﾚ鳴らすﾓｰﾄﾞ(→Defines.DEF_RMODE_BB_FANFARE_VOICE)
+
                     if (int_s_value[Defines.DEF_INT_BB_KIND] == Defines.DEF_BB_R7)
                     {
                         _soundTime = Util.GetMilliSeconds() + Defines.DEF_SOUND_MS_03; // ﾌｧﾝﾌｧｰﾚ完奏時間設定
@@ -860,35 +672,11 @@ public class Omatsuri
                 case Defines.DEF_RMODE_FIN_WAIT: // (モード初期)
                     int_s_value[Defines.DEF_INT_KEY_REJECT] = 0;
                     // 毎ゲーム終了時にここを通る
-#if __BONUS_CUT__
                     //				DfMain.TRACE(("毎ゲーム終了");
                     // ボーナス制御
                     ushort bonusEndFg;
-
-                    //				DfMain.TRACE(("-ST------------------------------------------------------------");
-                    //				DfMain.TRACE(("ボーナス制御:" + int_s_value[Defines.DEF_INT_BONUS_GOT]);
-                    //				DfMain.TRACE(("遊技ｽﾃｰﾀｽ(Defines.DEF_GMLVSTS):" + (clOHHB_V23.getWork(Defines.DEF_GMLVSTS) & 0xFFFF) );
-                    //				DfMain.TRACE(("BB子役(Defines.DEF_BBGMCTR):" + (clOHHB_V23.getWork(Defines.DEF_BBGMCTR)&0xFFFF));
-                    //				DfMain.TRACE(("残りJACIN(Defines.DEF_BIGBCTR):" + (clOHHB_V23.getWork(Defines.DEF_BIGBCTR)&0xFFFF));
-                    //				DfMain.TRACE(("JAC入賞回数(Defines.DEF_JAC_CTR):" + (clOHHB_V23.getWork(Defines.DEF_JAC_CTR)&0xFFFF));
-                    //				DfMain.TRACE(("JAC遊技回数(Defines.DEF_JACGAME):" + (clOHHB_V23.getWork(Defines.DEF_JACGAME)&0xFFFF));
-                    //				DfMain.TRACE(("-end-----------------------------------------------------------");
-
                     bonusEndFg = v23.mBonusCounter();
 
-                    //				DfMain.TRACE(("-ST------------------------------------------------------------");
-                    //				DfMain.TRACE(("ボーナス制御2:" + int_s_value[Defines.DEF_INT_BONUS_GOT]);
-                    //				DfMain.TRACE(("遊技ｽﾃｰﾀｽ(Defines.DEF_GMLVSTS):" + (clOHHB_V23.getWork(Defines.DEF_GMLVSTS) & 0xFFFF) );
-                    //				DfMain.TRACE(("BB子役(Defines.DEF_BBGMCTR):" + (clOHHB_V23.getWork(Defines.DEF_BBGMCTR)&0xFFFF));
-                    //				DfMain.TRACE(("残りJACIN(Defines.DEF_BIGBCTR):" + (clOHHB_V23.getWork(Defines.DEF_BIGBCTR)&0xFFFF));
-                    //				DfMain.TRACE(("JAC入賞回数(Defines.DEF_JAC_CTR):" + (clOHHB_V23.getWork(Defines.DEF_JAC_CTR)&0xFFFF));
-                    //				DfMain.TRACE(("JAC遊技回数(Defines.DEF_JACGAME):" + (clOHHB_V23.getWork(Defines.DEF_JACGAME)&0xFFFF));
-                    //				DfMain.TRACE(("bonusEndFg 1:" +(bonusEndFg&0xFFFF));
-                    //				DfMain.TRACE(("-end-----------------------------------------------------------");
-
-
-                    //Defines.DEF_HITFLAG
-                    //if(bonusEndFg != Defines.DEF_BBEND_FLX)
                     if (IS_BONUS() == true)
                     {	// ボーナス終了フラグじゃないとき
                         if (cutBonusSystem(0))
@@ -917,34 +705,14 @@ public class Omatsuri
                                     BonusCutFg = false;	// JACのカットはここまでなので
                                 }
                             }
-                            //						DfMain.TRACE(("-ST------------------------------------------------------------");
-                            //						DfMain.TRACE(("ボーナスカット前:" + int_s_value[Defines.DEF_INT_BONUS_GOT]);
-                            //						DfMain.TRACE(("遊技ｽﾃｰﾀｽ(Defines.DEF_GMLVSTS):" + (clOHHB_V23.getWork(Defines.DEF_GMLVSTS) & 0xFFFF) );
-                            //						DfMain.TRACE(("BB子役(Defines.DEF_BBGMCTR):" + (clOHHB_V23.getWork(Defines.DEF_BBGMCTR)&0xFFFF));
-                            //						DfMain.TRACE(("残りJACIN(Defines.DEF_BIGBCTR):" + (clOHHB_V23.getWork(Defines.DEF_BIGBCTR)&0xFFFF));
-                            //						DfMain.TRACE(("JAC入賞回数(Defines.DEF_JAC_CTR):" + (clOHHB_V23.getWork(Defines.DEF_JAC_CTR)&0xFFFF));
-                            //						DfMain.TRACE(("JAC遊技回数(Defines.DEF_JACGAME):" + (clOHHB_V23.getWork(Defines.DEF_JACGAME)&0xFFFF));
-                            //						DfMain.TRACE(("-end-----------------------------------------------------------");
 
                             bonusEndFg = v23.mBonusCounter();
 
-                            //						DfMain.TRACE(("-ST------------------------------------------------------------");
-                            //						DfMain.TRACE(("ボーナスカット後:" + int_s_value[Defines.DEF_INT_BONUS_GOT]);
-                            //						DfMain.TRACE(("遊技ｽﾃｰﾀｽ(Defines.DEF_GMLVSTS):" + (clOHHB_V23.getWork(Defines.DEF_GMLVSTS) & 0xFFFF) );
-                            //						DfMain.TRACE(("BB子役(Defines.DEF_BBGMCTR):" + (clOHHB_V23.getWork(Defines.DEF_BBGMCTR)&0xFFFF));
-                            //						DfMain.TRACE(("残りJACIN(Defines.DEF_BIGBCTR):" + (clOHHB_V23.getWork(Defines.DEF_BIGBCTR)&0xFFFF));
-                            //						DfMain.TRACE(("JAC入賞回数(Defines.DEF_JAC_CTR):" + (clOHHB_V23.getWork(Defines.DEF_JAC_CTR)&0xFFFF));
-                            //						DfMain.TRACE(("JAC遊技回数(Defines.DEF_JACGAME):" + (clOHHB_V23.getWork(Defines.DEF_JACGAME)&0xFFFF));
-                            //						DfMain.TRACE(("bonusEndFg 2:" +(bonusEndFg&0xFFFF));
-                            //						DfMain.TRACE(("-end-----------------------------------------------------------");
                         }
                     }
 
                     if (bonusEndFg != 0)
                     {
-#else
-#endif
-
                         BonusEnd(0);
                     }
                     break; // 抜ける
@@ -977,7 +745,8 @@ public class Omatsuri
             }
         }
 
-        int_s_value[Defines.DEF_INT_MODE_COUNTER]++; // モードが切り替わってからの累積カウンタ
+        // モードが切り替わってからの累積カウンタ
+        int_s_value[Defines.DEF_INT_MODE_COUNTER]++;
 
         ctrlTopLamp();
 
@@ -988,7 +757,7 @@ public class Omatsuri
 
         DoModeAction(keyTrigger);
         return false;
-    } // process()
+    }
 
     private void DoModeAction(int keyTrigger)
     {

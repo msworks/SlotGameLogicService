@@ -270,7 +270,7 @@ public partial class ZZ
             read_size = -1;
         }
 
-        Defines.TRACE("getRecord:" + read_size);
+        //Defines.TRACE("getRecord:" + read_size);
         return read_size;
     }
 

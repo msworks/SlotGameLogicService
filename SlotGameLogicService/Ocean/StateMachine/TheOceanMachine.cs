@@ -91,7 +91,7 @@ namespace TheOcean
                 yaku = mainLogic.Chusen(kakuhenMachine.Mode, setting);
 
                 //デバッグ用 大当たり固定
-                //yaku = Yaku.Atari;
+                yaku = Yaku.Atari;
             }
 
             var payout = payoutTable.Where(pt=>pt.route== route)

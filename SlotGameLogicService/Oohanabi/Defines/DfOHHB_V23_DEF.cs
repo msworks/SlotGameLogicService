@@ -1,13 +1,5 @@
-﻿//*******************************************************
-//	【C++言語ソース　→　JAVAソース出力】
-//		このファイルはZ80C2J.exeで出力されています。
-//*******************************************************
-
-public partial class Defines {
-
-    ///////////////////////////////////////////////
-    // 擬似2進数定義
-    ///////////////////////////////////////////////
+﻿public partial class Defines
+{
     public const int DEF__00000000B8 = 0;
     public const int DEF__00000001B8 = 1;
     public const int DEF__00000010B8 = 2;
@@ -271,35 +263,26 @@ public partial class Defines {
     //========================================================================================
     //=		         イクエートエリア                                                         		=
     //========================================================================================
-    //
     public const int DEF_RBHMAX = 3; // RB 作動可能回数の最大値
     public const int DEF_BBGMAX = 30; // BB 中一般遊技可能回数の最大値
-    //
     public const int DEF_SET_INIT = 0; // 設定値の初期値 ( 実際値-1 ）
     public const int DEF_WAVEMAX = 6; // 設定値の最高値
-    //
     public const int DEF_MEDLMAX = 3; // ﾒﾀﾞﾙ ｶｳﾝﾀｰ の最大値
     public const int DEF_PAYMAX = 15; // 獲得枚数の最大値
     public const int DEF_PAY2 = 15; // ﾒﾀﾞﾙ 払出音 2 の払出枚数
     public const int DEF_CRDMAX = 50; // ｸﾚｼﾞｯﾄ ｶｳﾝﾀｰ の最大値
-    //
     public const int DEF_FLAG_ON = 0xFF; // ﾌﾗｸﾞ ｾｯﾄ ｽﾃｰﾀｽ
-    //
 
     //========================================================================================
     //=		         抽選制御コード
     //========================================================================================
-    //
     public const int DEF_RNDMASK = 0x3F; // 乱数値 [ 上位 ] 有効 ﾋﾞｯﾄ ﾃﾞｰﾀ
-    //
     public const int DEF_ASSIGN = 0x80; // 設定別割り当て ｺｰﾄﾞ
-    //
     public const int DEF_FLAGNUM = 6; // 抽選 ﾌﾗｸﾞ 数
     public const int DEF_BNS_NUM = 2; // 特賞抽選 ﾌﾗｸﾞ 数
     public const int DEF_PCTCKNUM = 5; // 特賞 ﾌﾗｸﾞ ﾁｪｯｸ 数
     public const int DEF_PCTCKNUM2 = (3 * 8); // 特賞 ﾌﾗｸﾞ ﾁｪｯｸ 数
     public const int DEF_ETC_NUM = (DEF_FLAGNUM - DEF_BNS_NUM); // 特賞以外抽選 ﾌﾗｸﾞ 数
-    //
     public const int DEF_BNSFLGC = 5; // 履歴 ﾌﾗｸﾞ 発生時停止用 ｾﾚｸﾄｶｳﾝﾀｰ 数
     public const int DEF_FRTFLGC = 4; // 履歴 ﾌﾗｸﾞ 発生時以外停止用 ｾﾚｸﾄｶｳﾝﾀｰ 数
     public const int DEF_RJAC_BITN = 3; // RB 入賞 ﾋﾞｯﾄ
@@ -308,20 +291,16 @@ public partial class Defines {
     public const int DEF_JACHITF = 0x08; // 役物 当たり要求 ﾌﾗｸﾞ
     public const int DEF_FRUITFLG = 0x0E; // 当たり要求 ﾌﾗｸﾞ 1
     public const int DEF_FRUITFLG2 = 0x0F; // 当たり要求 ﾌﾗｸﾞ 2
-    //
     public const int DEF_BNSFLG = 0x30; // 履歴 ﾌﾗｸﾞ 当たり要求ﾌﾗｸﾞ
     public const int DEF_REACHDAT = 0x03; // BB 作動期待 ﾁｪｯｸ ﾃﾞｰﾀ
 
     //========================================================================================
     //=		         入力制御コード
     //========================================================================================
-    //
     public const int DEF_IN3LOG = DEF__11100111B8; // 入力 ﾎﾟｰﾄ [ 3 ] 論理変換 ﾃﾞｰﾀ
     public const int DEF_IN4LOG = DEF__00001111B8; // 入力 ﾎﾟｰﾄ [ 4 ] 論理変換 ﾃﾞｰﾀ
-    //
     public const int DEF_XST_BITX = 0x7F; // ｽﾀｰﾄﾚﾊﾞｰ ﾁｪｯｸ 禁止 ﾋﾞｯﾄ
     public const int DEF_COL_BITN = 6; // 精算 ｽｲｯﾁ ﾋﾞｯﾄ
-    //
     public const int DEF_PAY_BITN = 7; // ﾎｯﾊﾟｰ ｶｳﾝﾄ ｽｲｯﾁ ﾋﾞｯﾄ
     public const int DEF_SUB_BITN = 6; // 補助収納庫 ｽｲｯﾁ ﾋﾞｯﾄ
     public const int DEF_END_BITN = 5; // 打止め解除 ｽｲｯﾁ ﾋﾞｯﾄ
@@ -329,7 +308,6 @@ public partial class Defines {
     public const int DEF_KEY_BITN = 3; // ｷｰ ｽｲｯﾁ ﾋﾞｯﾄ
     public const int DEF_RES_BITN = 2; // ﾘｾｯﾄ ｽｲｯﾁ ﾋﾞｯﾄ
     public const int DEF_MIN_BITX = 0x03; // ﾒﾀﾞﾙ 投入 ｽｲｯﾁ ﾋﾞｯﾄ
-    //
     public const int DEF_PMD_BITN = 5; // 精算有り無し ｽｲｯﾁ ﾋﾞｯﾄ
     public const int DEF_SMD_BITN = 4; // 打止め有り無し ｽｲｯﾁ ﾋﾞｯﾄ
     public const int DEF_POW_BITN = 3; // ﾊﾟﾜｰﾀﾞｳﾝ ﾁｪｯｸ ﾋﾞｯﾄ
@@ -356,17 +334,8 @@ public partial class Defines {
     //
     public const int DEF_REELNUM = 3; // ﾘｰﾙ 数
     public const int DEF_REELNUM2 = 4; // ﾘｰﾙ 数
-    //
-
-    // TOCO C#移植 未使用っぽいのでコメントアウト
-    //public const int DEF_CCCPULD = (char)-47; // ﾊﾟﾙｽ ｺｰﾄﾞ ﾃﾞｰﾀ
-    //public const int DEF_CCCPULS = (char)-43; // ﾊﾟﾙｽ ｺｰﾄﾞ ｶｳﾝﾀｰ
-    //public const int DEF_CCCERR = (char)-24; // ｴﾗｰ 検出用 ｶｳﾝﾀｰ
     public const int DEF_CCCPIC = -20; // 図柄位置 ｶｳﾝﾀｰ [ 0 - 20 ]
     public const int DEF_CCCPOS = -16; // ﾊﾟﾙｽ ｶｳﾝﾀｰ [ 20,19 - 0 ]
-    //public const int DEF_CCCSMAD = (char)-12; // 加速 ﾃｰﾌﾞﾙ ｶｳﾝﾀｰ
-    //public const int DEF_CCCSTIM = (char)-8; // 加速用 ﾀｲﾏｰ
-    //public const int DEF_CCCSPC = (char)-4;         // ﾘｰﾙ 方向､速度 ﾌﾗｸﾞ 
 
     //                                         [ D7 ] 未使用
     //                                         [ D6 ] 未使用
@@ -411,7 +380,7 @@ public partial class Defines {
     public const int DEF_RPLC_FLN = 2; // 再遊技 ﾁｪｯｸ ﾋﾞｯﾄ
     public const int DEF_RBGC_FLN = 0; // RB 作動 ﾁｪｯｸ ﾋﾞｯﾄ
     public const int DEF_GMC_NUM = 8; // 遊技状態数
-    //
+
     public const int DEF_STOPRND_FLN = 1; // デバッグ用STOPRND値使用 ﾁｪｯｸ ﾋﾞｯﾄ ※アプリ専用
     //
     //                    GAMEST              // 遊技状態 ﾌﾗｸﾞ
@@ -514,9 +483,7 @@ public partial class Defines {
     //静的データ領域
     ///////////////////////////////////////////////
     public const int DEF_DATADR = 0;
-
     public const int DEF_TOPADRS = (0x120F);
-
     public const int DEF_SATDAT = (DEF_DATADR);
     public const int DEF_PRB_JHTBL = (6);
     public const int DEF_PRB_BBTBL = (8);
@@ -689,49 +656,34 @@ public partial class Defines {
     public const int DEF_FLASH_06 = (2487);
     public const int DEF_FLASH_07 = (2534);
     public const int DEF_RCH_TBL = (2541);
-    // TODO 未使用？
-    //     public const int DEF_DATAEND = (RCH_TBL   + 3 ); //データ領域終了	
 
     ///////////////////////////////////////////////
     //RAM領域
     ///////////////////////////////////////////////
     public const int DEF_TOPRWM = 0;
-    //CLR_AREA_1
     public const int DEF_WAVENUM = DEF_TOPRWM; //設定値
     public const int DEF_RANDOMX = (DEF_WAVENUM + 1); //乱数値 X 格納領域         ( 内部抽せん用乱数 )
     public const int DEF_RANDOMY = (DEF_RANDOMX + 2); // 乱数値 A 格納領域
-
-    //CLR_AREA_2
     public const int DEF_INBUFF0 = (DEF_RANDOMY + 1); // 入力 ﾎﾟｰﾄ 0 状態格納領域(実機は4バイトだがアプリでは1バイトで十分？)大花はINBUFF3
-
     public const int DEF_GAMEST = (DEF_INBUFF0 + 1); // 遊技状態 ﾌﾗｸﾞ 格納領域
     public const int DEF_BBGMCTR = (DEF_GAMEST + 1); // BB 終了枚数管理 ｶｳﾝﾀｰ 格納領域
     public const int DEF_BIGBCTR = (DEF_BBGMCTR + 1); // RB 作動可能回数格納領域
-
     public const int DEF_JAC_CTR = (DEF_BIGBCTR + 1); // 役物 入賞可能回数格納領域
     public const int DEF_JACGAME = (DEF_JAC_CTR + 1); // 役物 遊技可能回数格納領域
-
     public const int DEF_FOUT3 = (DEF_JACGAME + 1); //ﾘｰﾙﾗﾝﾌﾟ12点滅要求 ﾊﾞｯｸｱｯﾌﾟ ﾃﾞｰﾀ
-
     public const int DEF_HITREQ = (DEF_FOUT3 + 1); //内部当たり ﾌﾗｸﾞ
-
-    //CLR_AREA_3
     public const int DEF_WAVEBIT = (DEF_HITREQ + 1); //当たり要求 ﾌﾗｸﾞ
     public const int DEF_MEDLCTR = (DEF_WAVEBIT + 1); //ﾒﾀﾞﾙ ｶｳﾝﾀｰ 格納領域 ｾｯﾄ
-
     public const int DEF_GMLVSTS = (DEF_MEDLCTR + 1); //遊技状態 ｽﾃｰﾀｽ
     public const int DEF_FLGCTR = (DEF_GMLVSTS + 1); //ｽﾄｯﾌﾟ 用 ｾﾚｸﾄｶｳﾝﾀｰ 領域
     public const int DEF_TBLNUM = (DEF_FLGCTR + 1); //検索順序 ﾊﾟﾗﾒｰﾀ 選択 ﾃﾞｰﾀ 格納領域
     public const int DEF_LINENUM = (DEF_TBLNUM + 1); //第一回胴第一停止時変更 ﾃﾞｰﾀ 格納領域
-    //
     public const int DEF_MSPHADRS = (DEF_LINENUM + 1); //最短停止位置の入賞作動予想格納領域 ｱﾄﾞﾚｽ
     public const int DEF_STOPNUM = (DEF_MSPHADRS + 2); //停止要求番号 格納領域
-
     public const int DEF_SLAMPBIT = (DEF_STOPNUM + 1); //ｽﾄｯﾌﾟﾎﾞﾀﾝ LED 状態格納領域
     public const int DEF_STOPBIT = (DEF_SLAMPBIT + 1); //回胴停止装置作動状態
     public const int DEF_PUSHCTR = (DEF_STOPBIT + 1); //ｽﾄｯﾌﾟﾎﾞﾀﾝ 作動 ｶｳﾝﾀｰ 格納領域
     public const int DEF_STOPRND = (DEF_PUSHCTR + 1); // ﾘｰﾙ 停止用乱数 格納領域
-
     public const int DEF_ARAY11 = (DEF_STOPRND + 1); // ｾﾝﾀｰ ﾗｲﾝ 図柄 ﾃﾞｰﾀ 格納領域     [ 1st ]
     public const int DEF_ARAY12 = (DEF_ARAY11 + 1); //                                 [ 2nd ]
     public const int DEF_ARAY13 = (DEF_ARAY12 + 1); //                                 [ 3rd ]
@@ -752,7 +704,6 @@ public partial class Defines {
     public const int DEF_HITSND = (DEF_HITFLAG + 1); // 入賞 ｻｳﾝﾄﾞ ﾃﾞｰﾀ 格納領域
     public const int DEF_HITCTR = (DEF_HITSND + 1); // 入賞枚数 ｶｳﾝﾀｰ 格納領域
     public const int DEF_HITLINE = (DEF_HITCTR + 1); // 入賞 ﾗｲﾝ 格納領域
-
     public const int DEF_REELST = (DEF_HITLINE + 1); // ﾘｰﾙ 制御 ﾌﾗｸﾞ 格納領域
     public const int DEF_RCB_ERR = (DEF_REELST + 1); // ﾘｰﾙ ｴﾗｰ 検出用 ｶｳﾝﾀｰ 格納領域
     public const int DEF_RCB_PIC = (DEF_RCB_ERR + DEF_REELNUM2); // ﾘｰﾙ 図柄位置 ｶｳﾝﾀｰ 格納領域
@@ -761,21 +712,14 @@ public partial class Defines {
     public const int DEF_RCB_TIM = (DEF_RCB_MAD + DEF_REELNUM2); // ﾘｰﾙ 加速用 ﾀｲﾏｰ 格納領域
     public const int DEF_RCB_SPC = (DEF_RCB_TIM + DEF_REELNUM2); // ﾘｰﾙ 方向､速度 ﾌﾗｸﾞ 格納領域
     public const int DEF_RCB_ST = (DEF_RCB_SPC + DEF_REELNUM2); // ﾘｰﾙ ｽﾃｰﾀｽ 格納領域
-
-
     public const int DEF_HITCHK = (DEF_RCB_ST + DEF_REELNUM2); // 入賞作動検索回数格納領域
     public const int DEF_CHKREEL = (DEF_HITCHK + 1); //検索対象 ﾘｰﾙ 番号格納領域
     public const int DEF_REEL_BIT = (DEF_CHKREEL + 1); //回転 ﾘｰﾙ 選択 ﾋﾞｯﾄ 格納領域
     public const int DEF_STP_INPT = (DEF_REEL_BIT + 1); // 停止受付図柄位置 格納領域
-
     public const int DEF_FLASH = (DEF_STP_INPT + 1); // ﾘｰﾙﾗﾝﾌﾟﾃﾞﾓ ﾃﾞｰﾀ 格納領域（FLASH+0:WINﾗﾝﾌﾟとｽﾀｰﾄ音/FLASH+1:ﾌﾗｯｼｭﾊﾟﾀｰﾝと4th演出番号）
-
     public const int DEF_FORCE_FLAG = (DEF_FLASH + 2); // 強制フラグ(0:無効,1～7:各種フラグ)
-
     public const int DEF_WORKEND = (DEF_FORCE_FLAG + 1); //終了位置
-
     public const int DEF_CLR_AREA_1 = DEF_TOPRWM; //全ワーククリアの先頭
     public const int DEF_CLR_AREA_2 = DEF_INBUFF0; //ボーナス終了後に0クリアされる変数群の先頭
     public const int DEF_CLR_AREA_3 = DEF_WAVEBIT; // 1プレイ後に0クリアされる変数群の先頭
-
 }

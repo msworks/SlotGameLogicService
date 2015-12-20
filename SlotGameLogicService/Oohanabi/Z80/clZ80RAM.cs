@@ -1,22 +1,9 @@
-﻿//*******************************************************
-//	【C++言語ソース　→　JAVAソース出力】
-//		このファイルはZ80C2J.exeで出力されています。
-//*******************************************************
-
-
-//#include "DfMain.h"
-
-using System;
-
-public class clZ80RAM
+﻿public class clZ80RAM
 {
-
     //Z80ワークRAMの実態
     public readonly ushort[] mWorkRam = new ushort[Defines.DEF_WORKEND + 1];
-
     public clREG front;		//表レジスタ
     public clREG back;		//裏レジスタ
-
     public clRAND8 random;	//乱数クラス
 
     //初期化
@@ -39,6 +26,7 @@ public class clZ80RAM
 
     //ワークRAM 取得(仮想1バイト)
     public ushort getWork(int index) { return mWorkRam[index]; }
+
     //ワークRAM 設定(仮想1バイト)
     public void setWork(int index, ushort data) { Defines.RAM_TRACE("setWork:[" + index + "]" + (data & 0xFFFF)); mWorkRam[index] = data; }
 
@@ -105,9 +93,6 @@ public class clZ80RAM
 
     //ワークRAM内設定（2バイト）
     public void mLD_Nm_A(int index) { mWorkRam[index] = getA(); }
-    //	public  void mLD_Nm_DE(int index){mWorkRam[index] = getD();mWorkRam[index+1] = getE();}
-    //	public  void mLD_Nm_HL(int index){mWorkRam[index] = getH();mWorkRam[index+1] = getL();}
-
     public void mLD_Nm_DE(int index) { mWorkRam[index] = getE(); mWorkRam[index + 1] = getD(); }
     public void mLD_Nm_HL(int index) { mWorkRam[index] = getL(); mWorkRam[index + 1] = getH(); }
 
@@ -277,10 +262,5 @@ public class clZ80RAM
         }
     }
 
-    ///////////////////////////////////////////////
-    // 静的データ領域
-    ///////////////////////////////////////////////
-
     public ushort[] mDataTable;
-
 }

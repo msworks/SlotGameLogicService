@@ -87,12 +87,12 @@ namespace GameLogicService
             var localPath = url.LocalPath;
             var reqparams = null as Associative;
 
-            ReqResLog($"REQ => {url}");
-
             if (req.HttpMethod == "POST")
             {
                 if (!req.HasEntityBody)
                 {
+                    ReqResLog($"REQ => {url} : no param.");
+
                     reqparams = new Associative();
                 }
                 else
@@ -103,7 +103,7 @@ namespace GameLogicService
                         {
                             var param = reader.ReadToEnd();
 
-                            ReqResLog($"REQ PARAM => {param}");
+                            ReqResLog($"REQ => {url} : {param}");
 
                             reqparams = PostBody2KeyValues(param);
                         }
@@ -130,7 +130,7 @@ namespace GameLogicService
 
             var timeSpan = DateTime.Now - preTime;
 
-            writer.Log($"{localPath} : takes {timeSpan}");
+            //writer.Log($"{localPath} : takes {timeSpan}");
 
             var buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
 
@@ -214,13 +214,24 @@ namespace GameLogicService
         /// <returns></returns>
         Json ConfigResponse(Associative param)
         {
+            // setting expect 0%2C0%2C0%2C0%2C20%2C30%2C50
+
+            var setting = null as string;
             var gameId = null as GameId;
             var userId = null as UserId;
+            var settingValue = 6;
 
             try
             {
+                setting = param["setting"];
                 gameId = param["gameId"];
                 userId = param["userId"];
+
+                var delimiter = new string[]{ "%2C", "%252C" };
+                var parts = setting.Split(delimiter, StringSplitOptions.RemoveEmptyEntries);
+                var nums = parts.Select(s => s.ParseInt());
+                var ary = nums.ToArray();
+                settingValue = Setting.Get(ary);
             }
             catch (Exception ex)
             {
@@ -237,7 +248,7 @@ namespace GameLogicService
                 writer.Log("[INFO] DESTROY MACHINE GAMEID:" + gameId + " USERID:" + userId);
             }
 
-            machine = MachineFactory.Create(gameId, userId);
+            machine = MachineFactory.Create(gameId, userId, settingValue);
             if (machine == null)
             {
                 writer.Log("[ERROR] CREATE MACHINE FAILD GAMEID:" + gameId + " USERID:" + userId);

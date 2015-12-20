@@ -25,13 +25,15 @@ namespace GameLogicService
         UserId userId;
         TextWriter writer = Console.Out;
 
-        YAKU currectYaku;
+        Yaku currentYaku;
+        int settingValue;
 
-        public Oohababi(GameId gameId, UserId userId)
+        public Oohababi(GameId gameId, UserId userId, int settingValue)
         {
             State = MACHINE_STATE.CREATED;
             this.gameId = gameId;
             this.userId = userId;
+            this.settingValue = settingValue;
         }
 
         public Associative Config(Associative param)
@@ -40,7 +42,7 @@ namespace GameLogicService
 
             var result = new Associative();
             var seed = mobile.Seed.ToString();
-            var setting = Setting.Get(gameId);
+            var setting = this.settingValue;
 
             writer.Log("[INFO][Oomatsuri]Setting:" + setting);
 
@@ -75,30 +77,26 @@ namespace GameLogicService
 
         public Associative Play(Associative param)
         {
-            writer.Log("[INFO]PLAY");
-
             var betcount = null as string;
-            var rate = null as string;
+            var bet = 0;
 
             try
             {
                 betcount = param["betCount"];
-                rate = param["rate"];
+                bet = betcount.ParseInt();
             }
             catch
             {
+                writer.Log("[ERROR]Palameter error.");
                 return new Associative() { { "result", "error".DQ() } };
             }
-
-            var beforeCoinCount = mobile.CoinCount;
-            //Console.WriteLine("[INFO]Coin:" + beforeCoinCount);
-
-            var bet = betcount.ParseInt();
 
             // bet 0 check
             if (bet==0)
             {
-                if (currectYaku != YAKU.REPLAY)
+                if (!(currentYaku == Yaku.Replay ||
+                      currentYaku == Yaku.JACIN ||
+                      currentYaku == Yaku.JAC))
                 {
                     // bet0のとき、リプレイでなければエラー
                     return new Associative() { { "result", "error".DQ() } };
@@ -107,53 +105,30 @@ namespace GameLogicService
 
             mobile.InsertCoin(bet);
 
-            writer.Log("[INFO]Bet:" + bet);
-
-            //--------------------------------------
-            // 内部のスロットマシンにコインを入れて
-            // レバーを引いてリールが停止するまで
-            // 同期で待つ
-            //--------------------------------------
-
-            foreach (var state in PlaystateCheck(mobile))
+            // レバーを引くまで回す
+            foreach (var state in ProgressToLever(mobile))
             {
+                Action<int> winCoinCallback = (coin) => { };
                 mobile.ZZ.int_value[Defines.DEF_Z_INT_KEYPRESS] |= 0;
-                mobile.exec();
+                mobile.exec(winCoinCallback);
                 mobile.ZZ.int_value[Defines.DEF_Z_INT_KEYPRESS] |= (1 << 5);
-                mobile.exec();
-                Thread.Sleep(20);
+                mobile.exec(winCoinCallback);
+                Thread.Sleep(1);
             }
 
-            foreach (var n in Enumerable.Range(0, 100))
-            {
-                mobile.exec();
-                Thread.Sleep(20);
-            }
-
-            var yaku = mobile.Yaku;
             var afterCoinCount = mobile.CoinCount;
-            var payout = afterCoinCount - beforeCoinCount;
-
-            // 役を保存しておく
-            currectYaku = yaku;
-
-            if (payout < 0) payout = 0;
-
-            //Console.WriteLine("[INFO]ALL REEL STOPPED");
-            writer.Log("[INFO]YAKU:" + yaku);
-            //Console.WriteLine("[INFO]Coin:" + afterCoinCount);
-            writer.Log("[INFO]PAYOUT:" + payout);
 
             var result = new Associative();
-            result.Add("yaku", ((int)yaku).ToString());
             result.Add("route", "0");
-            result.Add("payout", payout.ToString());
 
             State = MACHINE_STATE.PLAY;
+
+            writer.Log($"[INFO]Play GameId:{gameId} UserId:{userId} Bet:{bet}");
+
             return result;
         }
 
-        public IEnumerable<PLAYSTATE> PlaystateCheck(Mobile mobile)
+        public IEnumerable<PLAYSTATE> ProgressToLever(Mobile mobile)
         {
             var state = PLAYSTATE.InsertCoin;
 
@@ -162,22 +137,6 @@ namespace GameLogicService
                 if (mobile.Playstate == PLAYSTATE.Lever)
                 {
                     state = PLAYSTATE.Lever;
-                    break;
-                }
-
-                yield return state;
-            }
-
-            while (true)
-            {
-                if (mobile.IsReelsStopped())
-                {
-                    mobile.Playstate = PLAYSTATE.AllReelStopped;
-                }
-
-                if (mobile.Playstate == PLAYSTATE.AllReelStopped)
-                {
-                    state = PLAYSTATE.AllReelStopped;
                     break;
                 }
 
@@ -194,22 +153,60 @@ namespace GameLogicService
             var reelstopright = null as string;
             var oshijun = null as string;
 
+            var left = 0;
+            var center = 0;
+            var right = 0;
+            var oshijuns = new int[] { 1, 2, 3 };
+
             try
             {
                 reelstopleft = param["reelStopLeft"];
                 reelstopcenter = param["reelStopCenter"];
                 reelstopright = param["reelStopRight"];
                 oshijun = param["oshijun"];
+
+                left = reelstopleft.ParseInt();
+                center = reelstopcenter.ParseInt();
+                right = reelstopright.ParseInt();
+                oshijuns = oshijun.Split('_').Select(s => s.ParseInt()).ToArray();
             }
             catch
             {
                 return new Associative() { { "result", "error".DQ() } };
             }
 
+            var yaku = mobile.Yaku;
+            var winCoins = 0;
+            var gotCoinCountFlg = false;
+
+            Action<int> winCoinCallback = (coin) =>
+            {
+                winCoins = coin;
+                gotCoinCountFlg = true;
+            };
+
+            // 止まるまで回す
+            while(gotCoinCountFlg == false)
+            {
+                mobile.ZZ.int_value[Defines.DEF_Z_INT_KEYPRESS] |= 0;
+                mobile.exec(winCoinCallback);
+                mobile.ZZ.int_value[Defines.DEF_Z_INT_KEYPRESS] |= (1 << 5);
+                mobile.exec(winCoinCallback);
+                Thread.Sleep(1);
+            }
+
             var result = new Associative();
             result.Add("result", "WIN".DQ());
+            result.Add("payout", winCoins.ToString());
+            result.Add("yaku", ((int)yaku).ToString());
 
-            State = MACHINE_STATE.CORRECT;
+            State = MACHINE_STATE.COLLECT;
+
+            writer.Log($"[INFO]Collect GameId:{gameId} UserId:{userId} Payout:{winCoins} Yaku:{yaku}");
+
+            // 役を保存しておく
+            currentYaku = yaku;
+
             return result;
         }
     }

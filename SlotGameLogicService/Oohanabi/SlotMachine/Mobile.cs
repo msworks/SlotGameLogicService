@@ -1,14 +1,16 @@
-﻿using System.Collections;
-using System.Text;
+﻿using System;
 
-public enum YAKU
+public enum Yaku
 {
-    CHERRY = 0x01,
-    BELL = 0x02,
-    YAKU_WMLN = 0x04,
-    REPLAY = 0x08,
-    REGULER_BONUS = 0x10,
-    BIG_BONUD = 0x20,
+    None = 0x00,            // 0
+    Cherry = 0x01,          // 1
+    Bell = 0x02,            // 2
+    YAKU_WMLN = 0x04,       // 4
+    Replay = 0x08,          // 8  リプレイ
+    RegulerBonus = 0x10,    // 16 レギュラーボーナス
+    JAC = 0x18,             // 24 ジャック
+    BigBonus = 0x20,        // 32 ビッグボーナス
+    JACIN = 0x28            // 40 ジャックイン BIGBONUS中のリプレイ
 }
 
 public class Mobile
@@ -42,9 +44,17 @@ public class Mobile
         get { return _state; }
     }
 
-    public YAKU Yaku
+    public Yaku Yaku
     {
-        get { return (YAKU)v23.getWork(Defines.DEF_WAVEBIT); }
+        get { return (Yaku)v23.getWork(Defines.DEF_WAVEBIT); }
+    }
+
+    public int WinCoin
+    {
+        get
+        {
+            return mOmatsuri.int_s_value[Defines.DEF_INT_WIN_COIN_NUM];
+        }
     }
 
     /// <summary>
@@ -76,6 +86,15 @@ public class Mobile
                mOmatsuri.IsReelStopped(2);
     }
 
+    /// <summary>
+    /// 4thリールが停止しているか状態を取得
+    /// </summary>
+    /// <returns></returns>
+    public bool Is4thReelsStopped()
+    {
+        return mOmatsuri.int_s_value[Defines.DEF_INT_4TH_ACTION_FLAG] == 0;
+    }
+
     public GameManager GameManager { private set; get; }
 
     public int Seed {
@@ -87,16 +106,13 @@ public class Mobile
 
     public Mobile()
     {
-        //
-        // 相互参照しまくりなのだが解決した方がいいのだろうか
-        //
         gameManager = new GameManager(this);
         GameManager = gameManager;
         mOmatsuri = new Omatsuri();
         slotInterface = new SlotInterface(this, mOmatsuri, gameManager);
         ZZ = new ZZ();
-        //ZZ.setThreadSpeed(1);
-        ZZ.setThreadSpeed(20);
+        ZZ.setThreadSpeed(1);
+        //ZZ.setThreadSpeed(20);
         v23 = new clOHHB_V23(mOmatsuri, ZZ);
         ZZ.SetV23(v23);
         ZZ.SetGameManager(gameManager);
@@ -111,11 +127,8 @@ public class Mobile
         int_m_value[Defines.DEF_INT_MODE_CURRENT] = Defines.DEF_MODE_UNDEF;
         int_m_value[Defines.DEF_INT_BASE_OFFSET_X] = (ZZ.getWidth() - Defines.DEF_POS_WIDTH);
         int_m_value[Defines.DEF_INT_BASE_OFFSET_Y] = (ZZ.getHeight() - Defines.DEF_POS_HEIGHT);
-
         ZZ.setOrigin(int_m_value[Defines.DEF_INT_BASE_OFFSET_X], int_m_value[Defines.DEF_INT_BASE_OFFSET_Y]);
-
         int_m_value[Defines.DEF_INT_TITLE_BG_START] = ZZ.getBitRandom(32);
-
         int_m_value[Defines.DEF_INT_GMODE] = Defines.DEF_GMODE_GAME;
         int_m_value[Defines.DEF_INT_SETUP_VALUE_CURSOL] = 3;// 設定４
         setSetUpValue(3);	// 設定４
@@ -135,7 +148,7 @@ public class Mobile
         keyPressing = key;
     }
 
-    public void exec()
+    public void exec(Action<int> returnCoinAction)
     {
         initModeFlag = false;
 
@@ -171,8 +184,6 @@ public class Mobile
                     saveMenuData(false);//初期はホールPは保存しない
                     if (DEF_IS_DOCOMO)
                     {
-                        // satoh
-                        //					setMode(DEF_MODE_HALL_NOTICE);
                         break;
                     }
                 }
@@ -186,37 +197,30 @@ public class Mobile
                 break;
             /* ゲーム中 */
             case Defines.DEF_MODE_RUN:
-                ctrlRun();
+                ctrlRun(returnCoinAction);
                 break;
         }
 
     }
 
-    private void ctrlRun()
+    private void ctrlRun(Action<int> returnCoinAction)
     {
-        /* 初期化ブロック */
-        if (initModeFlag)
-        {
-        }
-        if (mOmatsuri.process(keyTrigger))
+        if (mOmatsuri.process(keyTrigger, returnCoinAction))
         {
             mOmatsuri.getExitReason();
         }
         mOmatsuri.restartSlot();
-        // 4TH_REEL
         int pos = (mOmatsuri.int_s_value[Defines.DEF_INT_4TH_REEL_ANGLE] % 414) * (2359296 / 414);
         ZZ.dbgDrawAll();
     }
 
     private void ctrlTitle()
     {
-        {
-            setSetUpValue(slotInterface.gpif_setting);
-            // 分析モード
-            int_m_value[Defines.DEF_INT_GMODE] = Defines.DEF_GMODE_SIMURATION;
-            mOmatsuri.newSlot();
-            setMode(Defines.DEF_MODE_RUN);// ゲームを走らす
-        }
+        // ゲームを走らす
+        setSetUpValue(slotInterface.gpif_setting);
+        int_m_value[Defines.DEF_INT_GMODE] = Defines.DEF_GMODE_SIMURATION;
+        mOmatsuri.newSlot();
+        setMode(Defines.DEF_MODE_RUN);
     }
 
     /** Mobile内で使うint配列 */
@@ -225,7 +229,6 @@ public class Mobile
     /**
      * 目押しサポートあり？<BR>
      * ﾒﾆｭｰで変更されたﾌﾗｸﾞを渡す<BR>
-     * 
      * @return true:あり false:なし
      */
     public bool isMeoshi()
@@ -243,20 +246,14 @@ public class Mobile
      */
     public void setMenuAvarable(bool flag)
     {
-        int_m_value[Defines.DEF_INT_IS_MENU_AVAILABLE] = (flag) ? Defines.DEF_MENU_AVAILABLE
-                : Defines.DEF_MENU_UNAVAILABLE;
-        if (flag)
-        {
-        }
-        else
-        {
-        }
+        int_m_value[Defines.DEF_INT_IS_MENU_AVAILABLE] = 
+            (flag) ? Defines.DEF_MENU_AVAILABLE
+                   : Defines.DEF_MENU_UNAVAILABLE;
     }
 
     /**
      * JACカットするかどうか？<BR>
      * ﾒﾆｭｰで変更されたﾌﾗｸﾞを渡す<BR>
-     * 
      * @see Defines.DEF_JAC_CUT_ON
      * @see Defines.DEF_JAC_CUT_OFF
      * @return
@@ -324,9 +321,6 @@ public class Mobile
     {
         int_m_value[Defines.DEF_INT_VOLUME] = 40;// 音量２
         int_m_value[Defines.DEF_INT_VOLUME_KEEP] = 40;// 音量２
-        //		setVolume(int_m_value[Defines.DEF_INT_VOLUME]);
-        //		int_m_value[Defines.DEF_INT_SPEED] = 20;// スピード３
-        //		int_m_value[Defines.DEF_INT_IS_MEOSHI] = DEF_SELECT_2_OFF;// 目押しOff
         int_m_value[Defines.DEF_INT_ORDER] = Defines.DEF_SELECT_6_0;// 押し順順押し
         int_m_value[Defines.DEF_INT_KOKUCHI] = Defines.DEF_SELECT_3_OFF;// こくちOff
         int_m_value[Defines.DEF_INT_IS_JACCUT] = Defines.DEF_SELECT_2_OFF;// JACCUTオフ
@@ -336,9 +330,6 @@ public class Mobile
 
     public readonly int SAVE_BUFFER = Defines.DEF_SAVE_SIZE - 2; // アクセス関数の都合上-2しないとこける
 
-    // ///////////////////////////////////////////////////////////////////////
-    // メニューデータの管理
-    // ///////////////////////////////////////////////////////////////////////
     /**
      * メニューデータの書き込み
      */
@@ -375,10 +366,8 @@ public class Mobile
         buf[Defines.DEF_SAVE_KASIDASI_1] = (sbyte)((mOmatsuri.kasidasiMedal >> 8) & 0xff);
         buf[Defines.DEF_SAVE_KASIDASI_2] = (sbyte)((mOmatsuri.kasidasiMedal >> 16) & 0xff);
         buf[Defines.DEF_SAVE_KASIDASI_3] = (sbyte)((mOmatsuri.kasidasiMedal >> 24) & 0xff);
-
         buf[Defines.DEF_SAVE_WRITTEN] = 1;
         ZZ.setRecord(buf);
-
     }
 
     /**
@@ -426,9 +415,7 @@ public class Mobile
 
     /**
      * アプリモードアクセッサ
-     * 
-     * @param a
-     *            カレントモード
+     * @param a カレントモード
      * @return ノーマルモード
      */
     private int getNormalMode(int a)
@@ -438,9 +425,7 @@ public class Mobile
 
     /**
      * メニューアプリモードアクセッサ
-     * 
-     * @param a
-     *            カレントモード
+     * @param a カレントモード
      * @return メニューモード
      */
     private int getMenuMode(int a)
@@ -450,9 +435,7 @@ public class Mobile
 
     /**
      * アプリのイベントモード切替指示
-     * 
-     * @param m
-     *            変更要求するアプリモード
+     * @param m 変更要求するアプリモード
      */
     private void setMode(int m)
     {
@@ -468,8 +451,7 @@ public class Mobile
     /**
      * 強制停止. mobuilder と mobuilderA の差異を吸収する
      * 
-     * @param mode
-     *            サウンドモード
+     * @param mode サウンドモード
      * @see Df#SOUND_MULTI_SE
      * @see Df#SOUND_MULTI_BGM
      * @see Df#SOUND_UNDEF
@@ -518,5 +500,4 @@ public class Mobile
     {
         return (Defines.GP_DEF_INT_SPEED - 20) * 3 + 100;
     }
-
 }

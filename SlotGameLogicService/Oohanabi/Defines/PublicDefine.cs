@@ -295,25 +295,12 @@ public class PublicDefine {
 	public const int GPH_FLASH         = 153; // 03 画面フラッシュ⇒NO PROCESS
 	public const int GPH_SYNCCON_DRW   = 155; // 03 定期通信描画
 	public const int GPH_SYNCCON_DRW2  = 157; // 03 定期通信描画2(描画だけ)
-
-
-	// 分岐↓
 	public const int GPH_DEBUG_PRC   = 99999; // 05 debug制御
-	// 分岐↓
 	public const int GPH_SHOPTO_TOMENU  = 201; // 04 ショップへジャンプ
 	public const int GPH_GACHATO_TOMENU = 202; // 04 ガチャへジャンプ
-
-	// 分岐↓
 	public const int GPH_ERR2_RESUME = 222; // 03 ゲーム時の復帰制御
-
 	public const int GPH_RARE_CON    = 225; // 01 レア演出
-
-	// 分岐↓
-
-
-	// 描画
 	public const int GPH_WINDOW        = 340; // メインウィンドウ
 	public const int GPH_INFOWINDOW    = 350; // お知らせ画面
 	public const int GPH_DATAWINDOW    = 390; // ゲーム中データ表示
-
 }
