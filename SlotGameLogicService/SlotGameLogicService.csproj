@@ -47,6 +47,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\log4netTest\log4netTest\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -61,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\Extensions.cs" />
+    <Compile Include="Common\Logger.cs" />
     <Compile Include="GameLogicService\Setting.cs" />
     <Compile Include="Ocean\Enumerates.cs" />
     <Compile Include="Ocean\StateMachine\Kakuhen.cs" />

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Log;
+using System;
 
 public class Omatsuri
 {
@@ -3173,7 +3174,7 @@ public class Omatsuri
             var draw = GameManager.setting0Machine.Draw();
             if (draw == DrawSetting0.Hazure)
             {
-                Console.WriteLine("[INFO]FORCE HAZURE");
+                Logger.Info("FORCE HAZURE");
                 v23.mSetForceFlag(Defines.ForceYakuFlag.NONE);
             }
         }

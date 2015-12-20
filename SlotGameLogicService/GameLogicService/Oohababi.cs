@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using Log;
 
 namespace GameLogicService
 {
@@ -44,7 +45,7 @@ namespace GameLogicService
             var seed = mobile.Seed.ToString();
             var setting = this.settingValue;
 
-            writer.Log("[INFO][Oomatsuri]Setting:" + setting);
+            Logger.Info($"[INFO][Oomatsuri]Setting:{setting}");
 
             if (setting == 0)
             {
@@ -87,7 +88,7 @@ namespace GameLogicService
             }
             catch
             {
-                writer.Log("[ERROR]Palameter error.");
+                Logger.Error("[ERROR]Palameter error.");
                 return new Associative() { { "result", "error".DQ() } };
             }
 
@@ -123,7 +124,7 @@ namespace GameLogicService
 
             State = MACHINE_STATE.PLAY;
 
-            writer.Log($"[INFO]Play GameId:{gameId} UserId:{userId} Bet:{bet}");
+            Logger.Info($"[INFO]Play GameId:{gameId} UserId:{userId} Bet:{bet}");
 
             return result;
         }
@@ -202,7 +203,7 @@ namespace GameLogicService
 
             State = MACHINE_STATE.COLLECT;
 
-            writer.Log($"[INFO]Collect GameId:{gameId} UserId:{userId} Payout:{winCoins} Yaku:{yaku}");
+            Logger.Info($"[INFO]Collect GameId:{gameId} UserId:{userId} Payout:{winCoins} Yaku:{yaku}");
 
             // 役を保存しておく
             currentYaku = yaku;

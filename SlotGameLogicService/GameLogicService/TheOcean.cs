@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TheOcean;
+using Log;
 
 namespace GameLogicService
 {
@@ -38,10 +39,9 @@ namespace GameLogicService
         public Associative Config(Associative param)
         {
             var seed = (((int)(Util.GetMilliSeconds())) & 0xFFFF);
-            writer.Log("[INFO][TheOcean]Seed:" + seed);
 
             var setting = settingValue;
-            writer.Log("[INFO][TheOcean]Setting:" + setting);
+            Logger.Info($"[INFO][TheOcean]Seed:{seed} Setting:{setting}");
 
             machine = new TheOceanMachine(seed:seed, setting:setting);
 
@@ -105,7 +105,7 @@ namespace GameLogicService
 
             if (shootResult.route != Route.Abandon)
             {
-                writer.Log($"G:{gameId} U:{userId} power:{power} rate:{rate} yaku:{shootResult.yaku} route:{shootResult.route} payout:{shootResult.payout}");
+                Logger.Info($"G:{gameId} U:{userId} power:{power} rate:{rate} yaku:{shootResult.yaku} route:{shootResult.route} payout:{shootResult.payout}");
             }
 
             State = MACHINE_STATE.PLAY;

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading;
+using Log;
 
 namespace GameLogicService
 {
@@ -39,7 +40,7 @@ namespace GameLogicService
             {
                 ReqResLog = (msg) =>
                 {
-                    writer.Log(msg);
+                    Logger.Info(msg);
                 };
             } else
             {
@@ -55,12 +56,12 @@ namespace GameLogicService
             }
             catch (Exception e)
             {
-                writer.Log("[ERROR]GAMELOGIC SERVER RUN FAILED");
-                writer.Log(e);
+                Logger.Error("[ERROR]GAMELOGIC SERVER RUN FAILED");
+                Logger.Error(e);
                 return;
             }
 
-            writer.Log("[INFO]GAMELOGIC SERVER RUN PORT:9876");
+            Logger.Info("[INFO]GAMELOGIC SERVER RUN PORT:9876");
 
             while (true)
             {
@@ -141,7 +142,7 @@ namespace GameLogicService
             }
             catch(Exception)
             {
-                writer.Log("Stream Crashed");
+                Logger.Error("Stream Crashed");
             }
 
             res.Close();
@@ -166,7 +167,7 @@ namespace GameLogicService
             }
             catch (Exception ex)
             {
-                writer.Log(ex);
+                Logger.Error(ex);
             }
 
             return result;
@@ -192,7 +193,7 @@ namespace GameLogicService
             }
             catch (Exception ex)
             {
-                writer.Log(ex);
+                Logger.Error(ex);
             }
 
             return result;
@@ -235,7 +236,7 @@ namespace GameLogicService
             }
             catch (Exception ex)
             {
-                writer.Log(ex);
+                Logger.Error(ex);
                 return defaultResponse(param);
             }
 
@@ -245,19 +246,19 @@ namespace GameLogicService
             if (machines.ContainsKey(key))
             {
                 machines.Remove(key);
-                writer.Log("[INFO] DESTROY MACHINE GAMEID:" + gameId + " USERID:" + userId);
+                Logger.Info($"[INFO] DESTROY MACHINE GAMEID:{gameId} USERID:{userId}");
             }
 
             machine = MachineFactory.Create(gameId, userId, settingValue);
             if (machine == null)
             {
-                writer.Log("[ERROR] CREATE MACHINE FAILD GAMEID:" + gameId + " USERID:" + userId);
+                Logger.Error($"[ERROR] CREATE MACHINE FAILD GAMEID:{gameId} USERID:{userId}");
                 return defaultResponse(param);
             }
 
             machines.Add(key, machine);
 
-            writer.Log("[INFO] CREATE MACHINE GAMEID:" + gameId + " USERID:" + userId);
+            Logger.Info($"[INFO] CREATE MACHINE GAMEID:{gameId} USERID:{userId}");
 
             var table = machine.Config(param);
 
@@ -280,7 +281,7 @@ namespace GameLogicService
             }
             catch (Exception ex)
             {
-                writer.Log(ex);
+                Logger.Error(ex);
                 return defaultResponse(param);
             }
 
@@ -315,7 +316,7 @@ namespace GameLogicService
             }
             catch (Exception ex)
             {
-                writer.Log(ex);
+                Logger.Error(ex);
                 return defaultResponse(param);
             }
 
@@ -350,7 +351,7 @@ namespace GameLogicService
             }
             catch (Exception ex)
             {
-                writer.Log(ex);
+                Logger.Error(ex);
                 return defaultResponse(param);
             }
 
