@@ -56,12 +56,12 @@ namespace GameLogicService
             }
             catch (Exception e)
             {
-                Logger.Error("[ERROR]GAMELOGIC SERVER RUN FAILED");
+                Logger.Error("GAMELOGIC SERVER RUN FAILED");
                 Logger.Error(e);
                 return;
             }
 
-            Logger.Info("[INFO]GAMELOGIC SERVER RUN PORT:9876");
+            Logger.Info("GAMELOGIC SERVER RUN PORT:9876");
 
             while (true)
             {
