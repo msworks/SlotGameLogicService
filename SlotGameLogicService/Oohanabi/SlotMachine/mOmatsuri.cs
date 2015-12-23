@@ -54,23 +54,23 @@ public class Omatsuri
     private readonly ushort[,] bonus_Data = new ushort[Defines.DEF_INFO_GAME_HISTORY, Defines.DEF_INFO_GAMES];
 
     public readonly ushort[][] REELTB = {
-		new ushort[]{ Defines.DEF_RPLY, Defines.DEF_BAR_, Defines.DEF_BELL, Defines.DEF_WMLN, Defines.DEF_CHRY, Defines.DEF_BSVN, Defines.DEF_RPLY,
-		Defines.DEF_BELL, Defines.DEF_DON_, Defines.DEF_DON_, Defines.DEF_DON_, Defines.DEF_RPLY, Defines.DEF_BELL,
-		Defines.DEF_CHRY, Defines.DEF_BSVN, Defines.DEF_WMLN, Defines.DEF_RPLY, Defines.DEF_BELL, Defines.DEF_WMLN,
-		Defines.DEF_BELL, Defines.DEF_BSVN },
-		new ushort[]{ Defines.DEF_BELL, Defines.DEF_BAR_, Defines.DEF_CHRY, Defines.DEF_BELL, Defines.DEF_RPLY, Defines.DEF_BSVN, Defines.DEF_WMLN,
-		Defines.DEF_CHRY, Defines.DEF_BELL, Defines.DEF_RPLY, Defines.DEF_BAR_, Defines.DEF_CHRY, Defines.DEF_BAR_,
-		Defines.DEF_BELL, Defines.DEF_RPLY, Defines.DEF_CHRY, Defines.DEF_DON_, Defines.DEF_BELL, Defines.DEF_RPLY,
-		Defines.DEF_WMLN, Defines.DEF_RPLY },
-		new ushort[]{ Defines.DEF_BELL, Defines.DEF_CHRY, Defines.DEF_RPLY, Defines.DEF_WMLN, Defines.DEF_BELL, Defines.DEF_BSVN, Defines.DEF_CHRY,
-		Defines.DEF_RPLY, Defines.DEF_WMLN, Defines.DEF_BELL, Defines.DEF_CHRY, Defines.DEF_RPLY, Defines.DEF_WMLN,
-		Defines.DEF_BELL, Defines.DEF_DON_, Defines.DEF_RPLY, Defines.DEF_CHRY, Defines.DEF_BELL, Defines.DEF_BAR_,
-		Defines.DEF_RPLY, Defines.DEF_WMLN}
-	};
+        new ushort[]{ Defines.DEF_RPLY, Defines.DEF_BAR_, Defines.DEF_BELL, Defines.DEF_WMLN, Defines.DEF_CHRY, Defines.DEF_BSVN, Defines.DEF_RPLY,
+        Defines.DEF_BELL, Defines.DEF_DON_, Defines.DEF_DON_, Defines.DEF_DON_, Defines.DEF_RPLY, Defines.DEF_BELL,
+        Defines.DEF_CHRY, Defines.DEF_BSVN, Defines.DEF_WMLN, Defines.DEF_RPLY, Defines.DEF_BELL, Defines.DEF_WMLN,
+        Defines.DEF_BELL, Defines.DEF_BSVN },
+        new ushort[]{ Defines.DEF_BELL, Defines.DEF_BAR_, Defines.DEF_CHRY, Defines.DEF_BELL, Defines.DEF_RPLY, Defines.DEF_BSVN, Defines.DEF_WMLN,
+        Defines.DEF_CHRY, Defines.DEF_BELL, Defines.DEF_RPLY, Defines.DEF_BAR_, Defines.DEF_CHRY, Defines.DEF_BAR_,
+        Defines.DEF_BELL, Defines.DEF_RPLY, Defines.DEF_CHRY, Defines.DEF_DON_, Defines.DEF_BELL, Defines.DEF_RPLY,
+        Defines.DEF_WMLN, Defines.DEF_RPLY },
+        new ushort[]{ Defines.DEF_BELL, Defines.DEF_CHRY, Defines.DEF_RPLY, Defines.DEF_WMLN, Defines.DEF_BELL, Defines.DEF_BSVN, Defines.DEF_CHRY,
+        Defines.DEF_RPLY, Defines.DEF_WMLN, Defines.DEF_BELL, Defines.DEF_CHRY, Defines.DEF_RPLY, Defines.DEF_WMLN,
+        Defines.DEF_BELL, Defines.DEF_DON_, Defines.DEF_RPLY, Defines.DEF_CHRY, Defines.DEF_BELL, Defines.DEF_BAR_,
+        Defines.DEF_RPLY, Defines.DEF_WMLN}
+    };
 
     private readonly char[] width4th = "\u0075\u003F\u003B\u0037\u0040\u0038".ToCharArray();
 
-    public Omatsuri(){}
+    public Omatsuri() { }
 
     public void SetSlotInterface(SlotInterface slotInterface)
     {
@@ -98,16 +98,16 @@ public class Omatsuri
     }
 
     private int[] panel_colors = {
-	    ZZ.getColor(0x00, 0x00, 0x00),// なし
+        ZZ.getColor(0x00, 0x00, 0x00),// なし
 	    ZZ.getColor(Defines.DEF_POS_CELL_COLOR_ETC_R,
                     Defines.DEF_POS_CELL_COLOR_ETC_G,
-			        Defines.DEF_POS_CELL_COLOR_ETC_B),// 通常
+                    Defines.DEF_POS_CELL_COLOR_ETC_B),// 通常
 	    ZZ.getColor(Defines.DEF_POS_CELL_COLOR_BB_R,
                     Defines.DEF_POS_CELL_COLOR_BB_G,
-			        Defines.DEF_POS_CELL_COLOR_BB_B),// BB
+                    Defines.DEF_POS_CELL_COLOR_BB_B),// BB
 	    ZZ.getColor(Defines.DEF_POS_CELL_COLOR_RB_R,
                     Defines.DEF_POS_CELL_COLOR_RB_G,
-			        Defines.DEF_POS_CELL_COLOR_RB_B),// RB
+                    Defines.DEF_POS_CELL_COLOR_RB_B),// RB
 	    ZZ.getColor(0xFF, 0x00, 0xFF),
     };
 
@@ -274,7 +274,7 @@ public class Omatsuri
     private int pressingSpan = 0;
     public int req_code;
 
-    public bool process(int keyTrigger, Action<int> returnCoinCount)
+    public bool process(int keyTrigger, Action<int> returnCoinCount, int[] indexis, int[] order)
     {
         int_s_value[Defines.DEF_INT_REEL_SPEED] =
             ZZ.getThreadSpeed()
@@ -916,7 +916,7 @@ public class Omatsuri
                     }
                 }
                 break;
-                #endregion
+            #endregion
             // TOBE [=2.RMODE_SPIN rp]
             case Defines.DEF_RMODE_SPIN: // 回転中（毎回処理）
                 // 4thをまわす。
@@ -2747,8 +2747,8 @@ public class Omatsuri
 			},
 			// RLPTNDT29
 			new int[] { Defines.DEF_R_STS + Defines.DEF_ST_TN, Defines.DEF_R_NRS + Defines.DEF_R_NRL, Defines.DEF_RP08, // 1
-			}, 
-			};
+			},
+            };
 
     // private  final char[][] FLASHTBL = {
     // // FLASH_01[] = { // ﾌﾗｯｼｭ演出ﾃﾞｰﾀ 01
@@ -2907,27 +2907,27 @@ public class Omatsuri
 
     /** AUTO GENERATED char ARRAY BY compact.CompactClass */
     private char[][] FLASHTBL = {
-			"\u0003\u01F8\u0003\u01C7\u0003\u003F\uFFFF".ToCharArray(),
-			"\u0003\u0E00\u0003\u0E03\u0003\u0E24\u0003\u0F80\u0003\u0E48\u0003\u0E10\u0003\u0E00\uFFFF"
-					.ToCharArray(),
-			"\u0003\u0E00\u0003\u0E08\u0003\u0E10\u0003\u0E20\u0009\u0E00\u0006\u0E10\u0003\u0E00\u0003\u0E10\u0006\u0E00\uFFFF"
-					.ToCharArray(),
-			"\u0003\u0E00\u0003\u0E08\u0003\u0E10\u0003\u0E20\u0009\u0E00\u0003\u0E10\u0003\u0EAA\u0004\u0FEF\u0006\u0E00\uFFFF"
-					.ToCharArray(),
-			"\u0008\u0E00\u0003\u0E01\u0003\u0E02\u0003\u0E06\u0003\u0E04\u0003\u0E40\u0003\u0E80\u0003\u0F80\u0003\u0F08\u0003\u0E10\u0003\u0E30\u0003\u0E20\u000F\u0E00\u0003\u0E02\u0003\u0E15\n\u0E00\u0003\u0E80\u0003\u0F50\u000F\u0E00\u0003\u0E10\u0003\u0EAA\u0004\u0F45\n\u0E00\uFFFF"
-					.ToCharArray(),
-			"\u0008\u0E00\u0003\u0E08\u0003\u0E10\u0004\u0E20\n\u0000\u0002\u0FFF\u000F\u0000\u0003\u0AA1\u0003\u030A\u0003\u0E51\u0003\u0CA5\u0003\u0650\u0003\u04A8\u0003\u0F0A\u0004\u0855\u0004\u0EA2\u000F\u0E00\u0005\u018E\u0008\u0E00\u0005\u018E\u0008\u0E00\u0005\u018E\n\u0E00\uFFFF"
-					.ToCharArray(),
-			"\u0002\u0FFF\u0002\u01FF\u0002\u0FFF\uFFFF".ToCharArray(), };
+            "\u0003\u01F8\u0003\u01C7\u0003\u003F\uFFFF".ToCharArray(),
+            "\u0003\u0E00\u0003\u0E03\u0003\u0E24\u0003\u0F80\u0003\u0E48\u0003\u0E10\u0003\u0E00\uFFFF"
+                    .ToCharArray(),
+            "\u0003\u0E00\u0003\u0E08\u0003\u0E10\u0003\u0E20\u0009\u0E00\u0006\u0E10\u0003\u0E00\u0003\u0E10\u0006\u0E00\uFFFF"
+                    .ToCharArray(),
+            "\u0003\u0E00\u0003\u0E08\u0003\u0E10\u0003\u0E20\u0009\u0E00\u0003\u0E10\u0003\u0EAA\u0004\u0FEF\u0006\u0E00\uFFFF"
+                    .ToCharArray(),
+            "\u0008\u0E00\u0003\u0E01\u0003\u0E02\u0003\u0E06\u0003\u0E04\u0003\u0E40\u0003\u0E80\u0003\u0F80\u0003\u0F08\u0003\u0E10\u0003\u0E30\u0003\u0E20\u000F\u0E00\u0003\u0E02\u0003\u0E15\n\u0E00\u0003\u0E80\u0003\u0F50\u000F\u0E00\u0003\u0E10\u0003\u0EAA\u0004\u0F45\n\u0E00\uFFFF"
+                    .ToCharArray(),
+            "\u0008\u0E00\u0003\u0E08\u0003\u0E10\u0004\u0E20\n\u0000\u0002\u0FFF\u000F\u0000\u0003\u0AA1\u0003\u030A\u0003\u0E51\u0003\u0CA5\u0003\u0650\u0003\u04A8\u0003\u0F0A\u0004\u0855\u0004\u0EA2\u000F\u0E00\u0005\u018E\u0008\u0E00\u0005\u018E\u0008\u0E00\u0005\u018E\n\u0E00\uFFFF"
+                    .ToCharArray(),
+            "\u0002\u0FFF\u0002\u01FF\u0002\u0FFF\uFFFF".ToCharArray(), };
 
     /** AUTO GENERATED char ARRAY BY compact.CompactClass */
     public char[][] FLLXX = {
-			"\u0064\u0000\u0000\u0000\u0000\u0000".ToCharArray(),
-			"\u0078\u0091\u004E\u0024\u004E\u0000".ToCharArray(),
-			"\u0050\u0035\u007B\u00E4\n\u0000".ToCharArray(),
-			"\u00C8\u0011\u000E\u0011\u000E\u0000".ToCharArray(),
-			"\u0050\u0092\u0049\u0024\u0000\u0000".ToCharArray(),
-			"\u0050\u0089\u0052\u0024\u0000\u0000".ToCharArray(), };
+            "\u0064\u0000\u0000\u0000\u0000\u0000".ToCharArray(),
+            "\u0078\u0091\u004E\u0024\u004E\u0000".ToCharArray(),
+            "\u0050\u0035\u007B\u00E4\n\u0000".ToCharArray(),
+            "\u00C8\u0011\u000E\u0011\u000E\u0000".ToCharArray(),
+            "\u0050\u0092\u0049\u0024\u0000\u0000".ToCharArray(),
+            "\u0050\u0089\u0052\u0024\u0000\u0000".ToCharArray(), };
 
     // //////////////////////////////////////////////////////////////
     // compact.CompactClass byte[]
@@ -3050,8 +3050,8 @@ public class Omatsuri
         int result_index;
         int tmp;
         ushort pos = 0;
-        int[][] meoshi = { 
-		    new int[]{ 9, 15, 13 }, // BB図柄
+        int[][] meoshi = {
+            new int[]{ 9, 15, 13 }, // BB図柄
 		    new int[]{ 13, 3, 3 }, // BB図柄
 		    new int[]{ 0, 9, 17 }, // RB図柄
 		    new int[]{ 2, 4, 11} // 通常時の達人オート

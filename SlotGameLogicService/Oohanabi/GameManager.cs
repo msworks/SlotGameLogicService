@@ -1,4 +1,6 @@
-﻿public class GameManager
+﻿using Log;
+
+public class GameManager
 {
     int seed;
     Mobile mobile;
@@ -23,16 +25,19 @@
 
     public void OnCoinInsert()
     {
+        //Logger.Info($"OnCoinInsert");
         mobile.Playstate = PLAYSTATE.InsertCoin;
     }
 
     public void OnStartPlay()
     {
+        //Logger.Info($"OnStartPlay");
         mobile.Playstate = PLAYSTATE.Lever;
     }
 
     public void OnAllReelStopped()
     {
+        //Logger.Info($"OnAllReelStopped");
         mobile.Playstate = PLAYSTATE.AllReelStopped;
     }
 

@@ -15,10 +15,8 @@ public enum Yaku
 
 public class Mobile
 {
-    public const bool DEF_IS_DOCOMO = true; // TODO C#移植 DOCOMO準拠と仮定
+    public const bool DEF_IS_DOCOMO = true;
     public int keyTrigger = 0;
-
-    private bool initModeFlag = false;    // モード初期化フラグ
     private int keyPressing = 0;
     private int keyPressingCount = 0;
 
@@ -29,6 +27,23 @@ public class Mobile
     public ZZ ZZ;
 
     PLAYSTATE _state;
+
+    // 押下時リール位置
+    int[] ReelIndexies;
+
+    // 押下順
+    int[] Order;
+
+    /// <summary>
+    /// クライアントが押した内容
+    /// </summary>
+    /// <param name="reelIndexies">押下時リール位置</param>
+    /// <param name="order">押下順</param>
+    public void SetClientPressed(int[] reelIndexies, int[] order)
+    {
+        this.ReelIndexies = reelIndexies;
+        this.Order = order;
+    }
 
     public int CoinCount
     {
@@ -111,8 +126,8 @@ public class Mobile
         mOmatsuri = new Omatsuri();
         slotInterface = new SlotInterface(this, mOmatsuri, gameManager);
         ZZ = new ZZ();
-        ZZ.setThreadSpeed(1);
-        //ZZ.setThreadSpeed(20);
+        //ZZ.setThreadSpeed(1);
+        ZZ.setThreadSpeed(20);
         v23 = new clOHHB_V23(mOmatsuri, ZZ);
         ZZ.SetV23(v23);
         ZZ.SetGameManager(gameManager);
@@ -150,8 +165,6 @@ public class Mobile
 
     public void exec(Action<int> returnCoinAction)
     {
-        initModeFlag = false;
-
         // キー取得
         keyTrigger = ZZ.getKeyPressed();
         keyPressing = ZZ.getKeyPressing();
@@ -170,14 +183,12 @@ public class Mobile
         {
             int_m_value[Defines.DEF_INT_MODE_CURRENT] = int_m_value[Defines.DEF_INT_MODE_REQUEST];
             int_m_value[Defines.DEF_INT_COUNTER] = 0;
-            initModeFlag = true;
         }
 
         // モードごとに処理分岐
         switch (int_m_value[Defines.DEF_INT_MODE_CURRENT])
         {
             case Defines.DEF_MODE_UNDEF:
-
                 if (!loadMenuData())
                 {
                     initConfig();
@@ -195,6 +206,7 @@ public class Mobile
             case Defines.DEF_MODE_TITLE:
                 ctrlTitle();
                 break;
+
             /* ゲーム中 */
             case Defines.DEF_MODE_RUN:
                 ctrlRun(returnCoinAction);
@@ -205,7 +217,7 @@ public class Mobile
 
     private void ctrlRun(Action<int> returnCoinAction)
     {
-        if (mOmatsuri.process(keyTrigger, returnCoinAction))
+        if (mOmatsuri.process(keyTrigger, returnCoinAction, ReelIndexies, Order))
         {
             mOmatsuri.getExitReason();
         }
@@ -240,52 +252,45 @@ public class Mobile
     /**
      * Menuボタンの動作可否を設定する<BR>
      * スロットクラスで使用する。RMODE_BETでfalse,RMODE_WAITでtrue<BR>
-     * 
-     * @param flag
-     *            true:可動 false:非可動
+     * @param flag true:可動 false:非可動
      */
     public void setMenuAvarable(bool flag)
     {
-        int_m_value[Defines.DEF_INT_IS_MENU_AVAILABLE] = 
-            (flag) ? Defines.DEF_MENU_AVAILABLE
-                   : Defines.DEF_MENU_UNAVAILABLE;
+        var value = (flag) ? Defines.DEF_MENU_AVAILABLE
+                           : Defines.DEF_MENU_UNAVAILABLE;
+
+        int_m_value[Defines.DEF_INT_IS_MENU_AVAILABLE] = value;
     }
 
     /**
      * JACカットするかどうか？<BR>
      * ﾒﾆｭｰで変更されたﾌﾗｸﾞを渡す<BR>
-     * @see Defines.DEF_JAC_CUT_ON
-     * @see Defines.DEF_JAC_CUT_OFF
      * @return
      */
     public bool isJacCut()
     {
-        // グリパチではモードがない為
-        // すべてのボーナスカット時とする
+        // グリパチではモードがない為すべてのボーナスカット時とする
         if (mOmatsuri.cutBonus() != 0)
         {
             return true;
         }
+
         return false;
     }
 
     /**
      * 設定値を設定する<BR>
-     * 
      * @return 設定値0~5
      */
     public void setSetUpValue(int val)
     {
-
         int_m_value[Defines.DEF_INT_SETUP_VALUE] = val;
-        // 内部設定の変更(Z80関係はこっちかな？)
         v23.setWork(Defines.DEF_WAVENUM, (ushort)val);
     }
 
     /**
      * 設定値を取得する<BR>
      * ﾀｲﾄﾙから決定キー押下時に設定されるのでMobileで管理します。<BR>
-     * 
      * @return 設定値0~5
      */
     public int getSetUpValue()
@@ -294,12 +299,7 @@ public class Mobile
     }
 
     /**
-     * ゲームモードを取得する。<BR>
-     * ﾀｲﾄﾙ画面で設定する。
-     * 
-     * @see DEF_GMODE_GAME
-     * @see DEF_GMODE_SIMURATION
-     * @see DEF_GMODE_BATTLE
+     * ゲームモードを取得する。ﾀｲﾄﾙ画面で設定する。
      * @return
      */
     public int getGameMode()
@@ -309,7 +309,6 @@ public class Mobile
 
     /**
      * 告知の状態を返す
-     * 
      * @return
      */
     public int getKokuchi()
@@ -328,7 +327,8 @@ public class Mobile
         int_m_value[Defines.DEF_INT_IS_VIBRATION] = Defines.DEF_SELECT_2_ON;// データパネルON
     }
 
-    public readonly int SAVE_BUFFER = Defines.DEF_SAVE_SIZE - 2; // アクセス関数の都合上-2しないとこける
+    // アクセス関数の都合上-2しないとこける
+    public readonly int SAVE_BUFFER = Defines.DEF_SAVE_SIZE - 2;
 
     /**
      * メニューデータの書き込み
@@ -372,7 +372,6 @@ public class Mobile
 
     /**
      * メニューデータの読込
-     * 
      * @return
      */
     public bool loadMenuData()
@@ -450,11 +449,7 @@ public class Mobile
 
     /**
      * 強制停止. mobuilder と mobuilderA の差異を吸収する
-     * 
      * @param mode サウンドモード
-     * @see Df#SOUND_MULTI_SE
-     * @see Df#SOUND_MULTI_BGM
-     * @see Df#SOUND_UNDEF
      */
     public void stopSound(int mode)
     {
@@ -477,9 +472,6 @@ public class Mobile
                 }
             }
         }
-        else
-        {
-        }
     }
 
     public void playSound(int id, bool isRepeat, int mode)
@@ -487,9 +479,6 @@ public class Mobile
         if (Defines.DEF_USE_MULTI_SOUND)
         {
             ZZ.playSound(id, isRepeat, mode);
-        }
-        else
-        {
         }
     }
 
