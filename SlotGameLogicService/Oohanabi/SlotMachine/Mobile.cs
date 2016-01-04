@@ -1,11 +1,9 @@
-﻿using System;
-
-public enum Yaku
+﻿public enum Yaku
 {
     None = 0x00,            // 0
     Cherry = 0x01,          // 1
     Bell = 0x02,            // 2
-    YAKU_WMLN = 0x04,       // 4
+    YAKU_WMLN = 0x04,       // 4  半被
     Replay = 0x08,          // 8  リプレイ
     RegulerBonus = 0x10,    // 16 レギュラーボーナス
     JAC = 0x18,             // 24 ジャック
@@ -16,7 +14,7 @@ public enum Yaku
 public class Mobile
 {
     public const bool DEF_IS_DOCOMO = true;
-    public int keyTrigger = 0;
+    public  int keyTrigger = 0;
     private int keyPressing = 0;
     private int keyPressingCount = 0;
 
@@ -31,18 +29,14 @@ public class Mobile
     // 押下時リール位置
     int[] ReelIndexies;
 
-    // 押下順
-    int[] Order;
-
     /// <summary>
     /// クライアントが押した内容
     /// </summary>
     /// <param name="reelIndexies">押下時リール位置</param>
     /// <param name="order">押下順</param>
-    public void SetClientPressed(int[] reelIndexies, int[] order)
+    public void SetClientPressed(int[] reelIndexies)
     {
         this.ReelIndexies = reelIndexies;
-        this.Order = order;
     }
 
     public int CoinCount
@@ -145,10 +139,10 @@ public class Mobile
         ZZ.setOrigin(int_m_value[Defines.DEF_INT_BASE_OFFSET_X], int_m_value[Defines.DEF_INT_BASE_OFFSET_Y]);
         int_m_value[Defines.DEF_INT_TITLE_BG_START] = ZZ.getBitRandom(32);
         int_m_value[Defines.DEF_INT_GMODE] = Defines.DEF_GMODE_GAME;
-        int_m_value[Defines.DEF_INT_SETUP_VALUE_CURSOL] = 3;// 設定４
+        int_m_value[Defines.DEF_INT_SETUP_VALUE_CURSOL] = 3;    // 設定４
         setSetUpValue(3);	// 設定４
         int_m_value[Defines.DEF_INT_SUB_MENU_ITEM] = -1; // 選択メニューアイテムの初期化
-        int_m_value[Defines.DEF_INT_IS_SOUND] = 1;// 音鳴るよ
+        int_m_value[Defines.DEF_INT_IS_SOUND] = 1;  // 音鳴るよ
 
         initConfig();
     }
@@ -163,11 +157,16 @@ public class Mobile
         keyPressing = key;
     }
 
-    public void exec(Action<int> returnCoinAction)
+    public void exec(CallbackToController callbacks)
     {
         // キー取得
         keyTrigger = ZZ.getKeyPressed();
         keyPressing = ZZ.getKeyPressing();
+
+        if (keyTrigger != 0)
+        {
+            callbacks.KeyTrigger(keyTrigger);
+        }
 
         if (keyPressing == 0)
         {
@@ -192,7 +191,7 @@ public class Mobile
                 if (!loadMenuData())
                 {
                     initConfig();
-                    saveMenuData(false);//初期はホールPは保存しない
+                    saveMenuData(false);    //初期はホールPは保存しない
                     if (DEF_IS_DOCOMO)
                     {
                         break;
@@ -209,15 +208,15 @@ public class Mobile
 
             /* ゲーム中 */
             case Defines.DEF_MODE_RUN:
-                ctrlRun(returnCoinAction);
+                ctrlRun(callbacks);
                 break;
         }
 
     }
 
-    private void ctrlRun(Action<int> returnCoinAction)
+    private void ctrlRun(CallbackToController callbacks)
     {
-        if (mOmatsuri.process(keyTrigger, returnCoinAction, ReelIndexies, Order))
+        if (mOmatsuri.process(keyTrigger, callbacks, ReelIndexies))
         {
             mOmatsuri.getExitReason();
         }
@@ -318,11 +317,11 @@ public class Mobile
 
     private void initConfig()
     {
-        int_m_value[Defines.DEF_INT_VOLUME] = 40;// 音量２
-        int_m_value[Defines.DEF_INT_VOLUME_KEEP] = 40;// 音量２
-        int_m_value[Defines.DEF_INT_ORDER] = Defines.DEF_SELECT_6_0;// 押し順順押し
-        int_m_value[Defines.DEF_INT_KOKUCHI] = Defines.DEF_SELECT_3_OFF;// こくちOff
-        int_m_value[Defines.DEF_INT_IS_JACCUT] = Defines.DEF_SELECT_2_OFF;// JACCUTオフ
+        int_m_value[Defines.DEF_INT_VOLUME] = 40;       // 音量２
+        int_m_value[Defines.DEF_INT_VOLUME_KEEP] = 40;  // 音量２
+        int_m_value[Defines.DEF_INT_ORDER] = Defines.DEF_SELECT_6_0;        // 押し順順押し
+        int_m_value[Defines.DEF_INT_KOKUCHI] = Defines.DEF_SELECT_3_OFF;    // こくちOff
+        int_m_value[Defines.DEF_INT_IS_JACCUT] = Defines.DEF_SELECT_2_OFF;  // JACCUTオフ
         int_m_value[Defines.DEF_INT_IS_DATAPANEL] = Defines.DEF_SELECT_2_ON;// データパネルOFF
         int_m_value[Defines.DEF_INT_IS_VIBRATION] = Defines.DEF_SELECT_2_ON;// データパネルON
     }

@@ -31,9 +31,8 @@ namespace TheOcean
             var table = new[]
             {
                 new { pre = KakuhenMode.Normal, post = KakuhenMode.Kakuhen1 },
-                new { pre = KakuhenMode.Kakuhen3, post = KakuhenMode.Kakuhen2 },
+                new { pre = KakuhenMode.Kakuhen1, post = KakuhenMode.Kakuhen2 },
                 new { pre = KakuhenMode.Kakuhen2, post = KakuhenMode.Kakuhen1 },
-                new { pre = KakuhenMode.Kakuhen1, post = KakuhenMode.Normal },
             };
 
             Mode = table.Where(t => t.pre == Mode)

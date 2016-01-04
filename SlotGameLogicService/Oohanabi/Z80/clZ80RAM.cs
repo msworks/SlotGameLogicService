@@ -28,7 +28,8 @@
     public ushort getWork(int index) { return mWorkRam[index]; }
 
     //ワークRAM 設定(仮想1バイト)
-    public void setWork(int index, ushort data) { Defines.RAM_TRACE("setWork:[" + index + "]" + (data & 0xFFFF)); mWorkRam[index] = data; }
+    public void setWork(int index, ushort data) {
+        Defines.RAM_TRACE("setWork:[" + index + "]" + (data & 0xFFFF)); mWorkRam[index] = data; }
 
     //ワークRAM 取得(仮想2バイト)
     public ushort getWork16(int index) { return (ushort)((mWorkRam[index] | (mWorkRam[index + 1] << 8))); }

@@ -93,29 +93,55 @@ namespace GameLogicService
             }
 
             // bet 0 check
-            //if (bet==0)
-            //{
-            //    if (!(currentYaku == Yaku.Replay ||
-            //          currentYaku == Yaku.JACIN ||
-            //          currentYaku == Yaku.JAC))
-            //    {
-            //        // bet0のとき、リプレイでなければエラー
-            //        return new Associative() { { "result", "error".DQ() } };
-            //    }
-            //}
+            if (bet == 0)
+            {
+                Logger.Warn("BET 0 ERROR!!!");
+                Logger.Warn("BET 0 ERROR!!!");
+                Logger.Warn("BET 0 ERROR!!!");
+                return new Associative() { { "result", "error".DQ() } };
+            }
 
             mobile.InsertCoin(bet);
 
-            // レバーを引くまで回す
-            foreach (var state in ProgressToLever(mobile))
+            // マシンからのコールバック群
+
+            Action<int> Payout = (coinCount) =>
             {
-                Action<int> winCoinCallback = (coin) => {
-                    Logger.Info($"WinCoins:{coin}");
-                };
-                mobile.ZZ.int_value[Defines.DEF_Z_INT_KEYPRESS] |= 0;
-                mobile.exec(winCoinCallback);
+            };
+
+            var isLeverPulled = false;
+            Action<int> ReelStart = (_yaku) =>
+            {
+                Yaku y = (Yaku)_yaku;
+                isLeverPulled = true;
+            };
+
+            Action<int, int> ButtonStop = (button, reelIndex) =>
+            {
+            };
+
+            Action<int> KeyTrigger = (key) =>
+            {
+            };
+
+            Action Bet = () =>
+            {
+            };
+
+            var callbacks = new CallbackToController()
+            {
+                Payout = Payout,
+                ReelStart = ReelStart,
+                ButtonStop = ButtonStop,
+                KeyTrigger = KeyTrigger,
+                Bet = Bet
+            };
+
+            // レバーを引くまで回す
+            while(isLeverPulled == false)
+            {
                 mobile.ZZ.int_value[Defines.DEF_Z_INT_KEYPRESS] |= (1 << 5);
-                mobile.exec(winCoinCallback);
+                mobile.exec(callbacks);
                 Thread.Sleep(20);
             }
 
@@ -128,7 +154,7 @@ namespace GameLogicService
 
             State = MACHINE_STATE.PLAY;
 
-            Logger.Info($"[INFO]Play GameId:{gameId} UserId:{userId} Bet:{bet}");
+            Logger.Info($"[INFO]Play GameId:{gameId} UserId:{userId} Bet:{bet} ------ Yaku:{yaku}");
 
             return result;
         }
@@ -173,7 +199,7 @@ namespace GameLogicService
                 left = reelstopleft.ParseInt();
                 center = reelstopcenter.ParseInt();
                 right = reelstopright.ParseInt();
-                order = oshijun.Split('_').Select(s => s.ParseInt()).ToArray();
+                order = oshijun.ToCharArray().Select(c => c.ToString().ParseInt()-1).ToArray();
             }
             catch
             {
@@ -183,33 +209,63 @@ namespace GameLogicService
             var winCoins = 0;
             var gotCoinCountFlg = false;
 
-            Action<int> winCoinCallback = (coin) =>
-            {
-                Logger.Info($"WinCoins:{coin}");
+            // マシンからのコールバック群
 
-                winCoins = coin;
+            Action<int> Payout = (coinCount) =>
+            {
+                winCoins = coinCount;
                 gotCoinCountFlg = true;
+            };
+
+            Action<int> ReelStart = (_yaku) =>
+            {
+            };
+
+            Action<int, int> ButtonStop = (button, reelIndex) =>
+            {
+            };
+
+            Action<int> KeyTrigger = (key) =>
+            {
+            };
+
+            Action Bet = () =>
+            {
+            };
+
+            var callbacks = new CallbackToController()
+            {
+                Payout = Payout,
+                ReelStart = ReelStart,
+                ButtonStop = ButtonStop,
+                KeyTrigger = KeyTrigger,
+                Bet = Bet
             };
 
             var indexis = new int[] { left, center, right };
 
-            mobile.SetClientPressed(indexis, order);
+            mobile.SetClientPressed(indexis);
 
             // 押し順、押した位置で止める
             while(gotCoinCountFlg == false)
             {
-                mobile.ZZ.int_value[Defines.DEF_Z_INT_KEYPRESS] |= 0;
-                mobile.exec(winCoinCallback);
                 mobile.ZZ.int_value[Defines.DEF_Z_INT_KEYPRESS] |= (1 << 5);
-                mobile.exec(winCoinCallback);
+                mobile.exec(callbacks);
                 Thread.Sleep(20);
             }
 
-            var yaku = mobile.Yaku;
+            var v1 = reelstopleft.Substring(1, (reelstopleft.Length - 1));
+            var v2 = reelstopcenter.Substring(1, (reelstopcenter.Length - 1));
+            var v3 = reelstopright.Substring(1, (reelstopright.Length - 1));
+            var v4 = oshijun.Substring(1, (oshijun.Length - 1));
+            var xor = v1 + v2 + v3 + v4;
+            var code = (xor.ParseLong()^(0xffeeddcc)).ToString();
+            var yaku = code.Substring(4, 2).ParseInt();
+            var payout = code.Substring(6, 2).ParseInt();
 
             var result = new Associative();
             result.Add("result", "WIN".DQ());
-            result.Add("payout", winCoins.ToString());
+            result.Add("payout", payout.ToString());
             result.Add("yaku", ((int)yaku).ToString());
 
             State = MACHINE_STATE.COLLECT;
@@ -217,9 +273,17 @@ namespace GameLogicService
             Logger.Info($"[INFO]Collect GameId:{gameId} UserId:{userId} Payout:{winCoins} Yaku:{yaku}");
 
             // 役を保存しておく
-            currentYaku = yaku;
+            currentYaku = (Yaku)yaku;
 
             return result;
         }
+    }
+}
+
+public static class stringExtension2
+{
+    public static long ParseLong(this string source)
+    {
+        return long.Parse(source);
     }
 }

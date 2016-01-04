@@ -10,19 +10,19 @@ public class Omatsuri
     GameManager GameManager;
 
     public long reelwait = 0;
-    public bool reqMenuFg2 = false;	// リール停止時にメニューを表示する
+    public bool reqMenuFg2 = false;     // リール停止時にメニューを表示する
     public bool bgm_resumeFg = false;	// BGMのレジューム再生フラグ
     public int bgm_no = -1;
     public bool bgm_loop = false;
-    public int maj_ver;	// メインバージョン
-    public int sub_ver;	// サブバージョン
+    public int maj_ver;                 // メインバージョン
+    public int sub_ver;                 // サブバージョン
     public int prevHttpTime = 0;
     public int kasidasiMedal = 0;
     public int prevkasidasiMedal = 0;
     public int[] hallData = new int[Defines.DEF_H_PARAM_NUM];
     private bool BonusCutFg = false;
-    private bool reelStartFg;	// リールスタートキーがすでに押されている場合
-    private bool reqMenuFg = false;	// リール停止時にメニューを表示する
+    private bool reelStartFg;           // リールスタートキーがすでに押されている場合
+    private bool reqMenuFg = false;     // リール停止時にメニューを表示する
 
     //int mes_x = 0;
     bool IS_HALL() { return mobile.getGameMode() == Defines.DEF_GMODE_HALL; }
@@ -53,7 +53,8 @@ public class Omatsuri
 
     private readonly ushort[,] bonus_Data = new ushort[Defines.DEF_INFO_GAME_HISTORY, Defines.DEF_INFO_GAMES];
 
-    public readonly ushort[][] REELTB = {
+    public readonly ushort[][] REELTB =
+    {
         new ushort[]{ Defines.DEF_RPLY, Defines.DEF_BAR_, Defines.DEF_BELL, Defines.DEF_WMLN, Defines.DEF_CHRY, Defines.DEF_BSVN, Defines.DEF_RPLY,
         Defines.DEF_BELL, Defines.DEF_DON_, Defines.DEF_DON_, Defines.DEF_DON_, Defines.DEF_RPLY, Defines.DEF_BELL,
         Defines.DEF_CHRY, Defines.DEF_BSVN, Defines.DEF_WMLN, Defines.DEF_RPLY, Defines.DEF_BELL, Defines.DEF_WMLN,
@@ -180,7 +181,8 @@ public class Omatsuri
         for (int i = 0; i < int_s_value.Length; i++)
         {
             if (i != Defines.DEF_INT_REEL_SPEED)
-            {// リールスピードだけ除外
+            {
+                // リールスピードだけ除外
                 int_s_value[i] = 0;
             }
         }
@@ -189,15 +191,15 @@ public class Omatsuri
         int_s_value[Defines.DEF_INT_LOOP_SPEED] = ZZ.getThreadSpeed();
 
         // リールの初期化
-        int_s_value[Defines.DEF_INT_CREDIT_COIN_NUM] = 0; // クレジットコイン数（０枚）
-        int_s_value[Defines.DEF_INT_WIN_GET_COIN] = 0; // 払い出しコイン枚数
-        int_s_value[Defines.DEF_INT_WIN_COIN_NUM] = 0; // １ゲーム中の獲得コイン枚数
-        int_s_value[Defines.DEF_INT_BONUS_GOT] = 0; // ボーナス獲得数
-        int_s_value[Defines.DEF_INT_BONUS_JAC_GOT] = 0; //JACゲーム中の獲得枚数
+        int_s_value[Defines.DEF_INT_CREDIT_COIN_NUM] = 0;   // クレジットコイン数（０枚）
+        int_s_value[Defines.DEF_INT_WIN_GET_COIN] = 0;      // 払い出しコイン枚数
+        int_s_value[Defines.DEF_INT_WIN_COIN_NUM] = 0;      // １ゲーム中の獲得コイン枚数
+        int_s_value[Defines.DEF_INT_BONUS_GOT] = 0;         // ボーナス獲得数
+        int_s_value[Defines.DEF_INT_BONUS_JAC_GOT] = 0;     //JACゲーム中の獲得枚数
         int_s_value[Defines.DEF_INT_BB_KIND] = Defines.DEF_BB_UNDEF; // ＢＢ入賞時の種別
-        int_s_value[Defines.DEF_INT_BB_AFTER_1GAME] = 0; // BB 終了後の１ゲーム目？					
+        int_s_value[Defines.DEF_INT_BB_AFTER_1GAME] = 0;    // BB 終了後の１ゲーム目？					
         int_s_value[Defines.DEF_INT_BB_END_1GAME_REGET_BB] = 0; // BB 終了後の１ゲーム目でそろえることができた？ミッションパラメータ		
-        int_s_value[Defines.DEF_INT_BB_GET_OVER711] = 0; // BB獲得枚数 711枚以上？ミッションミッションパラメータ
+        int_s_value[Defines.DEF_INT_BB_GET_OVER711] = 0;    // BB獲得枚数 711枚以上？ミッションミッションパラメータ
 
         // モードの初期化
         int_s_value[Defines.DEF_INT_CURRENT_MODE] = Defines.DEF_RMODE_UNDEF;
@@ -274,7 +276,7 @@ public class Omatsuri
     private int pressingSpan = 0;
     public int req_code;
 
-    public bool process(int keyTrigger, Action<int> returnCoinCount, int[] indexis, int[] order)
+    public bool process(int keyTrigger, CallbackToController callbacks, int[] reelIndexies)
     {
         int_s_value[Defines.DEF_INT_REEL_SPEED] =
             ZZ.getThreadSpeed()
@@ -287,24 +289,29 @@ public class Omatsuri
             (slotInterface.gpif_auto_f == true) ||
             (slotInterface.gpif_nonstop_f == true) ||
             (slotInterface.gpif_tatsujin_f == true))
-        {	// ｵｰﾄﾌﾟﾚｲ
+        {
+            // ｵｰﾄﾌﾟﾚｲ
             if ((slotInterface.gpif_auto_f == true) ||
                 (slotInterface.gpif_nonstop_f == true) ||
                 (slotInterface.gpif_tatsujin_f == true))
-            {	// ｵｰﾄﾌﾟﾚｲの予約
+            {
+                // ｵｰﾄﾌﾟﾚｲの予約
                 //DfMain.TRACE(("test:" + mobile.int_m_value[Defines.DEF_INT_IS_MENU_AVAILABLE]);
                 // スロットゲーム中WAIT時以外は遷移しない
                 if (mobile.int_m_value[Defines.DEF_INT_IS_MENU_AVAILABLE] == Defines.DEF_MENU_UNAVAILABLE)
-                {	// メニューが無効の時
+                {
+                    // メニューが無効の時
                     //DfMain.TRACE(("ここきてる？:" + keyTrigger);
                     if ((keyTrigger & Defines.DEF_KEY_BIT_SOFT1) != 0)
-                    {	// ソフトキーがおされたら
+                    {
+                        // ソフトキーがおされたら
                         //DfMain.TRACE(("メニュー予約！！！");
                         req_code = 1;
                         reqMenuFg = true;
                     }
                     if ((keyTrigger & Defines.DEF_KEY_BIT_SOFT2) != 0)
-                    {	// ソフトキーがおされたら
+                    {
+                        // ソフトキーがおされたら
                         //DfMain.TRACE(("メニュー予約！！！");
                         req_code = 2;
                         reqMenuFg = true;
@@ -432,9 +439,9 @@ public class Omatsuri
                         mobile.stopSound(Defines.DEF_SOUND_UNDEF);
                     }
                     {
-
                         if (IS_HALL())
-                        {/*プレーヤーコイン要求*/
+                        {
+                            /*プレーヤーコイン要求*/
                             if (hallData[Defines.DEF_H_PLAYER_COIN] < int_s_value[Defines.DEF_INT_BET_COUNT])
                             {
                                 //鳴らさない
@@ -467,7 +474,6 @@ public class Omatsuri
                     if (!IS_REPLAY())
                     {
                         int_s_value[Defines.DEF_INT_TOTAL_BET] += int_s_value[Defines.DEF_INT_BETTED_COUNT];
-                        /**/
                         hallData[Defines.DEF_H_MEDAL_IN] += int_s_value[Defines.DEF_INT_BETTED_COUNT];
                         hallData[Defines.DEF_H_PLAYER_COIN] -= int_s_value[Defines.DEF_INT_BETTED_COUNT];
                     }
@@ -475,8 +481,32 @@ public class Omatsuri
                     v23.clearWork(Defines.DEF_CLR_AREA_3);
                     int rand = v23.mRandomX();
                     chgWaveNum();
+
+                    if (IS_BONUS_JAC())
+                    {
+                        v23.mSetForceFlag(Defines.ForceYakuFlag.REG);
+                    }
+
                     chgYaku();
+
+                    // 役抽選
                     v23.mReelStart(rand, int_s_value[Defines.DEF_INT_BET_COUNT]);
+                    var yaku = v23.getWork(Defines.DEF_WAVEBIT);
+
+                    // 内部BB 内部RBははずれ強制
+                    // はずれ強制だが、ＢＩＧ／７７７は揃えられる→リプレイ・チェリーを来ないようにする
+                    // BB中、RB中ははずれ強制は解除する→
+                    if ((v23.getWork(Defines.DEF_HITREQ) == Defines.DEF_HITFLAG_NR_BB) ||
+                        (v23.getWork(Defines.DEF_HITREQ) == Defines.DEF_HITFLAG_NR_RB))
+                    {
+
+                        //v23.mSetForceFlag(Defines.ForceYakuFlag.BIG);
+                        v23.mSetForceFlag(Defines.ForceYakuFlag.HAZURE);
+                    }
+
+
+
+                    callbacks.ReelStart(yaku);
 
                     if (!IS_BONUS())
                     {
@@ -592,11 +622,17 @@ public class Omatsuri
                     break;
 
                 case Defines.DEF_RMODE_RESULT:
+                    // (モード初期)
+                    // RESULTに入った時間を記録
                     _lampTime = Util.GetMilliSeconds() + Defines.DEF_WAIT_LAMP;
-                    int_s_value[Defines.DEF_INT_WIN_COIN_NUM] = v23.mPayMedal();
-                    var winCoinCount = int_s_value[Defines.DEF_INT_WIN_COIN_NUM];
 
-                    returnCoinCount(winCoinCount);
+                    // 払い出しコイン枚数
+                    var payOut = v23.mPayMedal();
+                    int_s_value[Defines.DEF_INT_WIN_COIN_NUM] = payOut;
+                    int_s_value[Defines.DEF_INT_TOTAL_PAY] += payOut;
+                    hallData[Defines.DEF_H_MEDAL_OUT] += payOut;
+
+                    callbacks.Payout(payOut);
 
                     int_s_value[Defines.DEF_INT_TOTAL_PAY] += int_s_value[Defines.DEF_INT_WIN_COIN_NUM];
                     hallData[Defines.DEF_H_MEDAL_OUT] += int_s_value[Defines.DEF_INT_WIN_COIN_NUM];
@@ -673,22 +709,24 @@ public class Omatsuri
                 case Defines.DEF_RMODE_FIN_WAIT: // (モード初期)
                     int_s_value[Defines.DEF_INT_KEY_REJECT] = 0;
                     // 毎ゲーム終了時にここを通る
-                    //				DfMain.TRACE(("毎ゲーム終了");
+                    // DfMain.TRACE(("毎ゲーム終了");
                     // ボーナス制御
                     ushort bonusEndFg;
                     bonusEndFg = v23.mBonusCounter();
 
                     if (IS_BONUS() == true)
-                    {	// ボーナス終了フラグじゃないとき
+                    {
+                        // ボーナス終了フラグじゃないとき
                         if (cutBonusSystem(0))
-                        {	// ﾎﾞｰﾅｽｶｯﾄ処理が必要の場合
-
+                        {
+                            // ﾎﾞｰﾅｽｶｯﾄ処理が必要の場合
                             // カット処理フラグON
                             BonusCutFg = true;
 
                             if ((int_s_value[Defines.DEF_INT_BB_KIND] == Defines.DEF_BB_B7)
                                 || (int_s_value[Defines.DEF_INT_BB_KIND] == Defines.DEF_BB_R7))
-                            { // ＢＢ終了判定(RBの場合はRB終了時にメダル加算を行なう)
+                            {
+                                // ＢＢ終了判定(RBの場合はRB終了時にメダル加算を行なう)
                                 if ((IS_BONUS_JAC() == true))
                                 {
                                     int num;
@@ -708,7 +746,6 @@ public class Omatsuri
                             }
 
                             bonusEndFg = v23.mBonusCounter();
-
                         }
                     }
 
@@ -756,11 +793,11 @@ public class Omatsuri
         ctrlLamp();
         ctrlBetLamp();
 
-        DoModeAction(keyTrigger);
+        DoModeAction(keyTrigger, callbacks, reelIndexies);
         return false;
     }
 
-    private void DoModeAction(int keyTrigger)
+    private void DoModeAction(int keyTrigger, CallbackToController callbacks, int[] reelIndexies)
     {
         // ======================================
         // 各モードにおける毎回の処理
@@ -860,6 +897,8 @@ public class Omatsuri
 
                             // コイン投入時処理
                             GameManager.OnCoinInsert();
+
+                            callbacks.Bet();
                         }
                         int_s_value[Defines.DEF_INT_BONUS_GOT]--;
                         int_s_value[Defines.DEF_INT_BETTED_COUNT]++;
@@ -964,38 +1003,43 @@ public class Omatsuri
                             Defines.TRACE(Util.GetMilliSeconds() - _spinTime);
                             isLimitStop = true;
                         }
+
                         // 自動停止もあり
                         if ((keyTrigger & (Defines.DEF_KEY_BIT_SELECT | Defines.DEF_KEY_BIT_5)) != 0
                             || (isLimitStop == true))
                         {
-                            int tmp;
-                            for (int i = 0; i < Defines.DEF_N_REELS; i++)
+                            var orderDown = new[] { 0, 1, 2 };
+                            var orderUp = new[] { 2, 1, 0 };
+
+                            // JACIN時はorderUpを使う
+                            var yaku = (Yaku)v23.getWork(Defines.DEF_WAVEBIT);
+                            var useOrder = yaku == Yaku.JACIN ? orderUp : orderDown;
+                            var mt = MeoshiType.HazureKotei;
+
+                            foreach (var i in useOrder)
                             {
                                 if (isSpinning)
                                 {
-                                    // 押し順の変更
-                                    tmp = getStopReel(i, isLimitStop);
-                                    isSpinning = setReelStopAngle(tmp);
-                                    //DfMain.TRACE(("停止フラグ:" + isSpinning);
+                                    isSpinning = setReelStopAngle(i, yaku, mt);
                                 }
                             }
                         }
                         else
                         {
-                            if (isSpinning
-                                    && (keyTrigger & (Defines.DEF_KEY_BIT_1)) != 0)
+                            var orderDown = new[] { 0, 1, 2 };
+                            var orderUp = new[] { 2, 1, 0 };
+
+                            // JACIN時はorderUpを使う
+                            var yaku = (Yaku)v23.getWork(Defines.DEF_WAVEBIT);
+                            var useOrder = yaku == Yaku.JACIN ? orderUp : orderDown;
+                            var mt = MeoshiType.HazureKotei;
+
+                            foreach (var i in useOrder)
                             {
-                                isSpinning = setReelStopAngle(0);
-                            }
-                            if (isSpinning
-                                    && (keyTrigger & (Defines.DEF_KEY_BIT_2)) != 0)
-                            {
-                                isSpinning = setReelStopAngle(1);
-                            }
-                            if (isSpinning
-                                    && (keyTrigger & (Defines.DEF_KEY_BIT_3)) != 0)
-                            {
-                                isSpinning = setReelStopAngle(2);
+                                if (isSpinning)
+                                {
+                                    isSpinning = setReelStopAngle(i, yaku, mt);
+                                }
                             }
                         }
                     }
@@ -1135,20 +1179,14 @@ public class Omatsuri
                 break;
             // TOBE [=4.RMODE_RESULT rp]
             case Defines.DEF_RMODE_RESULT: // 結果（毎回処理）
-#if __COM_TYPE__
                 if ((mobile.isJacCut() == true))
-#else
-//			if (mobile.isJacCut() && IS_BONUS_JAC())
-#endif
                 {
                     // 内部でカウント
                     int_s_value[Defines.DEF_INT_CREDIT_COIN_NUM] += int_s_value[Defines.DEF_INT_WIN_COIN_NUM];
                     int_s_value[Defines.DEF_INT_SLOT_COIN_NUM] += int_s_value[Defines.DEF_INT_WIN_COIN_NUM];
                     // 表示用は個々で増やす
                     int_s_value[Defines.DEF_INT_WIN_GET_COIN] += int_s_value[Defines.DEF_INT_WIN_COIN_NUM];
-                    /**/
                     hallData[Defines.DEF_H_PLAYER_COIN] += int_s_value[Defines.DEF_INT_WIN_COIN_NUM];
-
 
                     // ５０枚まではクレジットへ貯めるぅ
                     if (int_s_value[Defines.DEF_INT_CREDIT_COIN_NUM] > Defines.DEF_NUM_MAX_CREDIT)
@@ -1163,13 +1201,6 @@ public class Omatsuri
                     _soundTime = 0;
 
                     // 払い出し分加算
-#if __ERR_MSG__
-				if( (int_s_value[Defines.DEF_INT_WIN_COIN_NUM] < 0) || (int_s_value[Defines.DEF_INT_WIN_COIN_NUM] > 800))
-				{	// 0以下ならば
-					SET_ERR_CODE(ERR_CODE_PAY_UP2);
-					SET_ERR_OPTION(int_s_value[Defines.DEF_INT_WIN_COIN_NUM]);
-				}
-#endif
                     GPW_chgCredit(int_s_value[Defines.DEF_INT_WIN_COIN_NUM]);
                 }
                 else
@@ -1184,13 +1215,6 @@ public class Omatsuri
                             //					if ((int_s_value[Defines.DEF_INT_MODE_COUNTER] % (Defines.DEF_WAIT_COUNT_UP
                             //							/ 1 + 1 )) == 0) {
 
-#if __ERR_MSG__
-					if( (int_s_value[Defines.DEF_INT_WIN_COIN_NUM] < 0) || (int_s_value[Defines.DEF_INT_WIN_COIN_NUM] > 20))
-					{	// 0以下ならば
-						SET_ERR_CODE(ERR_CODE_PAY_UP);
-						SET_ERR_OPTION(int_s_value[Defines.DEF_INT_WIN_COIN_NUM]);
-					}
-#endif
                             // 払い出し分加算
                             GPW_chgCredit(1);
                             // ５０枚まではクレジットへ貯めるぅ
@@ -1217,14 +1241,6 @@ public class Omatsuri
                 if (_soundTime < Util.GetMilliSeconds()
                         || (int_s_value[Defines.DEF_INT_WIN_COIN_NUM] <= int_s_value[Defines.DEF_INT_WIN_GET_COIN] && !IS_REPLAY()))
                 {
-#if __COM_TYPE__
-#else
-//				// 後告知なら、ここで出現
-//				if (mobile.getKokuchi() == Defines.DEF_SELECT_3_AFFTER) {
-//					m_nYokoku2[1] = -1;
-//					ForwordYokoku();
-//				}
-#endif
                     mobile.stopSound(Defines.DEF_SOUND_MULTI_SE);
                     _soundTime = Util.GetMilliSeconds();
                     // REG入賞
@@ -1350,7 +1366,6 @@ public class Omatsuri
 
     /**
      * クリップが使えるのでisRepaintを使用しない方向で
-     * 
      */
     private void drawAll()
     {
@@ -1370,7 +1385,8 @@ public class Omatsuri
         ZZ.drawImage(Defines.DEF_RES_K7, Defines.DEF_POS_K7_X, Defines.DEF_POS_K7_Y);
 
         // ランプ
-        {	// drawK1 4thリールの左右のランプ
+        {
+            // drawK1 4thリールの左右のランプ
             int[] x = { Defines.DEF_POS_S1_X, Defines.DEF_POS_S2_X, Defines.DEF_POS_S3_X, Defines.DEF_POS_S4_X, Defines.DEF_POS_S5_X, Defines.DEF_POS_S6_X };
             int[] y = { Defines.DEF_POS_S1_Y, Defines.DEF_POS_S2_Y, Defines.DEF_POS_S3_Y, Defines.DEF_POS_S4_Y, Defines.DEF_POS_S5_Y, Defines.DEF_POS_S6_Y };
             // ランプの画像がなぜかでかすぎる為、いれとかないと枠外にでてしまう。
@@ -1385,7 +1401,9 @@ public class Omatsuri
             // クリッピング領域の解除
             ZZ.setClip(-ZZ.getOffsetX(), -ZZ.getOffsetY(), ZZ.getWidth(), ZZ.getHeight());
         }
-        {	// drawK3 BETランプ
+
+        {
+            // drawK3 BETランプ
             int[] x = { Defines.DEF_POS_B1_X, Defines.DEF_POS_B2_X, Defines.DEF_POS_B3_X, Defines.DEF_POS_B4_X, Defines.DEF_POS_B5_X };
             int[] y = { Defines.DEF_POS_B1_Y, Defines.DEF_POS_B2_Y, Defines.DEF_POS_B3_Y, Defines.DEF_POS_B4_Y, Defines.DEF_POS_B5_Y };
             for (int i = 0; i < 5; i++)
@@ -1397,7 +1415,8 @@ public class Omatsuri
             }
         }
 
-        {	// drawK4 筐体左のかぎやランプやリプレイランプ
+        {
+            // drawK4 筐体左のかぎやランプやリプレイランプ
             int[] x = { Defines.DEF_POS_C1_X, Defines.DEF_POS_C2_X, Defines.DEF_POS_C3_X, Defines.DEF_POS_C4_X, Defines.DEF_POS_C5_X };
             int[] y = { Defines.DEF_POS_C1_Y, Defines.DEF_POS_C2_Y, Defines.DEF_POS_C3_Y, Defines.DEF_POS_C4_Y, Defines.DEF_POS_C5_Y };
             for (int i = 0; i < 5; i++)
@@ -1411,6 +1430,7 @@ public class Omatsuri
 
         // 4th
         draw4th();
+
         // リール
         drawSlot();
 
@@ -1420,13 +1440,15 @@ public class Omatsuri
         {
             ZZ.drawImage(Defines.DEF_RES_D1_B, Defines.DEF_POS_CHANCE_X, Defines.DEF_POS_CHANCE_Y);
         }
+
         // ボーナスかうんと描画
         drawBonusCount();
+
         // クレジット描画
         drawCredit();
+
         // 払い出し描画
         drawPay();
-
     }
 
     /**
@@ -1468,7 +1490,6 @@ public class Omatsuri
 
     /**
      * 光どころ描画
-     * 
      */
     private void drawK4()
     {
@@ -1488,7 +1509,6 @@ public class Omatsuri
 
     /**
      * 4thリールの描画
-     * 
      */
     private void draw4th()
     {
@@ -1510,11 +1530,13 @@ public class Omatsuri
         // １リールずつ処理
         int[] x = { 25, 92, 159 };
         for (int i = 0; i < 3; i++)
-        { // 左のリールから描画しています
+        {
+            // 左のリールから描画しています
             // リール部分クリッピング
             ZZ.setClip(25, 114 + Defines.GP_DRAW_OFFSET_Y, 215 - 25, 96);
+
             // 消灯
-            int[] state = { 0, 0, 0, 0, 0 };// 消灯
+            int[] state = { 0, 0, 0, 0, 0 };    // 消灯
             if (int_s_value[Defines.DEF_INT_CURRENT_MODE] == Defines.DEF_RMODE_FLASH
                     || (int_s_value[Defines.DEF_INT_WIN_LAMP_STATUS] == 2 && int_s_value[Defines.DEF_INT_CURRENT_MODE] == Defines.DEF_RMODE_WAIT))
             {
@@ -1539,6 +1561,7 @@ public class Omatsuri
             {
                 state[0] = state[1] = state[2] = state[3] = state[4] = 1;
             }
+
             // ブラー
             if ((int_s_value[Defines.DEF_INT_IS_REEL_STOPPED] & BIT(i)) == 0)
             {
@@ -1561,11 +1584,14 @@ public class Omatsuri
 
             // 例:15.75コマ回転していたら15番を取得
             int mid = ((per21 >> 16) % Defines.DEF_N_FRAME); // 中段番号番号。
+
             // 各y座標に0.75コマ分下に
             int[] y = { 204, 176, 148, 120, 92 };
-            // // リールの描画
+
+            // リールの描画
             for (int j = 0; j < 5; j++)
-            {// 0:枠下 1:下段 2:中段 3:上段 4:枠上
+            {
+                // 0:枠下 1:下段 2:中段 3:上段 4:枠上
                 int h = 28;
                 y[j] += (/* １コマに満たない分 */(per21 & ANGLE_2PI_MASK) * h) >> 16;
 
@@ -1590,27 +1616,28 @@ public class Omatsuri
         ZZ.setClip(25, 114 + Defines.GP_DRAW_OFFSET_Y, 215 - 25, 96);
         ZZ.scale3D(100);// スケール弄るよ
         int[] xx = { 25, 92, 159 };
+
         for (int i = 0; i < 3; i++)
         {
             // 上の左影
             _drawEffect(xx[i], 114, 56, 2, 61, 61, 61, Defines.DEF_INK_SUB);
             _drawEffect(xx[i], 116, 56, 4, 36, 36, 36, Defines.DEF_INK_SUB);
             _drawEffect(xx[i], 120, 56, 3, 18, 18, 18, Defines.DEF_INK_SUB);
+
             // 下の左影
             _drawEffect(xx[i], 208, 56, 2, 61, 61, 61, Defines.DEF_INK_SUB);
             _drawEffect(xx[i], 204, 56, 4, 36, 36, 36, Defines.DEF_INK_SUB);
             _drawEffect(xx[i], 201, 56, 3, 18, 18, 18, Defines.DEF_INK_SUB);
         }
+
         ZZ.scale3D(50);// 戻すよ～
 
         // クリッピング領域の解除
         ZZ.setClip(-ZZ.getOffsetX(), -ZZ.getOffsetY(), ZZ.getWidth(), ZZ.getHeight());
-
-    } // End of drawSlot()
+    }
 
     /**
      * TODO クレジット描画
-     * 
      */
     private void drawCredit()
     {
@@ -1637,7 +1664,6 @@ public class Omatsuri
 
     /**
      * TODO 払い出し描画
-     * 
      */
     private void drawPay()
     {
@@ -1668,7 +1694,8 @@ public class Omatsuri
         // ZZ.drawImage(Defines.DEF_RES_K2, Defines.DEF_POS_K2_X, Defines.DEF_POS_K2_Y);
         // ボーナスカウンタ表示領域
         if (IS_BONUS_JAC())
-        { // Jac 中
+        {
+            // Jac 中
             int i = v23.getWork(Defines.DEF_BIGBCTR);
             i = (i == 0) ? 1 : i;
             // (JACイン中)残り回数(3～1)
@@ -1678,8 +1705,7 @@ public class Omatsuri
             ZZ.drawImage(Defines.DEF_RES_SEG_GB, Defines.DEF_POS_BONUS_X - Defines.DEF_POS_BONUS_W,
                     Defines.DEF_POS_BONUS_Y);
             // ボーナスカウント(JACイン中)を表示します(8～1)
-            ZZ.drawImage(Defines.DEF_RES_SEG_G0 + v23.getWork(Defines.DEF_JAC_CTR),
-                    Defines.DEF_POS_BONUS_X, Defines.DEF_POS_BONUS_Y);
+            ZZ.drawImage(Defines.DEF_RES_SEG_G0 + v23.getWork(Defines.DEF_JAC_CTR), Defines.DEF_POS_BONUS_X, Defines.DEF_POS_BONUS_Y);
         }
         else if (IS_BONUS_GAME())
         {
@@ -1690,9 +1716,7 @@ public class Omatsuri
             {
                 if (val > 0)
                 {
-                    ZZ
-                            .drawImage(Defines.DEF_RES_SEG_G0 + (val % 10), xx,
-                                    Defines.DEF_POS_BONUS_Y);
+                    ZZ.drawImage(Defines.DEF_RES_SEG_G0 + (val % 10), xx, Defines.DEF_POS_BONUS_Y);
                 }
                 val /= 10;
                 xx -= Defines.DEF_POS_BONUS_W;
@@ -1707,7 +1731,8 @@ public class Omatsuri
     public string GetBonusCount()
     {
         if (IS_BONUS_JAC())
-        { // Jac 中
+        {
+            // Jac 中
             int i = v23.getWork(Defines.DEF_BIGBCTR);
             i = (i == 0) ? 1 : i;
             return i + "-" + v23.getWork(Defines.DEF_JAC_CTR);
@@ -1717,6 +1742,7 @@ public class Omatsuri
             // ＢＢ残り回数を表示
             return v23.getWork(Defines.DEF_BBGMCTR).ToString();
         }
+
         return "";
     }
 
@@ -1726,7 +1752,6 @@ public class Omatsuri
      * @param xx  X座標（１桁目の左上）
      * @param yy  Y座標（左上）
      * @param max 表示値の最大値
-     * @see #printNumber(int, int, int)
      */
     private void printPanelCounts(int val, int xx, int yy, int max, int col)
     {
@@ -1780,13 +1805,13 @@ public class Omatsuri
         {
             int_s_value[Defines.DEF_INT_RLPTNDT] = id - 1;
             int_s_value[Defines.DEF_INT_RLPTNDT_COUNTER] = 0;
-            int_s_value[Defines.DEF_INT_RLPTNDT_FLAG] = 0;// 0:回転開始可1:回転中2:回転終了
-            int_s_value[Defines.DEF_INT_4TH_ACTION_FLAG] = 1;// セット完了（動作待ち）
+            int_s_value[Defines.DEF_INT_RLPTNDT_FLAG] = 0;      // 0:回転開始可 1:回転中 2:回転終了
+            int_s_value[Defines.DEF_INT_4TH_ACTION_FLAG] = 1;   // セット完了（動作待ち）
             isCanStop = false;
         }
     }
 
-    bool isCanStop = false;//センサー通過フラグ
+    bool isCanStop = false; //センサー通過フラグ
 
     private void action4th()
     {
@@ -1855,14 +1880,16 @@ public class Omatsuri
             int_s_value[Defines.DEF_INT_4TH_REEL_ANGLE] %= 414;
             //センサーチェック
             if (dir < 0)
-            {//正回転のセンサー位置:はずれ～青ドンの間にある
+            {
+                //正回転のセンサー位置:はずれ～青ドンの間にある
                 if (int_s_value[Defines.DEF_INT_4TH_REEL_ANGLE] == 270)
                 {
                     isCanStop = true;
                 }
             }
             else
-            {//逆回転のセンサー位置:大当り～赤ドンの間にある
+            {
+                //逆回転のセンサー位置:大当り～赤ドンの間にある
                 if (int_s_value[Defines.DEF_INT_4TH_REEL_ANGLE] == 60)
                 {
                     isCanStop = true;
@@ -1917,12 +1944,7 @@ public class Omatsuri
     }
 
     /**
-     * 動く上部ランプ
-     * 
-     * 演出ＩＤ
-     * 
-     * @param isRepaint
-     * @see #drawUpperLamp(int)
+     * 動く上部ランプ 演出ＩＤ
      */
     private void ctrlTopLamp()
     {
@@ -1943,16 +1965,14 @@ public class Omatsuri
 
         // satoh#暫定
         // 0: 点滅スピード(ms)
-
         var v001 = int_s_value[Defines.DEF_INT_MODE_COUNTER];
         var v002 = FLLXX[int_s_value[Defines.DEF_INT_TOP_LAMP]][0];
         var v003 = int_s_value[Defines.DEF_INT_LOOP_SPEED];
 
-
         if ((int_s_value[Defines.DEF_INT_MODE_COUNTER] % (FLLXX[int_s_value[Defines.DEF_INT_TOP_LAMP]][0]
                 / int_s_value[Defines.DEF_INT_LOOP_SPEED] + 1)) == 0)
         {
-            //		if ((int_s_value[Defines.DEF_INT_MODE_COUNTER] % (FLLXX[int_s_value[Defines.DEF_INT_TOP_LAMP]][0]
+            // if ((int_s_value[Defines.DEF_INT_MODE_COUNTER] % (FLLXX[int_s_value[Defines.DEF_INT_TOP_LAMP]][0]
             //				/ 1 + 1 )) == 0) {
             // ボーナス上部ランプの点滅スピード調整
             int_s_value[Defines.DEF_INT_SEQUENCE_EFFECT]++;
@@ -1981,19 +2001,14 @@ public class Omatsuri
         }
     }
 
-    // ======================================================
-    // TOBE [スイッチメソッド]
-    // ======================================================
     /**
      * ボタンのスイッチ
-     * 
      */
     private void ctrlButtonLamp()
     {
         for (int i = 0; i < 3; i++)
         {
-            if (int_s_value[Defines.DEF_INT_REEL_STOP_R0 + i] != ANGLE_UNDEF
-                    || (int_s_value[Defines.DEF_INT_KEY_REJECT] > 0))
+            if (int_s_value[Defines.DEF_INT_REEL_STOP_R0 + i] != ANGLE_UNDEF || (int_s_value[Defines.DEF_INT_KEY_REJECT] > 0))
             {
                 // 止められている又はキーリジェクト前
                 lampSwitch(Defines.DEF_LAMP_BUTTON_L + i, Defines.DEF_LAMP_ACTION_OFF);
@@ -2008,7 +2023,6 @@ public class Omatsuri
 
     /**
      * BETランプのスイッチ
-     * 
      */
     private void ctrlBetLamp()
     {
@@ -2048,22 +2062,23 @@ public class Omatsuri
                             int id = 0;
                             switch (i)
                             {
-                                case 0:// センター
+                                case 0: // センター
                                     id = Defines.DEF_LAMP_BET_3;
                                     break;
-                                case 1:// トップ
+                                case 1: // トップ
                                     id = Defines.DEF_LAMP_BET_2;
                                     break;
-                                case 2:// ボトム
+                                case 2: // ボトム
                                     id = Defines.DEF_LAMP_BET_4;
                                     break;
-                                case 3:// クロスダウン
+                                case 3: // クロスダウン
                                     id = Defines.DEF_LAMP_BET_1;
                                     break;
-                                case 4:// クロスｱｯﾌﾟ
+                                case 4: // クロスｱｯﾌﾟ
                                     id = Defines.DEF_LAMP_BET_5;
                                     break;
                             }
+
                             if (int_s_value[Defines.DEF_INT_ON_OFF_EFFECT] > 0)
                             {
                                 lampSwitch(id, Defines.DEF_LAMP_ACTION_OFF);
@@ -2093,6 +2108,7 @@ public class Omatsuri
                 lampSwitch(Defines.DEF_LAMP_WIN, Defines.DEF_LAMP_ACTION_OFF);
                 lampSwitch(Defines.DEF_LAMP_BAR, Defines.DEF_LAMP_ACTION_OFF);
             }
+
             if (int_s_value[Defines.DEF_INT_WIN_LAMP_STATUS] > 1)
             {
                 if (int_s_value[Defines.DEF_INT_ON_OFF_EFFECT] > 0)
@@ -2110,6 +2126,7 @@ public class Omatsuri
             lampSwitch(Defines.DEF_LAMP_WIN, Defines.DEF_LAMP_ACTION_OFF);
             lampSwitch(Defines.DEF_LAMP_BAR, Defines.DEF_LAMP_ACTION_OFF);
         }
+
         switch (int_s_value[Defines.DEF_INT_CURRENT_MODE])
         {
             case Defines.DEF_RMODE_RESULT:
@@ -2118,6 +2135,7 @@ public class Omatsuri
                     lampSwitch(Defines.DEF_LAMP_FRE, Defines.DEF_LAMP_ACTION_ON);
                 }
                 break;
+
             case Defines.DEF_RMODE_WAIT:
             case Defines.DEF_RMODE_BET:
                 // TODO C#移植 フォールスルーしていたのでC#で動くように変更
@@ -2152,6 +2170,7 @@ public class Omatsuri
                 {
                     lampSwitch(Defines.DEF_LAMP_STA, Defines.DEF_LAMP_ACTION_OFF);
                 }
+
                 // インサートコインランプを点滅させる
                 if (!IS_REPLAY()
                         && ((IS_BONUS_JAC() && int_s_value[Defines.DEF_INT_BETTED_COUNT] < 1) || (!IS_BONUS_JAC() && (int_s_value[Defines.DEF_INT_CREDIT_COIN_NUM] < Defines.DEF_NUM_MAX_CREDIT || int_s_value[Defines.DEF_INT_BETTED_COUNT] < 3))))
@@ -2238,17 +2257,37 @@ public class Omatsuri
         }
     }
 
-    // ======================================================
-    // TOBE [メイン制御内部メソッド]
-    // ======================================================
+    private bool setReelStopAngle2(int buttonId, int reelIndex)
+    {
+        if (IsReelStopped(buttonId))
+        {
+            return true; // 止まってる
+        }
+
+        // 止まる場所
+        int result_index = reelIndex;
+
+        // 停止角度を決める
+        int_s_value[Defines.DEF_INT_REEL_STOP_R0 + buttonId] = INDEX2ANGLE(result_index);
+
+        // 停止出目を覚えておく
+        int_s_value[Defines.DEF_INT_PREV_GAME] &= ~(0x1F << buttonId * 5);// 対象BITをクリア
+        int_s_value[Defines.DEF_INT_PREV_GAME] |= (result_index << (buttonId * 5));// 記憶
+
+        if (mobile.isJacCut() == true)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * リールを止めるべき所に止める。
-     * 
-     * @param stopNum
-     *            第？回胴停止(左=0, 中=1, 右=2)
+     * @param stopNum 第？回胴停止(左=0, 中=1, 右=2)
      * @return 既に止まっていたら true
      */
-    private bool setReelStopAngle(int stopNum)
+    private bool setReelStopAngle(int stopNum, Yaku y, MeoshiType mt)
     {
         if (IsReelStopped(stopNum))
         {
@@ -2257,7 +2296,7 @@ public class Omatsuri
 
         // 止まる場所
         int result_index;
-        // ////////////////
+
         // 目押サポート付ボーナスイン
         result_index = ANGLE2INDEX(int_s_value[Defines.DEF_INT_REEL_ANGLE_R0 + stopNum]);
 
@@ -2267,20 +2306,16 @@ public class Omatsuri
         int_s_value[Defines.DEF_INT_REEL_STOP_R0 + stopNum] = INDEX2ANGLE(result_index);
 
         // 停止出目を覚えておく
-        int_s_value[Defines.DEF_INT_PREV_GAME] &= ~(0x1F << stopNum * 5);// 対象BITをクリア
-        int_s_value[Defines.DEF_INT_PREV_GAME] |= (result_index << (stopNum * 5));// 記憶
+        int_s_value[Defines.DEF_INT_PREV_GAME] &= ~(0x1F << stopNum * 5);   // 対象BITをクリア
+        int_s_value[Defines.DEF_INT_PREV_GAME] |= (result_index << (stopNum * 5));  // 記憶
 
         if (mobile.isJacCut() == true)
         {
             return true;
         }
-        //		if (mobile.isJacCut() && IS_BONUS_JAC()) {
-        //			DfMain.TRACE(("JACkカットになっている？");
-        //			return true;
-        //		}
 
         return false;
-    } // End of setReelStopAngle() Method
+    }
 
     /**
      * 各種払い出し音セット
@@ -2316,33 +2351,23 @@ public class Omatsuri
                 _soundTime = Util.GetMilliSeconds() + Defines.DEF_SOUND_MS_17;
             }
         }
+
         playSE(snd_id);
     }
 
     /**
      * グラフ更新(シフト)
-     * 
      * ボーナス終了後の次ゲームのリール回転開始のタイミングで呼ぶ.
-     * 
-     * @param current =
-     *            現在の回転数
-     * @param game_kind =
-     *            BIG/REG/NORMAL
-     * 
-     * @see bonus_Data[][]
-     * @see df.Df#UNIT_GAMES
-     * @see df.Df#INFO_GAMES
-     * @see df.Df#GAME_BIG
-     * @see df.Df#GAME_REG
-     * @see df.Df#GAME_NONE
-     * 
+     * @param current = 現在の回転数
+     * @param game_kind = BIG/REG/NORMAL
      */
     private void shiftDataPanelHistory(int current, int game_kind)
     {
         // Y軸 高さ.
         int idx = current / Defines.DEF_UNIT_GAMES;
         if (idx >= Defines.DEF_INFO_GAMES)
-        { // == bonus_Data[x].Length
+        {
+            // == bonus_Data[x].Length
             idx = Defines.DEF_INFO_GAMES - 1;
         }
 
@@ -2369,26 +2394,16 @@ public class Omatsuri
     }
 
     /**
-     * 進行中のゲーム情報を蓄積していく
-     * 
-     * 毎ゲーム呼ぶ.
-     * 
-     * @param current =
-     *            現在のボーナス間回転数
-     * 
-     * @see bonus_Data[][]
-     * @see df.Df#UNIT_GAMES
-     * @see df.Df#INFO_GAMES
-     * @see df.Df#GAME_NONE
-     * @see df.Df#GAME_NORMAL
-     * 
+     * 進行中のゲーム情報を蓄積していく 毎ゲーム呼ぶ.
+     * @param current = 現在のボーナス間回転数
      */
     private void setCurrentDataPanel(int current)
     {
         // Y軸 高さ.
         int idx = (current - 1) / Defines.DEF_UNIT_GAMES;
         if (idx >= Defines.DEF_INFO_GAMES)
-        { // == bonus_Data[x].Length
+        {
+            // == bonus_Data[x].Length
             idx = Defines.DEF_INFO_GAMES - 1;
         }
 
@@ -2401,7 +2416,6 @@ public class Omatsuri
 
     /**
      * ＢＢ作動中ですか？
-     * 
      * @return true=ＢＢ作動中
      */
     public bool IS_BONUS_GAME()
@@ -2411,7 +2425,6 @@ public class Omatsuri
 
     /**
      * BONUS中ですか？
-     * 
      * @return
      */
     public bool IS_BONUS()
@@ -2421,7 +2434,6 @@ public class Omatsuri
 
     /**
      * ＲＢ作動中ですか？
-     * 
      * @return true=ＲＢ作動中
      */
     public bool IS_BONUS_JAC()
@@ -2434,8 +2446,7 @@ public class Omatsuri
      */
     public bool IS_REPLAY()
     {
-        return v23.getWork(Defines.DEF_GAMEST) == 0x4
-                || (!IS_BONUS() && v23.getWork(Defines.DEF_HITFLAG) == 0x8);
+        return v23.getWork(Defines.DEF_GAMEST) == 0x4 || (!IS_BONUS() && v23.getWork(Defines.DEF_HITFLAG) == 0x8);
     }
 
     public int getReelId(int reelBit)
@@ -2472,6 +2483,7 @@ public class Omatsuri
         {
             yukou = 3;
         }
+
         for (int line = 0; line < yukou; line++)
         {
             int tmp = Defines.DEF_ARAY;
@@ -2489,6 +2501,7 @@ public class Omatsuri
                 tempai[1]++;
             }
         }
+
         return tempai;
     }
 
@@ -2516,27 +2529,18 @@ public class Omatsuri
         }
         else
         {
-            //// 非重畳の場合はボーナスゲームのＢＧＭを優先して鳴らす（＝ボーナスゲームでないときだけ鳴らせる）
-            //if (!IS_BONUS_GAME())
-            //{
-            //    // 非重畳の場合は第三引数に意味はない！！
-            //    mobile.playSound(id, false, Defines.DEF_SOUND_MULTI_SE);
-            //}
         }
     }
 
     /**
      * BGM を再生(Director.directionデータから選ばず、直接鳴動を指定するときに使う)
-     * 
-     * @param id
-     *            サウンドＩＤ
-     * @param loop
-     *            ループ再生
+     * @param id サウンドＩＤ
+     * @param loop ループ再生
      */
     public void playBGM(int id, bool loop)
     {
         // 非重畳の場合は第３引数は無視されるのよ
-#if __COM_TYPE__
+
         if (loop == true)
         {
             bgm_no = id;
@@ -2547,9 +2551,8 @@ public class Omatsuri
             bgm_no = -1;
             bgm_loop = false;
         }
-#endif
+
         GameManager.PlayBGM(id, loop);
-        //mobile.playSound(id, loop, Defines.DEF_SOUND_MULTI_BGM);
     }
 
     // ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
@@ -2750,162 +2753,8 @@ public class Omatsuri
 			},
             };
 
-    // private  final char[][] FLASHTBL = {
-    // // FLASH_01[] = { // ﾌﾗｯｼｭ演出ﾃﾞｰﾀ 01
-    // { 3, F2 | F3 | F5 | F6 | F8 | F9 | FNON, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 01
-    // 3, F1 | F3 | F4 | F6 | F7 | F9 | FNON, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ
-    // // ﾊﾟﾀｰﾝ 02
-    // 3, F1 | F2 | F4 | F5 | F7 | F8 | FNON, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ
-    // // ﾊﾟﾀｰﾝ 03
-    // FEND // ｴﾝﾄﾞｺｰﾄﾞ
-    // },
-    // // FLASH_02[] = { // ﾌﾗｯｼｭ演出ﾃﾞｰﾀ 02
-    // { 3, F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 01
-    // 3, F4 | F7 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 02
-    // 3, F1 | F2 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 03
-    // 3, F3 | F6 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 04
-    // 3, F8 | F9 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 05
-    // 3, F5 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 06
-    // 3, F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 07
-    // FEND // ｴﾝﾄﾞｺｰﾄﾞ
-    // },
-    // // FLASH_03[] = { // ﾌﾗｯｼｭ演出ﾃﾞｰﾀ 03
-    // { 3, F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 01
-    // 3, F8 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 02
-    // 3, F5 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 03
-    // 3, F2 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 04
-    // 9, F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 05
-    // 6, F5 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 06
-    // 3, F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 07
-    // 3, F5 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 08
-    // 6, F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 09
-    // FEND // ｴﾝﾄﾞｺｰﾄﾞ
-    // },
-    // // FLASH_04[] = { // ﾌﾗｯｼｭ演出ﾃﾞｰﾀ 04
-    // { 3, F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 01
-    // 3, F8 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 02
-    // 3, F5 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 03
-    // 3, F2 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 04
-    // 9, F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 05
-    // 3, F5 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 06
-    // 3, F2 | F4 | F6 | F8 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ
-    // // ﾊﾟﾀｰﾝ 07
-    // 4, F1 | F2 | F3 | F4 | F6 | F7 | F8 | F9 | F10 | F11 | F12, // ﾘｰﾙ
-    // // ﾗﾝﾌﾟ
-    // // ﾃﾞﾓ
-    // // ﾊﾟﾀｰﾝ
-    // // 08
-    // 6, F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 09
-    // FEND // ｴﾝﾄﾞｺｰﾄﾞ
-    // },
-    // // FLASH_05[] = { // ﾌﾗｯｼｭ演出ﾃﾞｰﾀ 05
-    // { 8, F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 01
-    // 3, F7 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 02
-    // 3, F4 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 03
-    // 3, F1 | F4 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 04
-    // 3, F1 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 05
-    // 3, F9 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 06
-    // 3, F6 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 07
-    // 3, F3 | F6 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 08
-    // 3, F3 | F8 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 09
-    // 3, F5 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 10
-    // 3, F2 | F5 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 11
-    // 3, F2 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 12
-    // 15, F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 13
-    // 3, F4 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 14
-    // 3, F1 | F5 | F7 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 15
-    // 10, F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 16
-    // 3, F6 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 17
-    // 3, F3 | F5 | F9 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 18
-    // 15, F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 19
-    // 3, F5 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 20
-    // 3, F2 | F4 | F6 | F8 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ
-    // // ﾊﾟﾀｰﾝ 21
-    // 4, F1 | F3 | F7 | F9 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ
-    // // ﾊﾟﾀｰﾝ 22
-    // 10, F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 23
-    // FEND // ｴﾝﾄﾞｺｰﾄﾞ
-    // },
-    // // FLASH_06[] = { // ﾌﾗｯｼｭ演出ﾃﾞｰﾀ 06
-    // {
-    // 8,
-    // F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 01
-    // 3,
-    // F8 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 02
-    // 3,
-    // F5 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 03
-    // 4,
-    // F2 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 04
-    // 10,
-    // FNON, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 05
-    // 2,
-    // F1 | F2 | F3 | F4 | F5 | F6 | F7 | F8 | F9 | F10 | F11
-    // | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 06
-    // 15, FNON, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 07
-    // 3, F2 | F6 | F7 | F10 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 08
-    // 3, F3 | F4 | F8 | F10, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 09
-    // 3, F5 | F7 | F9 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 10
-    // 3, F1 | F2 | F6 | F7 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 11
-    // 3, F5 | F9 | F10 | F11, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 12
-    // 3, F2 | F6 | F8 | F11, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 13
-    // 3, F3 | F4 | F8 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 14
-    // 4, F1 | F5 | F7 | F9 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 15
-    // 4, F2 | F4 | F6 | F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 16
-    // 15, F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 17
-    // 5, F1 | F3 | F4 | F6 | F8 | FNON, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 18
-    // 8, F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 19
-    // 5, F1 | F3 | F4 | F6 | F8 | FNON, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 20
-    // 8, F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 21
-    // 5, F1 | F3 | F4 | F6 | F8 | FNON, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 22
-    // 10, F10 | F11 | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 23
-    // FEND // ｴﾝﾄﾞｺｰﾄﾞ
-    // },
-    // // FLASH_07[] = { // ﾌﾗｯｼｭ演出ﾃﾞｰﾀ 07
-    // {
-    // 2,
-    // F1 | F2 | F3 | F4 | F5 | F6 | F7 | F8 | F9 | F10 | F11
-    // | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 01
-    // 2,
-    // F1 | F2 | F3 | F4 | F5 | F6 | F7 | F8 | F9 | FNON, // ﾘｰﾙ
-    // // ﾗﾝﾌﾟ
-    // // ﾃﾞﾓ
-    // // ﾊﾟﾀｰﾝ
-    // // 02
-    // 2,
-    // F1 | F2 | F3 | F4 | F5 | F6 | F7 | F8 | F9 | F10 | F11
-    // | F12, // ﾘｰﾙ ﾗﾝﾌﾟ ﾃﾞﾓ ﾊﾟﾀｰﾝ 03
-    // FEND // ｴﾝﾄﾞｺｰﾄﾞ
-    // }, };
-
-    // // //
-    // //
-    // ----------------------------------------------------------------------------------------------
-    // // // 遊技状態表示ＬＥＤデータテーブル
-    // //
-    // //----------------------------------------------------------------------------------------------
-    // public  final char[][] FLLXX = {
-    // //ダミー
-    // {100,0x00,0x00,0x00,0x00},
-    // // RB作動時の点灯
-    // { 120, 0x91, 0x4E, 0x24, 0x4E },
-    // // BB作動時の点灯
-    // { 80, 0x35, 0x7B, 0xE4, 0x0A },
-    // // 再遊技作動時の点灯
-    // { 200, 0x11, 0x0E, 0x11, 0x0E },
-    // // 正回転時の点灯
-    // { 80, 0x92, 0x49, 0x24, 0x00 },
-    // // 逆回転時の点灯
-    // { 80, 0x89, 0x52, 0x24, 0x00 }, };
-
-    // //////////////////////////////////////////////////////////////
-    // compact.CompactClass char[]
-
-    /*------------------ class Director ------------------*/
-
-    /** AUTO GENERATED char ARRAY BY compact.CompactClass */
     private char[] flash = "\u0000".ToCharArray();
 
-    /** AUTO GENERATED char ARRAY BY compact.CompactClass */
     private char[][] FLASHTBL = {
             "\u0003\u01F8\u0003\u01C7\u0003\u003F\uFFFF".ToCharArray(),
             "\u0003\u0E00\u0003\u0E03\u0003\u0E24\u0003\u0F80\u0003\u0E48\u0003\u0E10\u0003\u0E00\uFFFF"
@@ -2920,7 +2769,6 @@ public class Omatsuri
                     .ToCharArray(),
             "\u0002\u0FFF\u0002\u01FF\u0002\u0FFF\uFFFF".ToCharArray(), };
 
-    /** AUTO GENERATED char ARRAY BY compact.CompactClass */
     public char[][] FLLXX = {
             "\u0064\u0000\u0000\u0000\u0000\u0000".ToCharArray(),
             "\u0078\u0091\u004E\u0024\u004E\u0000".ToCharArray(),
@@ -2929,12 +2777,6 @@ public class Omatsuri
             "\u0050\u0092\u0049\u0024\u0000\u0000".ToCharArray(),
             "\u0050\u0089\u0052\u0024\u0000\u0000".ToCharArray(), };
 
-    // //////////////////////////////////////////////////////////////
-    // compact.CompactClass byte[]
-
-    /*------------------ class Director ------------------*/
-    // /////////////////////////////////
-    // BREWからの告知移植
     /** 3D Rect用 */
     private int[] polygon = new int[4 * 3];// xyz*4
 
@@ -2953,13 +2795,10 @@ public class Omatsuri
      * @param b
      * @param ink
      */
-    public void _drawEffect(int x0, int y0, int w, int h, int r, int g,
-            int b, int ink)
+    public void _drawEffect(int x0, int y0, int w, int h, int r, int g, int b, int ink)
     {
-
         const int bias_x = 120;// ZZ.centerX;
         const int bias_y = 120;// ZZ.centerY;
-
 
         // x0, y0, z0
         polygon[0] = x0 - bias_x;
@@ -3025,7 +2864,7 @@ public class Omatsuri
     }
 
     public int GET_INT_TO_STR(int str) { return str; }
-    public int GET_STR_TO_INT(string str) { return (int)long.Parse(str); } 	// 符号付きで変換されるので一つ上の型からキャストする
+    public int GET_STR_TO_INT(string str) { return (int)long.Parse(str); }          // 符号付きで変換されるので一つ上の型からキャストする
     public ushort GET_STR_TO_CHAR(string str) { return (ushort)long.Parse(str); } 	// 符号付きで変換されるので一つ上の型からキャストする
 
     // 基本がこれ
@@ -3039,6 +2878,12 @@ public class Omatsuri
         EYE_TYPE_SP_REP,	// 達人オートのリプレイ外し
         EYE_TYPE_TIMEOUT,	// 自動停止
     };
+
+    public enum MeoshiType
+    {
+        AtariKotei,
+        HazureKotei,
+    }
 
     // 目押し制御用
     // 引数
@@ -3135,10 +2980,10 @@ public class Omatsuri
     {
         int ret;
         int num = 0;
-        //int stop[][] = {{0,1,2}, {2,1,0}};// 順押しと逆押し
 
         if (limit == true)
-        {	// 自動停止の場合は順押しにする
+        {
+            // 自動停止の場合は順押しにする
             //ret = gp.gpif_oshijun_list[0][index];
             num = 0;
         }
@@ -3147,6 +2992,8 @@ public class Omatsuri
         //DFMain.APP_TRACE("押し順: gpif_oshijun_list["+num+"]["+index+"]=" + ret);
         return ret;
     }
+
+    Defines.ForceYakuFlag ffff = Defines.ForceYakuFlag.REG;
 
     // 役の変更
     void chgYaku()
@@ -3170,7 +3017,6 @@ public class Omatsuri
         {
             // 設定０のとき、17の倍数ゲーム（17､34､51､68・・・）に
             // 強制フラグでハズレフラグに差し替える
-
             var draw = GameManager.setting0Machine.Draw();
             if (draw == DrawSetting0.Hazure)
             {
@@ -3180,6 +3026,8 @@ public class Omatsuri
         }
 
         flag = GameManager.forceYakuValue;
+        //flag = ffff;
+        //ffff = 0;
 
         if (flag != 0)
         {
@@ -3202,11 +3050,13 @@ public class Omatsuri
         for (i = 0; i < Math.Abs(num); i++)
         {
             if (num > 0)
-            {	// 換算
+            {
+                // 換算
                 slotInterface.onCreditUp();
             }
             else if (num < 0)
-            {	// 減算
+            {
+                // 減算
                 slotInterface.onCreditUse();
             }
         }
@@ -3220,7 +3070,8 @@ public class Omatsuri
     public int GPW_chgProba()
     {
         if (slotInterface.gpif_triple_f == true)
-        {	//トリプルセブンアイテム使用時
+        {
+            //トリプルセブンアイテム使用時
             //(num * gpif_kakuhen_n)
             Defines.APP_TRACE("確率アップ:" + slotInterface.gpif_kakuhen_n);
             return slotInterface.gpif_kakuhen_n;
@@ -3244,7 +3095,8 @@ public class Omatsuri
 
         Defines.APP_TRACE("gp.gpif_bonuscut_f:" + slotInterface.gpif_bonuscut_f);
         if (slotInterface.gpif_bonuscut_f == true)
-        {	// ボーナスカットON
+        {
+            // ボーナスカットON
             // 0ボーナスカット
             // 1 OFF
             // 2 JACカット
@@ -3254,7 +3106,8 @@ public class Omatsuri
             if ((this.int_s_value[Defines.DEF_INT_BB_KIND] == Defines.DEF_BB_B7)
                 || (this.int_s_value[Defines.DEF_INT_BB_KIND] == Defines.DEF_BB_R7)) // ＢＢ終了判定
             //if ((clOHHB_V23.getWork(DfOHHB_V23_DEF.DEF_GMLVSTS) & 0x01) != 0)
-            {	// ビッグボーナス中
+            {
+                // ビッグボーナス中
                 Defines.APP_TRACE("ここまできてる？：" + num);
 
                 if (IS_BONUS_JAC() == true)
@@ -3304,17 +3157,20 @@ public class Omatsuri
         int cutType;
 
         if (type == 1)
-        {	// 強制的にカットしたい場合
+        {
+            // 強制的にカットしたい場合
             cutType = 1;
         }
         else
-        {	// 通常はカットフラグを見て動作させる
+        {
+            // 通常はカットフラグを見て動作させる
             cutType = cutBonus();
         }
         Defines.APP_TRACE(" ﾎﾞｰﾅｽ:" + this.int_s_value[Defines.DEF_INT_BB_KIND] + " cutType:" + cutType);
 
         if (cutType == 1)
-        {	// ﾎﾞｰﾅｽｹﾞｰﾑ
+        {
+            // ﾎﾞｰﾅｽｹﾞｰﾑ
             Defines.APP_TRACE("ボーナスオールカットだよ");
             // 遊技状態 ｽﾃｰﾀｽをRB or JAC 中へ
             v23.setWork(Defines.DEF_GMLVSTS, (ushort)1);
@@ -3327,7 +3183,8 @@ public class Omatsuri
             return true;
         }
         else if (cutType == 2)
-        {	// JACｹﾞｰﾑ of RB
+        {
+            // JACｹﾞｰﾑ of RB
             Defines.APP_TRACE("JACカットだよ");
             // 遊技状態 ｽﾃｰﾀｽをRB or JAC 中へ
             v23.setWork(Defines.DEF_GMLVSTS, (ushort)1);
@@ -3361,19 +3218,23 @@ public class Omatsuri
                 // リールの停止位置によるチェック
                 if ((v23.getWork(Defines.DEF_HITREQ) == Defines.DEF_HITFLAG_NR_BB) ||
                     (v23.getWork(Defines.DEF_HITREQ) == Defines.DEF_HITFLAG_NR_RB))
-                {	// ボーナス内部中ならば
+                {
+                    // ボーナス内部中ならば
                     if (flash == (int)Defines.EVENT.EVENT_NO1)
-                    {	// 3連ドン（1確)
+                    {
+                        // 3連ドン（1確)
                         tmp = ANGLE2INDEX(this.int_s_value[Defines.DEF_INT_REEL_ANGLE_R0]);
                         // 角度補正で+1されてしまうので-1する
                         if ((tmp - 1) == 9)
-                        {	// 3連ドン（1確)
+                        {
+                            // 3連ドン（1確)
                             Defines.APP_TRACE("演出１：3連ドン（1確)");
                             GPW_SET_EVENT((int)Defines.EVENT.EVENT_NO1);
                         }
                     }
                     else if (flash == (int)Defines.EVENT.EVENT_NO2)
-                    {	// トリプルテンパイの場合
+                    {
+                        // トリプルテンパイの場合
                         Defines.APP_TRACE("演出２：トリプルテンパイ（BIG確）");
                         GPW_SET_EVENT((int)Defines.EVENT.EVENT_NO2);
                     }
@@ -3392,15 +3253,18 @@ public class Omatsuri
 
                         if (Defines.CHECK_FLAG(v23.getWork(Defines.DEF_ARAY33), Defines.DEF_BSVN) &&
                             Defines.CHECK_FLAG(v23.getWork(Defines.DEF_ARAY13), Defines.DEF_CHRY))
-                        {	// 右リール下段にﾁｪﾘｰ付き青七図柄
+                        {
+                            // 右リール下段にﾁｪﾘｰ付き青七図柄
                             if (Defines.CHECK_FLAG(v23.getWork(Defines.DEF_ARAY21), (Defines.DEF_BSVN | Defines.DEF_DON_ | Defines.DEF_BAR_)))
-                            {	// 左リール上段にボーナス図柄
+                            {
+                                // 左リール上段にボーナス図柄
                                 Defines.TRACE("演出３：上段タイプのゲチェナ");
                                 Defines.APP_TRACE("演出３：上段タイプのゲチェナ");
                                 GPW_SET_EVENT((int)Defines.EVENT.EVENT_NO3);
                             }
                             else if (Defines.CHECK_FLAG(v23.getWork(Defines.DEF_ARAY31), (Defines.DEF_BSVN | Defines.DEF_DON_ | Defines.DEF_BAR_)))
-                            {	// 左リール下段にボーナス図柄
+                            {
+                                // 左リール下段にボーナス図柄
                                 Defines.TRACE("演出３：上段タイプのゲチェナ");
                                 Defines.APP_TRACE("演出３：下段タイプのゲチェナ");
                                 GPW_SET_EVENT((int)Defines.EVENT.EVENT_NO3);
@@ -3409,10 +3273,10 @@ public class Omatsuri
                     }
                 }
                 break;
-            case (int)Defines.EVENT_PROC.EVENT_PROC_CHK_FLASH:
-                // 演出によるチェック
 
-                //////////////////////////////////////////////////////////////////////////////////
+            case (int)Defines.EVENT_PROC.EVENT_PROC_CHK_FLASH:
+
+                // 演出によるチェック
                 // あまりタイプ
                 tmp = (flash % 32);
                 // 演出チェック
@@ -3435,7 +3299,6 @@ public class Omatsuri
                     GPW_SET_EVENT((int)Defines.EVENT.EVENT_NO5);
                 }
 
-                //////////////////////////////////////////////////////////////////////////////////
                 // 割り算タイプ
                 tmp = (int)(flash / 32);
                 if (tmp == 7)
@@ -3447,14 +3310,18 @@ public class Omatsuri
 
                 break;
             case (int)Defines.EVENT_PROC.EVENT_PROC_CHK_LANP:
+
                 // 確定ランプフラグ
                 if ((this.int_s_value[Defines.DEF_INT_WIN_LAMP] == 0) && (flash != 0))
-                {	// まだ確定ランプが点等していなく、演出番号が点等命令の場合
+                {
+                    // まだ確定ランプが点等していなく、演出番号が点等命令の場合
                     Defines.APP_TRACE("演出８：「か～ぎや～」ランプ点灯");
                     GPW_SET_EVENT((int)Defines.EVENT.EVENT_NO8);
                 }
                 break;
+
             case (int)Defines.EVENT_PROC.EVENT_PROC_WEB:
+
                 // イベント情報の送信
                 if (eventFlagList[(int)Defines.EVENT.EVENT_WEB] == true)
                 {
@@ -3481,9 +3348,6 @@ public class Omatsuri
                     Defines.APP_TRACE("演出帳:" + strTmp);
 
                     slotInterface.userDirection = strTmp;
-
-                    // 通信を行なう
-                    // TODO C#移植 一旦コメントアウト
                     slotInterface.onReaSceneGet();
                 }
                 break;
@@ -3492,7 +3356,8 @@ public class Omatsuri
 
     // 大祭り用のサーバー文字列の作成
     public String OmatsuriToString(bool intfg)
-    {	// リール停止の初期値
+    {
+        // リール停止の初期値
         Defines.APP_TRACE("★リール位置の初期化★");
         this.int_s_value[Defines.DEF_INT_REEL_ANGLE_R0] = INDEX2ANGLE(9);
         this.int_s_value[Defines.DEF_INT_REEL_ANGLE_R1] = INDEX2ANGLE(16);
@@ -3516,6 +3381,7 @@ public class Omatsuri
         str = "";
 
         Defines.APP_TRACE("★乱数用シードの登録★:" + clRAND8.mRndbuf.Length);
+
         // 乱数用シードの登録
         for (i = 0; i < Defines.RAND_SEED_SIZE; i++)
         {
@@ -3548,7 +3414,6 @@ public class Omatsuri
             tmp = 0;
         }
         str = str + tmp;
-        /////////////////////////////////////////////
 
         str = str + ",";
         Defines.APP_TRACE("★グローバル変数の登録★:" + Defines.DEF_INT_SLOT_VALUE_MAX);
@@ -3557,7 +3422,8 @@ public class Omatsuri
             if ((i == Defines.DEF_INT_REEL_ANGLE_R0) ||
                 (i == Defines.DEF_INT_REEL_ANGLE_R1) ||
                 (i == Defines.DEF_INT_REEL_ANGLE_R2))
-            {	// リールの位置
+            {
+                // リールの位置
                 tmp = ANGLE2INDEX(this.int_s_value[i]);
                 // 角度補正で+1されてしまうので-1する
                 //DFMain.APP_TRACE("["+i+"]:"+(tmp-1));
@@ -3602,7 +3468,8 @@ public class Omatsuri
         clRAND8.mRndwh = GET_STR_TO_CHAR(appData[top + ofset]); ofset++;
 
         if (this.maj_ver >= 12 && this.sub_ver >= 0)
-        {// バージョン11以上からサブのバージョンを付与
+        {
+            // バージョン11以上からサブのバージョンを付与
             //DFMain.APP_TRACE("★サウンドの再生登録★");
             this.bgm_no = GET_STR_TO_INT(appData[top + ofset]); ofset++;
             tmp = GET_STR_TO_INT(appData[top + ofset]); ofset++;
@@ -3628,9 +3495,11 @@ public class Omatsuri
             if ((i == Defines.DEF_INT_REEL_ANGLE_R0) ||
                 (i == Defines.DEF_INT_REEL_ANGLE_R1) ||
                 (i == Defines.DEF_INT_REEL_ANGLE_R2))
-            {	// リールの位置
+            {
+                // リールの位置
                 if (tmp != 0)
-                {	// tmp=0の場合は初期値になる為、代入しない
+                {
+                    // tmp=0の場合は初期値になる為、代入しない
                     //DFMain.APP_TRACE("リール位置["+i+"]:" + tmp + ":" + INDEX2ANGLE(tmp));
                     this.int_s_value[i] = INDEX2ANGLE(tmp);
                 }
@@ -3672,13 +3541,16 @@ public class Omatsuri
 
                     // ヒット役を消す
                     v23.setWork(Defines.DEF_HITFLAG, (ushort)0);
+
                     // 獲得枚数を消す
                     v23.setWork(Defines.DEF_INT_WIN_GET_COIN, (ushort)0);
 
                     //ここでランプを消す
                     this.int_s_value[Defines.DEF_INT_TOP_LAMP] = 0;
+
                     // 上部の左右ランプフラグ更新
                     ctrlTopLamp();
+
                     // 4THのランプフラグ更新
                     lampSwitch(Defines.DEF_LAMP_4TH, Defines.DEF_LAMP_ACTION_OFF);
 
@@ -3714,19 +3586,22 @@ public class Omatsuri
 
         if ((this.int_s_value[Defines.DEF_INT_BB_KIND] == Defines.DEF_BB_B7)
                 || (this.int_s_value[Defines.DEF_INT_BB_KIND] == Defines.DEF_BB_R7))
-        { // ＢＢ終了判定
+        {
+            // ＢＢ終了判定
             Defines.TRACE("BBボーナス終了:" + this.int_s_value[Defines.DEF_INT_BONUS_GOT] + "枚:" + type);
             if (type == 1)
-            {	// ボーナス状態を強制クリア
-
+            {
+                // ボーナス状態を強制クリア
             }
             else
-            {	// 通常はこっち
+            {
+                // 通常はこっち
                 _soundTime = Util.GetMilliSeconds() + Defines.DEF_SOUND_MS_09; // ﾌｧﾝﾌｧｰﾚ完奏時間設定
                 playBGM(Defines.DEF_SOUND_09, false); // BBEND音
 
                 if (BonusCutFg == true)
-                {	// ボーナスカットオールの場合限定
+                {
+                    // ボーナスカットオールの場合限定
                     BonusCutFg = false;
                     if (this.int_s_value[Defines.DEF_INT_BONUS_GOT] < Defines.BIG_BONUS_AVENUM)
                     {
@@ -3747,7 +3622,6 @@ public class Omatsuri
 
             // 消化中の使用コイン数があるため、－枚は０枚にしておく
             this.int_s_value[Defines.DEF_INT_BONUS_GOT] = Math.Max(0, this.int_s_value[Defines.DEF_INT_BONUS_GOT]);
-
         }
         else if (this.int_s_value[Defines.DEF_INT_BB_KIND] == Defines.DEF_RB_IN)
         {

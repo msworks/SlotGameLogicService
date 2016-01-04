@@ -78,6 +78,7 @@
     <Compile Include="Ocean\RouteDeterminer.cs" />
     <Compile Include="Ocean\StateMachine\TheOceanMachine.cs" />
     <Compile Include="Oohanabi\Setting0Machine.cs" />
+    <Compile Include="Oohanabi\SlotMachine\CallbackToController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>

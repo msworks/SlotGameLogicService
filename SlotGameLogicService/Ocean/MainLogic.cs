@@ -116,10 +116,18 @@ namespace TheOcean
         {
             var S0_ATARI_NUM = 163;       // 設定０大当たり
             var S0_HAZURE_NUM = 65373;    // 設定０はずれ
-            var ATARI_NUM = 202;          // 大当たり
-            var HAZURE_NUM = 65334;       // はずれ
-            var KH_ATARI_NUM = 2029;      // 確率変動時大当たり
-            var KH_HAZURE_NUM = 63507;    // 確率変動時はずれ
+
+            var ATARI_NUM = 5536;          // 大当たり
+            var HAZURE_NUM = 60000;       // はずれ
+            var KH_ATARI_NUM = 65536;      // 確率変動時大当たり
+            var KH_HAZURE_NUM = 0;    // 確率変動時はずれ
+
+            //var S0_ATARI_NUM = 163;       // 設定０大当たり
+            //var S0_HAZURE_NUM = 65373;    // 設定０はずれ
+            //var ATARI_NUM = 202;          // 大当たり
+            //var HAZURE_NUM = 65334;       // はずれ
+            //var KH_ATARI_NUM = 2029;      // 確率変動時大当たり
+            //var KH_HAZURE_NUM = 63507;    // 確率変動時はずれ
 
             // 大当たり抽選テーブルの初期化
             var S0_ATARI = Enumerable.Range(0, S0_ATARI_NUM).Select(v => true);

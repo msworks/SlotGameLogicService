@@ -26,13 +26,4 @@ namespace GameLogicService
             return value;
         }
     }
-
-    static class stringExtension
-    {
-        public static string DropPercent(this string source)
-        {
-            var length = source.Length;
-            return source.Substring(0, length - 1);
-        }
-    }
 }

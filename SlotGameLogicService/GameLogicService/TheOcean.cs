@@ -98,19 +98,22 @@ namespace GameLogicService
                 shootResult = machine.Shoot(pow);
             }
 
+            this.payout = shootResult.payout;
+
             var result = new Associative();
             result.Add("yaku", ((int)shootResult.yaku).ToString());
             result.Add("route", ((int)shootResult.route).ToString());
-            result.Add("payout", ((int)shootResult.payout).ToString());
 
             if (shootResult.route != Route.Abandon)
             {
-                Logger.Info($"G:{gameId} U:{userId} power:{power} rate:{rate} yaku:{shootResult.yaku} route:{shootResult.route} payout:{shootResult.payout}");
+                Logger.Info($"G:{gameId} U:{userId} power:{power} rate:{rate} yaku:{shootResult.yaku} route:{shootResult.route}");
             }
 
             State = MACHINE_STATE.PLAY;
             return result;
         }
+
+        public int payout;
 
         public Associative Collect(Associative param)
         {
@@ -133,6 +136,10 @@ namespace GameLogicService
 
             var result = new Associative();
             result.Add("result", "WIN".DQ());
+            result.Add("yaku", "0");
+            result.Add("payout", (payout).ToString());
+
+            Logger.Info($"[Ocean][Collect]GameId:{gameId} UserId:{userId} payout:{payout}");
 
             State = MACHINE_STATE.COLLECT;
             return result;
